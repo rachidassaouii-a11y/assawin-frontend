@@ -124,7 +124,6 @@
             <h1>ASSAWIN Wallet</h1>
             <p>Vue consolidée de votre activité</p>
         </div>
-
         <div class="kpi-grid">
             <div class="glass-card kpi-card">
                 <h3>CA Analysé</h3>
@@ -143,16 +142,13 @@
                 <div class="value" id="alertes">—</div>
             </div>
         </div>
-
         <div class="section-title">Dernières opérations</div>
         <div class="glass-card" id="operations">
             <p style="color: var(--text-muted);">Chargement en cours...</p>
         </div>
-
         <button class="btn-gold" onclick="loadData()">Actualiser les données</button>
         <div id="result"></div>
     </div>
-
     <script>
         async function loadData() {
             const resultDiv = document.getElementById('result');
@@ -160,13 +156,10 @@
             try {
                 const response = await fetch("https://assawin-api-2026.onrender.com/health");
                 const data = await response.json();
-                // Affichage des valeurs simulées pour le Wallet
-                // (à remplacer par les vrais endpoints API quand ils seront prêts)
                 document.getElementById('ca').textContent = "125 000 €";
                 document.getElementById('marge').textContent = "32 500 €";
                 document.getElementById('exposition').textContent = "8,5 %";
                 document.getElementById('alertes').textContent = "3";
-                
                 document.getElementById('operations').innerHTML = `
                     <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border-glass);">
                         <span>Devis #DEV-2024-001</span>
@@ -181,14 +174,12 @@
                         <span style="color: var(--gold-primary);">En attente</span>
                     </div>
                 `;
-                
                 resultDiv.textContent = "Statut : " + data.status;
             } catch (error) {
                 resultDiv.textContent = "Erreur : " + error.message;
             }
         }
-        // Appel initial (retiré pour éviter le chargement automatique)
-        // loadData();
+        // loadData(); // Retiré pour éviter le chargement automatique
     </script>
 </body>
 </html>
