@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASSAWIN™ - Cockpit Projet</title>
+    
+    <style>
+        :root {
+            --bg: #0B0B0C;
+            --bg-card: #1A1A1C;
+            --gold: #D4AF37;
+            --gold-light: #F0D77B;
+            --text-primary: #FFFFFF;
+            --text-secondary: #9E9E9E;
+            --accent-emerald: #10b981;
+            --accent-red: #ef4444;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            color: var(--gold);
+            margin: 0;
+        }
+        #status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.15);
+        }
+        .kpi-card h3 {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .kpi-card .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--gold);
+        }
+        .btn-gold {
+            background: linear-gradient(135deg, #B8860B 0%, var(--gold) 50%, var(--gold-light) 100%);
+            color: var(--bg);
+            border: none;
+            border-radius: 0.5rem;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .btn-gold:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Cockpit Projet</h1>
+            <div id="status-badge">En attente de connexion...</div>
+        </header>
+
+        <h2 id="project-name" style="color: var(--gold); margin-bottom: 1.5rem;">Chargement...</h2>
+
+        <div class="kpi-grid">
+            <div class="glass-card kpi-card">
+                <h3>Budget Alloué</h3>
+                <p id="kpi-budget" class="value">--</p>
+            </div>
+            <div class="glass-card kpi-card">
+                <h3>Déboursé Sec</h3>
+                <p id="kpi-debourse" class="value" style="color: var(--accent-red);">--</p>
+            </div>
+            <div class="glass-card kpi-card">
+                <h3>Prix de Vente</h3>
+                <p id="kpi-vente" class="value" style="color: var(--accent-emerald);">--</p>
+            </div>
+            <div class="glass-card kpi-card">
+                <h3>Marge Nette</h3>
+                <p id="kpi-marge" class="value">--</p>
+            </div>
+            <div class="glass-card kpi-card">
+                <h3>Exposition</h3>
+                <p id="kpi-exposition" class="value" style="color: #f97316;">--</p>
+            </div>
+            <div class="glass-card kpi-card">
+                <h3>Avancement</h3>
+                <p id="kpi-avancement" class="value" style="color: #3b82f6;">--</p>
+            </div>
+        </div>
+
+        <button class="btn-gold" onclick="fetchData()">Synchroniser les données</button>
+    </div>
+
+    <script>
+        const API_BASE_URL = "https://assawin-backend.onrender.com";
+        const statusBadge = document.getElementById('status-badge');
+
+        const euro = new Intl.NumberFormat("fr-FR", {
+            style: "currency",
+            currency: "EUR",
+            maximumFractionDigits: 0
+        });
+
+        const percent = new Intl.NumberFormat("fr-FR", {
+            maximumFractionDigits: 1
+        });
+
+        function updateUIStatus(state) {
+            if (state.loading) {
+                statusBadge.textContent = "Synchronisation...";
+                statusBadge.className = "px-3 py-1 rounded-full text-sm font-semibold bg-blue-900/50 text-blue-400 border border-blue-700/50";
+            } else if (state.success) {
+                statusBadge.textContent = "Connecté au backend";
+                statusBadge.className = "px-3 py-1 rounded-full text-sm font-semibold bg-emerald-900/50 text-emerald-400 border border-emerald-700/50";
+            } else if (state.error) {
+                statusBadge.textContent = "Erreur de connexion API";
+                statusBadge.className = "px-3 py-1 rounded-full text-sm font-semibold bg-red-900/50 text-red-400 border border-red-700/50";
+            }
+        }
+
+        async function fetchData() {
+            updateUIStatus({ loading: true, success: false, error: false });
+            try {
+                const projetId = "project_001";
+                const response = await fetch(`${API_BASE_URL}/api/v1/projets/${projetId}/cockpit`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const payload = await response.json();
+
+                updateUIStatus({ loading: false, success: true, error: false });
+
+                document.getElementById("project-name").textContent = payload.projet.nom;
+                document.getElementById("kpi-budget").textContent = euro.format(payload.financials.budget);
+                document.getElementById("kpi-debourse").textContent = euro.format(payload.financials.debourse);
+                document.getElementById("kpi-vente").textContent = euro.format(payload.financials.vente);
+                document.getElementById("kpi-marge").textContent = euro.format(payload.financials.marge);
+                document.getElementById("kpi-exposition").textContent = percent.format(payload.risque.exposition) + " %";
+                document.getElementById("kpi-avancement").textContent = percent.format(payload.avancement.pourcentage) + " %";
+
+            } catch (error) {
+                console.error("Erreur Cockpit Projet :", error);
+                updateUIStatus({ loading: false, success: false, error: true });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchData);
+    </script>
+</body>
+</html>
