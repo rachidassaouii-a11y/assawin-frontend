@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASSAWIN Wallet</title>
+<title>ASSAWIN</title>
 <style>
 :root {
     --bg-dark-main: #030712;
@@ -18,21 +18,39 @@
     --accent-red: #ef4444;
 }
 * { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
 body {
     background: var(--bg-dark-main);
     color: var(--text-primary);
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
-    display: flex;
-    justify-content: center;
     min-height: 100vh;
-    margin: 0;
+    position: relative;
+    overflow-x: hidden;
+}
+.bg-watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 140vw;
+    max-width: 900px;
+    opacity: 0.035;
+    z-index: 0;
+    pointer-events: none;
+}
+.page-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
 }
 .container { max-width: 800px; margin: 0 auto; width: 100%; }
-.header { text-align: center; margin-bottom: 2rem; }
-.header h1 { color: var(--gold-primary); font-size: 2rem; margin-bottom: 0.5rem; }
-.header p { color: var(--text-muted); font-size: 1rem; }
+.header { text-align: center; margin-bottom: 2rem; display: flex; flex-direction: column; align-items: center; }
+.logo-mark { width: 64px; height: 64px; margin-bottom: 0.75rem; }
+.header p { color: var(--text-muted); font-size: 1rem; margin: 0; }
 .auth-card, .form-card {
     background: var(--bg-card-glass);
     border: 1px solid var(--border-glass);
@@ -40,8 +58,9 @@ body {
     padding: 2rem;
     max-width: 400px;
     margin: 0 auto 1rem;
+    backdrop-filter: blur(8px);
 }
-.form-card { max-width: 500px; margin-bottom: 1.5rem; }
+.form-card { max-width: 560px; margin-bottom: 1.5rem; }
 .auth-card input, .form-card input, .form-card select {
     width: 100%;
     padding: 0.75rem;
@@ -113,18 +132,56 @@ body {
     width: 100%;
     margin-top: 0.5rem;
 }
+.btn-small {
+    background: rgba(245,158,11,0.1);
+    color: var(--gold-primary);
+    border: 1px dashed var(--gold-primary);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+.btn-remove {
+    background: transparent;
+    color: var(--accent-red);
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0.3rem 0;
+}
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 #status, #auth-status, #proj-status, #devis-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
 #app, #register-section, #project-form, #devis-form { display: none; }
+.ligne-block {
+    border: 1px solid var(--border-glass);
+    border-radius: 0.5rem;
+    padding: 0.85rem;
+    margin-bottom: 0.75rem;
+    background: rgba(255,255,255,0.02);
+}
 .ligne-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem; }
 .ligne-row input { margin-bottom: 0; }
 .project-select { margin-bottom: 1rem; }
 </style>
 </head>
 <body>
+
+<svg class="bg-watermark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="94" fill="none" stroke="#f59e0b" stroke-width="2"/>
+  <path d="M100 40 L150 150 L128 150 L100 88 L72 150 L50 150 Z" fill="#f59e0b"/>
+  <rect x="78" y="118" width="44" height="10" fill="#030712"/>
+</svg>
+
+<div class="page-content">
 <div class="container">
     <div class="header">
-        <h1>ASSAWIN Wallet</h1>
+        <svg class="logo-mark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="94" fill="none" stroke="#f59e0b" stroke-width="6"/>
+          <path d="M100 40 L150 150 L128 150 L100 88 L72 150 L50 150 Z" fill="#f59e0b"/>
+          <rect x="78" y="118" width="44" height="10" fill="#030712"/>
+        </svg>
         <p>Vue consolidée de votre activité</p>
     </div>
 
@@ -185,10 +242,10 @@ body {
         </div>
 
         <div class="form-card" id="devis-form">
-            <label>Projet</label>
+            <label>Projet (client)</label>
             <select id="devis-projet" class="project-select"></select>
             <label>Titre du devis</label>
-            <input type="text" id="devis-titre" placeholder="Ex: Lot peinture" />
+            <input type="text" id="devis-titre" placeholder="Ex: Rénovation complète" />
             <div class="row2">
                 <div>
                     <label>Acompte (%)</label>
@@ -199,33 +256,23 @@ body {
                     <input type="number" id="devis-marge" value="30" />
                 </div>
             </div>
-            <label style="margin-top:0.5rem">Ligne de devis</label>
-            <div class="ligne-row">
-                <input type="text" id="ligne-designation" placeholder="Désignation" />
-                <input type="text" id="ligne-unite" placeholder="Unité" value="u" />
-                <input type="number" id="ligne-quantite" placeholder="Qté" value="1" />
-                <input type="number" id="ligne-tva" placeholder="TVA %" value="20" />
-            </div>
-            <div class="row2">
-                <div>
-                    <label>Prix unitaire HT (€)</label>
-                    <input type="number" id="ligne-prix" value="0" />
-                </div>
-                <div>
-                    <label>Déboursé sec unitaire (€)</label>
-                    <input type="number" id="ligne-debourse" value="0" />
-                </div>
-            </div>
-            <button class="btn-gold" onclick="createDevis()">Créer le devis</button>
+
+            <label style="margin-top:0.5rem">Interventions / lignes du devis</label>
+            <div id="lignes-container"></div>
+            <button class="btn-small" type="button" onclick="addLigne()">+ Ajouter une intervention</button>
+
+            <button class="btn-gold" onclick="createDevis()" style="margin-top:1rem">Créer le devis</button>
             <div id="devis-status"></div>
         </div>
     </div>
+</div>
 </div>
 
 <script>
 const API_URL = "https://assawin-backend.onrender.com";
 let token = null;
 let cachedProjects = [];
+let ligneCounter = 0;
 
 function showRegister() {
     document.getElementById('login-section').style.display = "none";
@@ -250,7 +297,61 @@ async function toggleDevisForm() {
     const el = document.getElementById('devis-form');
     const willShow = el.style.display !== "block";
     el.style.display = willShow ? "block" : "none";
-    if (willShow) await refreshProjectSelect();
+    if (willShow) {
+        await refreshProjectSelect();
+        if (document.getElementById('lignes-container').children.length === 0) addLigne();
+    }
+}
+
+function addLigne() {
+    ligneCounter++;
+    const id = ligneCounter;
+    const container = document.getElementById('lignes-container');
+    const block = document.createElement('div');
+    block.className = 'ligne-block';
+    block.id = 'ligne-' + id;
+    block.innerHTML = `
+        <div class="ligne-row">
+            <input type="text" placeholder="Désignation" data-field="designation" />
+            <input type="text" placeholder="Unité" value="u" data-field="unite" />
+            <input type="number" placeholder="Qté" value="1" data-field="quantite" />
+            <input type="number" placeholder="TVA %" value="20" data-field="taux_tva" />
+        </div>
+        <div class="row2">
+            <div>
+                <label>Prix unitaire HT (€) — ce que le client paie</label>
+                <input type="number" value="0" data-field="prix_unitaire_ht" />
+            </div>
+            <div>
+                <label>Déboursé sec unitaire (€) — ce que ça te coûte réellement</label>
+                <input type="number" value="0" data-field="debourse_sec_unitaire" />
+            </div>
+        </div>
+        <button type="button" class="btn-remove" onclick="removeLigne(${id})">✕ Retirer cette intervention</button>
+    `;
+    container.appendChild(block);
+}
+
+function removeLigne(id) {
+    const el = document.getElementById('ligne-' + id);
+    if (el) el.remove();
+}
+
+function collectLignes() {
+    const blocks = document.querySelectorAll('.ligne-block');
+    const lignes = [];
+    blocks.forEach(block => {
+        const get = (field) => block.querySelector(`[data-field="${field}"]`).value;
+        lignes.push({
+            designation: get('designation'),
+            unite: get('unite'),
+            quantite: parseFloat(get('quantite')) || 1,
+            prix_unitaire_ht: parseFloat(get('prix_unitaire_ht')) || 0,
+            debourse_sec_unitaire: parseFloat(get('debourse_sec_unitaire')) || 0,
+            taux_tva: parseFloat(get('taux_tva')) || 20
+        });
+    });
+    return lignes;
 }
 
 async function refreshProjectSelect() {
@@ -402,16 +503,15 @@ async function createDevis() {
     const titre = document.getElementById('devis-titre').value;
     const acompte_pct = parseFloat(document.getElementById('devis-acompte').value) || 30;
     const marge_cible_pct = parseFloat(document.getElementById('devis-marge').value) || 30;
-    const designation = document.getElementById('ligne-designation').value;
-    const unite = document.getElementById('ligne-unite').value;
-    const quantite = parseFloat(document.getElementById('ligne-quantite').value) || 1;
-    const prix_unitaire_ht = parseFloat(document.getElementById('ligne-prix').value) || 0;
-    const debourse_sec_unitaire = parseFloat(document.getElementById('ligne-debourse').value) || 0;
-    const taux_tva = parseFloat(document.getElementById('ligne-tva').value) || 20;
+    const lignes = collectLignes();
     const statusDiv = document.getElementById('devis-status');
 
-    if (!id_projet || !titre || !designation) {
-        statusDiv.textContent = "Projet, titre et désignation obligatoires.";
+    if (!id_projet || !titre) {
+        statusDiv.textContent = "Projet et titre obligatoires.";
+        return;
+    }
+    if (lignes.length === 0 || !lignes.some(l => l.designation)) {
+        statusDiv.textContent = "Ajoute au moins une intervention avec une désignation.";
         return;
     }
 
@@ -424,10 +524,7 @@ async function createDevis() {
             body: JSON.stringify({
                 titre, acompte_pct, id_projet, marge_cible_pct,
                 fournisseur_non_verifie: false,
-                lots: [{
-                    nom_lot: "Lot principal",
-                    lignes: [{ designation, unite, quantite, prix_unitaire_ht, debourse_sec_unitaire, taux_tva }]
-                }]
+                lots: [{ nom_lot: "Lot principal", lignes }]
             })
         });
         const data = await res.json();
@@ -439,7 +536,8 @@ async function createDevis() {
 
         statusDiv.textContent = "Devis créé ! Marge : " + data.marge_brute_eur + " € (" + data.taux_marque_pct + "%)";
         document.getElementById('devis-titre').value = "";
-        document.getElementById('ligne-designation').value = "";
+        document.getElementById('lignes-container').innerHTML = "";
+        addLigne();
         loadDashboard();
     } catch (err) {
         statusDiv.textContent = "Erreur réseau : " + err.message;
