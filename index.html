@@ -172,6 +172,286 @@ async function register() {
         return;
     }
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASSAWIN Wallet</title>
+<style>
+:root {
+    --bg-dark-main: #030712;
+    --bg-card-glass: rgba(255,255,255,0.05);
+    --border-glass: rgba(255,255,255,0.1);
+    --gold-primary: #f59e0b;
+    --gold-secondary: #d97706;
+    --gold-light: #fbbf24;
+    --text-primary: #f9fafb;
+    --text-muted: #9ca3af;
+    --accent-emerald: #10b981;
+    --accent-red: #ef4444;
+}
+* { box-sizing: border-box; }
+body {
+    background: var(--bg-dark-main);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+.container { max-width: 800px; margin: 0 auto; width: 100%; }
+.header { text-align: center; margin-bottom: 2rem; }
+.header h1 { color: var(--gold-primary); font-size: 2rem; margin-bottom: 0.5rem; }
+.header p { color: var(--text-muted); font-size: 1rem; }
+.auth-card, .form-card {
+    background: var(--bg-card-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 400px;
+    margin: 0 auto 1rem;
+}
+.form-card { max-width: 500px; margin-bottom: 1.5rem; }
+.auth-card input, .form-card input, .form-card select {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-glass);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+.form-card label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+.switch-link {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    max-width: 400px;
+    margin: 0 auto 2rem;
+}
+.switch-link a { color: var(--gold-primary); cursor: pointer; text-decoration: underline; }
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.glass-card {
+    background: var(--bg-card-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-glass);
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
+.kpi-card { text-align: center; }
+.kpi-card h3 {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.kpi-card .value { color: var(--gold-primary); font-size: 2rem; font-weight: bold; }
+.section-title { color: var(--gold-primary); font-size: 1.2rem; margin-bottom: 1rem; margin-top: 2rem; }
+.btn-gold {
+    background: linear-gradient(135deg, var(--gold-secondary) 0%, var(--gold-primary) 50%, var(--gold-light) 100%);
+    color: var(--bg-dark-main);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.85rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+.btn-gold:active { transform: scale(0.98); }
+.btn-secondary {
+    background: transparent;
+    color: var(--gold-primary);
+    border: 1px solid var(--gold-primary);
+    border-radius: 0.5rem;
+    padding: 0.6rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+#status, #auth-status, #proj-status, #devis-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
+#app, #register-section, #project-form, #devis-form { display: none; }
+.ligne-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem; }
+.ligne-row input { margin-bottom: 0; }
+.project-select { margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>ASSAWIN Wallet</h1>
+        <p>Vue consolidée de votre activité</p>
+    </div>
+
+    <div class="auth-card" id="login-section">
+        <input type="email" id="login-email" placeholder="Email" />
+        <input type="password" id="login-password" placeholder="Mot de passe" />
+        <button class="btn-gold" onclick="login()">Se connecter</button>
+        <div id="status"></div>
+    </div>
+    <div class="switch-link" id="to-register">
+        Pas encore de compte ? <a onclick="showRegister()">Créer un compte</a>
+    </div>
+
+    <div class="auth-card" id="register-section">
+        <input type="text" id="reg-nom" placeholder="Nom complet" />
+        <input type="email" id="reg-email" placeholder="Email" />
+        <input type="password" id="reg-password" placeholder="Mot de passe" />
+        <input type="text" id="reg-entreprise" placeholder="Entreprise (optionnel)" />
+        <button class="btn-gold" onclick="register()">Créer mon compte</button>
+        <div id="auth-status"></div>
+    </div>
+    <div class="switch-link" id="to-login" style="display:none">
+        Déjà un compte ? <a onclick="showLogin()">Se connecter</a>
+    </div>
+
+    <div id="app">
+        <div class="kpi-grid">
+            <div class="glass-card kpi-card"><h3>CA total</h3><div class="value" id="ca">—</div></div>
+            <div class="glass-card kpi-card"><h3>Marge brute</h3><div class="value" id="marge">—</div></div>
+            <div class="glass-card kpi-card"><h3>Taux de marque</h3><div class="value" id="taux">—</div></div>
+            <div class="glass-card kpi-card"><h3>Projets</h3><div class="value" id="projets">—</div></div>
+        </div>
+        <div class="section-title">Détail</div>
+        <div class="glass-card" id="details"><p style="color:var(--text-muted)">Chargement...</p></div>
+        <button class="btn-gold" onclick="loadDashboard()" style="margin-top:1.5rem">Actualiser</button>
+
+        <div class="section-title">Actions</div>
+        <button class="btn-gold" onclick="toggleProjectForm()">+ Nouveau projet</button>
+        <button class="btn-secondary" onclick="toggleDevisForm()">+ Nouveau devis</button>
+
+        <div class="form-card" id="project-form">
+            <label>Nom du projet</label>
+            <input type="text" id="proj-nom" placeholder="Ex: Rénovation Saint-Ouen" />
+            <div class="row2">
+                <div>
+                    <label>Budget initial HT (€)</label>
+                    <input type="number" id="proj-budget" value="0" />
+                </div>
+                <div>
+                    <label>Marge cible (%)</label>
+                    <input type="number" id="proj-marge" value="30" />
+                </div>
+            </div>
+            <label>Description</label>
+            <input type="text" id="proj-description" placeholder="Optionnel" />
+            <button class="btn-gold" onclick="createProject()">Créer le projet</button>
+            <div id="proj-status"></div>
+        </div>
+
+        <div class="form-card" id="devis-form">
+            <label>Projet</label>
+            <select id="devis-projet" class="project-select"></select>
+            <label>Titre du devis</label>
+            <input type="text" id="devis-titre" placeholder="Ex: Lot peinture" />
+            <div class="row2">
+                <div>
+                    <label>Acompte (%)</label>
+                    <input type="number" id="devis-acompte" value="30" />
+                </div>
+                <div>
+                    <label>Marge cible (%)</label>
+                    <input type="number" id="devis-marge" value="30" />
+                </div>
+            </div>
+            <label style="margin-top:0.5rem">Ligne de devis</label>
+            <div class="ligne-row">
+                <input type="text" id="ligne-designation" placeholder="Désignation" />
+                <input type="text" id="ligne-unite" placeholder="Unité" value="u" />
+                <input type="number" id="ligne-quantite" placeholder="Qté" value="1" />
+                <input type="number" id="ligne-tva" placeholder="TVA %" value="20" />
+            </div>
+            <div class="row2">
+                <div>
+                    <label>Prix unitaire HT (€)</label>
+                    <input type="number" id="ligne-prix" value="0" />
+                </div>
+                <div>
+                    <label>Déboursé sec unitaire (€)</label>
+                    <input type="number" id="ligne-debourse" value="0" />
+                </div>
+            </div>
+            <button class="btn-gold" onclick="createDevis()">Créer le devis</button>
+            <div id="devis-status"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_URL = "https://assawin-backend.onrender.com";
+let token = null;
+let cachedProjects = [];
+
+function showRegister() {
+    document.getElementById('login-section').style.display = "none";
+    document.getElementById('to-register').style.display = "none";
+    document.getElementById('register-section').style.display = "block";
+    document.getElementById('to-login').style.display = "block";
+}
+
+function showLogin() {
+    document.getElementById('register-section').style.display = "none";
+    document.getElementById('to-login').style.display = "none";
+    document.getElementById('login-section').style.display = "block";
+    document.getElementById('to-register').style.display = "block";
+}
+
+function toggleProjectForm() {
+    const el = document.getElementById('project-form');
+    el.style.display = el.style.display === "block" ? "none" : "block";
+}
+
+async function toggleDevisForm() {
+    const el = document.getElementById('devis-form');
+    const willShow = el.style.display !== "block";
+    el.style.display = willShow ? "block" : "none";
+    if (willShow) await refreshProjectSelect();
+}
+
+async function refreshProjectSelect() {
+    try {
+        const res = await fetch(API_URL + "/api/v1/projets/", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        const data = await res.json();
+        if (!res.ok) return;
+        cachedProjects = data;
+        const select = document.getElementById('devis-projet');
+        select.innerHTML = data.map(p => "<option value='" + p.id_projet + "'>" + p.nom_projet + "</option>").join("");
+    } catch (err) {}
+}
+
+async function register() {
+    const nom = document.getElementById('reg-nom').value;
+    const email = document.getElementById('reg-email').value;
+    const password = document.getElementById('reg-password').value;
+    const entreprise = document.getElementById('reg-entreprise').value;
+    const statusDiv = document.getElementById('auth-status');
+
+    if (!nom || !email || !password) {
+        statusDiv.textContent = "Nom, email et mot de passe obligatoires.";
+        return;
+    }
+
     statusDiv.textContent = "Création du compte... (le serveur peut mettre 30-50s à démarrer)";
 
     try {
@@ -249,6 +529,94 @@ async function loadDashboard() {
             "<div style='display:flex;justify-content:space-between;padding:8px 0'><span>Coût total</span><span>" + data.cout_total.toLocaleString('fr-FR') + " €</span></div>";
     } catch (err) {
         document.getElementById('details').innerHTML = "<p>Erreur réseau : " + err.message + "</p>";
+    }
+}
+
+async function createProject() {
+    const nom_projet = document.getElementById('proj-nom').value;
+    const budget_initial_ht = parseFloat(document.getElementById('proj-budget').value) || 0;
+    const marge_cible_pct = parseFloat(document.getElementById('proj-marge').value) || 30;
+    const description = document.getElementById('proj-description').value;
+    const statusDiv = document.getElementById('proj-status');
+
+    if (!nom_projet) {
+        statusDiv.textContent = "Le nom du projet est obligatoire.";
+        return;
+    }
+
+    statusDiv.textContent = "Création en cours...";
+
+    try {
+        const res = await fetch(API_URL + "/api/v1/projets/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({
+                nom_projet, budget_initial_ht, marge_cible_pct,
+                statut: "EN_COURS", description: description || null
+            })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            statusDiv.textContent = "Erreur : " + (data.detail || res.status);
+            return;
+        }
+
+        statusDiv.textContent = "Projet créé !";
+        document.getElementById('proj-nom').value = "";
+        document.getElementById('proj-description').value = "";
+        loadDashboard();
+    } catch (err) {
+        statusDiv.textContent = "Erreur réseau : " + err.message;
+    }
+}
+
+async function createDevis() {
+    const id_projet = document.getElementById('devis-projet').value;
+    const titre = document.getElementById('devis-titre').value;
+    const acompte_pct = parseFloat(document.getElementById('devis-acompte').value) || 30;
+    const marge_cible_pct = parseFloat(document.getElementById('devis-marge').value) || 30;
+    const designation = document.getElementById('ligne-designation').value;
+    const unite = document.getElementById('ligne-unite').value;
+    const quantite = parseFloat(document.getElementById('ligne-quantite').value) || 1;
+    const prix_unitaire_ht = parseFloat(document.getElementById('ligne-prix').value) || 0;
+    const debourse_sec_unitaire = parseFloat(document.getElementById('ligne-debourse').value) || 0;
+    const taux_tva = parseFloat(document.getElementById('ligne-tva').value) || 20;
+    const statusDiv = document.getElementById('devis-status');
+
+    if (!id_projet || !titre || !designation) {
+        statusDiv.textContent = "Projet, titre et désignation obligatoires.";
+        return;
+    }
+
+    statusDiv.textContent = "Création en cours...";
+
+    try {
+        const res = await fetch(API_URL + "/api/v1/devis/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({
+                titre, acompte_pct, id_projet, marge_cible_pct,
+                fournisseur_non_verifie: false,
+                lots: [{
+                    nom_lot: "Lot principal",
+                    lignes: [{ designation, unite, quantite, prix_unitaire_ht, debourse_sec_unitaire, taux_tva }]
+                }]
+            })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            statusDiv.textContent = "Erreur : " + (data.detail || res.status);
+            return;
+        }
+
+        statusDiv.textContent = "Devis créé ! Marge : " + data.marge_brute_eur + " € (" + data.taux_marque_pct + "%)";
+        document.getElementById('devis-titre').value = "";
+        document.getElementById('ligne-designation').value = "";
+        loadDashboard();
+    } catch (err) {
+        statusDiv.textContent = "Erreur réseau : " + err.message;
     }
 }
 </script>
