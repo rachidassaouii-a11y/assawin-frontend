@@ -33,15 +33,15 @@ body {
 .header { text-align: center; margin-bottom: 2rem; }
 .header h1 { color: var(--gold-primary); font-size: 2rem; margin-bottom: 0.5rem; }
 .header p { color: var(--text-muted); font-size: 1rem; }
-.login-card {
+.auth-card {
     background: var(--bg-card-glass);
     border: 1px solid var(--border-glass);
     border-radius: 1rem;
     padding: 2rem;
     max-width: 400px;
-    margin: 0 auto 2rem;
+    margin: 0 auto 1rem;
 }
-.login-card input {
+.auth-card input {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
@@ -51,6 +51,14 @@ body {
     color: var(--text-primary);
     font-size: 1rem;
 }
+.switch-link {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    max-width: 400px;
+    margin: 0 auto 2rem;
+}
+.switch-link a { color: var(--gold-primary); cursor: pointer; text-decoration: underline; }
 .kpi-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -87,8 +95,9 @@ body {
     width: 100%;
 }
 .btn-gold:active { transform: scale(0.98); }
-#status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 1rem; }
+#status, #auth-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 1rem; }
 #app { display: none; }
+#register-section { display: none; }
 </style>
 </head>
 <body>
@@ -98,11 +107,26 @@ body {
         <p>Vue consolidée de votre activité</p>
     </div>
 
-    <div class="login-card" id="login-section">
-        <input type="email" id="email" placeholder="Email" />
-        <input type="password" id="password" placeholder="Mot de passe" />
+    <div class="auth-card" id="login-section">
+        <input type="email" id="login-email" placeholder="Email" />
+        <input type="password" id="login-password" placeholder="Mot de passe" />
         <button class="btn-gold" onclick="login()">Se connecter</button>
         <div id="status"></div>
+    </div>
+    <div class="switch-link" id="to-register">
+        Pas encore de compte ? <a onclick="showRegister()">Créer un compte</a>
+    </div>
+
+    <div class="auth-card" id="register-section">
+        <input type="text" id="reg-nom" placeholder="Nom complet" />
+        <input type="email" id="reg-email" placeholder="Email" />
+        <input type="password" id="reg-password" placeholder="Mot de passe" />
+        <input type="text" id="reg-entreprise" placeholder="Entreprise (optionnel)" />
+        <button class="btn-gold" onclick="register()">Créer mon compte</button>
+        <div id="auth-status"></div>
+    </div>
+    <div class="switch-link" id="to-login" style="display:none">
+        Déjà un compte ? <a onclick="showLogin()">Se connecter</a>
     </div>
 
     <div id="app">
@@ -122,9 +146,60 @@ body {
 const API_URL = "https://assawin-backend.onrender.com";
 let token = null;
 
+function showRegister() {
+    document.getElementById('login-section').style.display = "none";
+    document.getElementById('to-register').style.display = "none";
+    document.getElementById('register-section').style.display = "block";
+    document.getElementById('to-login').style.display = "block";
+}
+
+function showLogin() {
+    document.getElementById('register-section').style.display = "none";
+    document.getElementById('to-login').style.display = "none";
+    document.getElementById('login-section').style.display = "block";
+    document.getElementById('to-register').style.display = "block";
+}
+
+async function register() {
+    const nom = document.getElementById('reg-nom').value;
+    const email = document.getElementById('reg-email').value;
+    const password = document.getElementById('reg-password').value;
+    const entreprise = document.getElementById('reg-entreprise').value;
+    const statusDiv = document.getElementById('auth-status');
+
+    if (!nom || !email || !password) {
+        statusDiv.textContent = "Nom, email et mot de passe obligatoires.";
+        return;
+    }
+
+    statusDiv.textContent = "Création du compte... (le serveur peut mettre 30-50s à démarrer)";
+
+    try {
+        const res = await fetch(API_URL + "/api/v1/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nom, email, password, entreprise: entreprise || null })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            statusDiv.textContent = "Erreur : " + (data.detail || "inscription refusée");
+            return;
+        }
+
+        statusDiv.textContent = "Compte créé ! Connexion en cours...";
+        document.getElementById('login-email').value = email;
+        document.getElementById('login-password').value = password;
+        showLogin();
+        await login();
+    } catch (err) {
+        statusDiv.textContent = "Erreur réseau : " + err.message;
+    }
+}
+
 async function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
     const statusDiv = document.getElementById('status');
     statusDiv.textContent = "Connexion... (le serveur peut mettre 30-50s à démarrer)";
 
@@ -143,6 +218,7 @@ async function login() {
 
         token = data.access_token;
         document.getElementById('login-section').style.display = "none";
+        document.getElementById('to-register').style.display = "none";
         document.getElementById('app').style.display = "block";
         loadDashboard();
     } catch (err) {
