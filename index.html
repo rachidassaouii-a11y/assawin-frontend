@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASSAWIN — Pilotage BTP & Expertise GROUPE ARTS</title>
+<title>ASSAWIN — Pilotage BTP & Gestion GROUPE ARTS</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
@@ -32,22 +32,15 @@ body {
     padding-bottom: 90px;
 }
 
-/* En-tête Signature */
 .google-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
     padding: 14px 20px;
     background: linear-gradient(180deg, rgba(22,24,29,0.9) 0%, rgba(12,13,15,0.8) 100%);
     border-bottom: 1px solid var(--border-color);
     position: sticky; top: 0; z-index: 999;
     backdrop-filter: blur(10px);
 }
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+.header-left { display: flex; align-items: center; gap: 12px; }
 .icon-menu {
     background: var(--pill-bg); border: 1px solid var(--border-color); color: var(--gold); 
     width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
@@ -55,311 +48,126 @@ body {
 }
 .icon-menu:hover { background: var(--gold-glow); }
 .app-logo-container h1 {
-    font-size: 1.25rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
+    font-size: 1.25rem; font-weight: 800; letter-spacing: 0.12em;
     background: linear-gradient(90deg, #f59e0b, #fbbf24, #ffffff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     margin: 0;
 }
-.app-subtitle {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-top: 2px;
-}
+.app-subtitle { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 2px; }
 .profile-avatar {
     width: 36px; height: 36px;
     background: linear-gradient(135deg, #f59e0b, #b45309);
-    color: #000;
-    border-radius: 50%;
+    color: #000; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-weight: 700; font-size: 0.95rem;
     box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
     cursor: pointer;
 }
 
-/* Barre de recherche & Actions */
-.search-container {
-    padding: 12px 16px 4px 16px;
-    max-width: 600px;
-    margin: 0 auto;
-}
+.search-container { padding: 12px 16px 4px 16px; max-width: 600px; margin: 0 auto; }
 .search-bar {
-    background: var(--surface);
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    padding: 10px 16px;
-    gap: 12px;
+    background: var(--surface); border: 1px solid var(--border-color); border-radius: 14px;
+    display: flex; align-items: center; padding: 10px 16px; gap: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
-.search-bar input {
-    flex: 1;
-    background: none;
-    border: none;
-    color: var(--text-main);
-    font-size: 0.95rem;
-    outline: none;
-}
+.search-bar input { flex: 1; background: none; border: none; color: var(--text-main); font-size: 0.95rem; outline: none; }
 .search-bar input::placeholder { color: var(--text-muted); }
-.search-tools {
-    display: flex;
-    gap: 12px;
-    color: var(--gold);
-    font-size: 1.1rem;
-    cursor: pointer;
-}
+.search-tools { display: flex; gap: 12px; color: var(--gold); font-size: 1.1rem; cursor: pointer; }
 
-/* Pastilles / Filtres Rapides */
 .pills-scroll {
-    display: flex;
-    gap: 8px;
-    padding: 10px 16px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    max-width: 600px;
-    margin: 0 auto;
+    display: flex; gap: 8px; padding: 10px 16px; overflow-x: auto;
+    scrollbar-width: none; max-width: 600px; margin: 0 auto;
 }
 .pills-scroll::-webkit-scrollbar { display: none; }
 .pill-btn {
-    background: var(--pill-bg);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-    padding: 8px 14px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
-    transition: all 0.2s;
+    background: var(--pill-bg); border: 1px solid var(--border-color); color: var(--text-main);
+    padding: 8px 14px; border-radius: 12px; font-size: 0.8rem; white-space: nowrap;
+    cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 500; transition: all 0.2s;
 }
-.pill-btn:active, .pill-btn.active {
-    background: var(--gold-glow);
-    border-color: var(--gold);
-    color: var(--gold);
-}
+.pill-btn:active, .pill-btn.active { background: var(--gold-glow); border-color: var(--gold); color: var(--gold); }
 
-/* Contenu Principal */
-.content-wrapper {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 8px 16px;
-}
+.content-wrapper { max-width: 600px; margin: 0 auto; padding: 8px 16px; }
 
-/* Manifeste Banner (L'âme du Groupe Arts) */
 .manifesto-card {
     background: linear-gradient(135deg, #1e2128 0%, #16181d 100%);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 14px;
-    position: relative;
-    overflow: hidden;
+    border: 1px solid var(--border-color); border-radius: 16px; padding: 16px;
+    margin-bottom: 14px; position: relative; overflow: hidden;
 }
-.manifesto-card::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-    background: var(--gold);
-}
-.manifesto-title {
-    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); font-weight: 700; margin-bottom: 4px;
-}
-.manifesto-text {
-    font-size: 0.9rem; color: var(--text-main); font-style: italic; line-height: 1.4;
-}
+.manifesto-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--gold); }
+.manifesto-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); font-weight: 700; margin-bottom: 4px; }
+.manifesto-text { font-size: 0.9rem; color: var(--text-main); font-style: italic; line-height: 1.4; }
 
 .card {
-    background: var(--surface);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 14px;
+    background: var(--surface); border: 1px solid var(--border-color);
+    border-radius: 16px; padding: 16px; margin-bottom: 14px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 
-.kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 14px;
-}
+.kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
 .kpi-card {
-    background: var(--surface-card);
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 14px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s, border-color 0.2s;
+    background: var(--surface-card); border: 1px solid var(--border-color);
+    border-radius: 14px; padding: 14px; text-align: center; cursor: pointer; transition: transform 0.2s, border-color 0.2s;
 }
 .kpi-card:hover { border-color: var(--gold); transform: translateY(-2px); }
-.kpi-card span {
-    display: block;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 4px;
-}
-.kpi-card strong {
-    font-size: 1.2rem;
-    color: var(--gold);
-}
+.kpi-card span { display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.kpi-card strong { font-size: 1.1rem; color: var(--gold); }
 
 .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 18px 0 10px 0;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text-main);
-    letter-spacing: 0.02em;
+    display: flex; justify-content: space-between; align-items: center;
+    margin: 18px 0 10px 0; font-size: 0.95rem; font-weight: 700; color: var(--text-main); letter-spacing: 0.02em;
 }
 
-/* Formulaires & Champs stylés */
-input[type="text"], input[type="number"], input[type="month"], select, textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    background: var(--surface-card);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    color: var(--text-main);
-    font-size: 0.95rem;
-    transition: border-color 0.2s;
+input[type="text"], input[type="number"], input[type="month"], input[type="date"], input[type="email"], input[type="tel"], select, textarea {
+    width: 100%; padding: 12px; margin-bottom: 10px; background: var(--surface-card);
+    border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 0.95rem; transition: border-color 0.2s;
 }
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--gold);
-    box-shadow: 0 0 8px var(--gold-glow);
-}
-label {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 500;
-}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 8px var(--gold-glow); }
+label { font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 500; }
 
-.btn {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    border: none;
-    text-align: center;
-    transition: all 0.2s;
+.badge {
+    display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
 }
-.btn-primary { 
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
-    color: #000; 
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-}
+.badge-prospect { background: rgba(56, 189, 248, 0.15); color: var(--blue); border: 1px solid rgba(56, 189, 248, 0.3); }
+.badge-client { background: rgba(74, 222, 128, 0.15); color: var(--green); border: 1px solid rgba(74, 222, 128, 0.3); }
+
+.btn { width: 100%; padding: 12px; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; border: none; text-align: center; transition: all 0.2s; }
+.btn-primary { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #000; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
 .btn-primary:active { transform: scale(0.98); }
-.btn-secondary { 
-    background: var(--surface-card); 
-    color: var(--text-main); 
-    border: 1px solid var(--border-color); 
-    margin-bottom: 8px; 
-}
+.btn-secondary { background: var(--surface-card); color: var(--text-main); border: 1px solid var(--border-color); margin-bottom: 8px; }
 .btn-secondary:hover { background: var(--pill-hover); }
 
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
-/* Listes d'éléments vivantes */
 .list-item {
-    background: var(--surface-card);
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 10px;
-    transition: border-color 0.2s;
+    background: var(--surface-card); border: 1px solid var(--border-color);
+    border-radius: 14px; padding: 14px; margin-bottom: 10px; transition: border-color 0.2s;
 }
 .list-item:hover { border-color: rgba(245, 158, 11, 0.4); }
-.list-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 4px;
-}
+.list-item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
 .list-item-title { font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
 .list-item-value { color: var(--gold); font-weight: 700; }
-.list-item-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
-.list-item-actions {
-    display: flex;
-    gap: 16px;
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-}
-.action-link {
-    background: none; border: none; color: var(--blue); font-size: 0.8rem; font-weight: 600; cursor: pointer; padding: 0;
-    transition: opacity 0.2s;
-}
+.list-item-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+.list-item-actions { display: flex; gap: 16px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.06); }
+.action-link { background: none; border: none; color: var(--blue); font-size: 0.8rem; font-weight: 600; cursor: pointer; padding: 0; }
 .action-link:hover { opacity: 0.8; }
 .action-link.red { color: var(--red); }
 
-.ligne-block {
-    background: rgba(0,0,0,0.2);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 10px;
-}
+.ligne-block { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
 
-/* Navigation inférieure */
 .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: rgba(18, 20, 26, 0.95);
-    backdrop-filter: blur(12px);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-around;
-    padding: 8px 0 14px 0;
-    z-index: 1000;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(18, 20, 26, 0.95); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;
+    padding: 8px 0 14px 0; z-index: 1000;
 }
 .nav-item {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.7rem;
-    font-weight: 500;
-    cursor: pointer;
-    flex: 1;
-    transition: color 0.2s;
+    background: none; border: none; color: var(--text-muted); display: flex;
+    flex-direction: column; align-items: center; gap: 4px; font-size: 0.7rem; font-weight: 500; cursor: pointer; flex: 1; transition: color 0.2s;
 }
-.nav-item.active {
-    color: var(--gold);
-}
-.nav-item.active .nav-icon-pill {
-    background: var(--gold-glow);
-    color: var(--gold);
-    border: 1px solid var(--border-color);
-}
-.nav-icon-pill {
-    width: 46px;
-    height: 26px;
-    border-radius: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.05rem;
-    transition: all 0.2s;
-}
+.nav-item.active { color: var(--gold); }
+.nav-item.active .nav-icon-pill { background: var(--gold-glow); color: var(--gold); border: 1px solid var(--border-color); }
+.nav-icon-pill { width: 46px; height: 26px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; }
 
 .view-section { display: none; }
 .view-section.active { display: block; }
@@ -367,289 +175,267 @@ label {
 </head>
 <body>
 
-    <!-- En-tête -->
     <div class="google-header">
         <div class="header-left">
             <button class="icon-menu" onclick="exportData()" title="Sauvegarder JSON">💾</button>
             <div class="app-logo-container">
                 <h1>ASSAWIN</h1>
-                <div class="app-subtitle">GROUPE ARTS — Pilotage BTP</div>
+                <div class="app-subtitle">GROUPE ARTS — Pilotage & Gestion</div>
             </div>
         </div>
         <div class="profile-avatar" title="Rachid Assaoui">RA</div>
     </div>
 
-    <!-- Barre de recherche -->
     <div class="search-container">
         <div class="search-bar">
             <span>🔍</span>
-            <input type="text" id="global-search" placeholder="Rechercher chantier, client, lot DPGF..." oninput="filterData(this.value)" />
+            <input type="text" id="global-search" placeholder="Rechercher contact, chantier, point du jour..." oninput="filterData(this.value)" />
             <div class="search-tools">
-                <span onclick="openProjectForm()" title="Nouveau Chantier">➕</span>
+                <span onclick="toggleForm('point-form')" title="Nouveau Point Quotidien">📌</span>
                 <span onclick="triggerImport()" title="Restaurer sauvegarde">📂</span>
             </div>
             <input type="file" id="import-file" style="display:none" onchange="importData(event)">
         </div>
     </div>
 
-    <!-- Pastilles de navigation rapide -->
     <div class="pills-scroll">
-        <button class="pill-btn active" onclick="switchTab(0, this)">⚡ Tableau de Bord</button>
-        <button class="pill-btn" onclick="switchTab(1, this)">🏗️ Chantiers & Devis</button>
-        <button class="pill-btn" onclick="switchTab(2, this)">💰 Trésorerie & Flotte</button>
-        <button class="pill-btn" onclick="openProjectForm()">➕ Nouveau Chantier</button>
-        <button class="pill-btn" onclick="openDevisForm()">📄 Rédiger Devis / DPGF</button>
+        <button class="pill-btn active" onclick="switchTab(0, this)">⚡ Tableau de Bord & Point</button>
+        <button class="pill-btn" onclick="switchTab(1, this)">👥 CRM Contacts</button>
+        <button class="pill-btn" onclick="switchTab(2, this)">🏗️ Chantiers & Devis</button>
+        <button class="pill-btn" onclick="switchTab(3, this)">💰 Tréso & Objectifs</button>
+        <button class="pill-btn" onclick="toggleForm('point-form')">+ Point du Jour</button>
     </div>
 
     <div class="content-wrapper">
 
-        <!-- MANIFESTE / CITATION D'ESPRIT -->
         <div class="manifesto-card">
             <div class="manifesto-title">La Méthode Groupe Arts</div>
             <div class="manifesto-text">"Diagnostiquer avec précision, conseiller avec clarté, rénover avec excellence."</div>
         </div>
 
-        <!-- VUE 0 : TABLEAU DE BORD & PILOTAGE -->
+        <!-- VUE 0 : TABLEAU DE BORD & POINT QUOTIDIEN -->
         <div class="view-section active" id="view-0">
             <div class="kpi-grid">
-                <div class="kpi-card" onclick="switchTab(1, null)">
-                    <span>CA Engagé</span>
-                    <strong id="kpi-ca">0,00 €</strong>
+                <div class="kpi-card" onclick="switchTab(3, null)">
+                    <span>Objectif Mois</span>
+                    <strong id="kpi-obj-mois">0,00 €</strong>
+                </div>
+                <div class="kpi-card" onclick="switchTab(3, null)">
+                    <span>Objectif Annuel</span>
+                    <strong id="kpi-obj-an">0,00 €</strong>
+                </div>
+                <div class="kpi-card" onclick="switchTab(3, null)">
+                    <span>Comparatif M-1</span>
+                    <strong id="kpi-m-1">0,00 €</strong>
                 </div>
                 <div class="kpi-card" onclick="switchTab(2, null)">
-                    <span>Tréso Mois</span>
-                    <strong id="kpi-mois">0,00 €</strong>
-                </div>
-                <div class="kpi-card" onclick="switchTab(1, null)">
-                    <span>Devis & DPGF</span>
-                    <strong id="kpi-devis">0</strong>
-                </div>
-                <div class="kpi-card" onclick="switchTab(1, null)">
                     <span>Chantiers Actifs</span>
                     <strong id="kpi-projets">0</strong>
                 </div>
             </div>
 
+            <!-- FORMULAIRE POINT QUOTIDIEN (J-1 / J+1 & Objectifs) -->
+            <div class="card" id="point-form" style="display:none; border-color:var(--gold);">
+                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">📌 Point Quotidien de Pilotage</h3>
+                <label>Date du point</label>
+                <input type="date" id="pt-date" />
+                <div class="row2">
+                    <div>
+                        <label>Bilan J-1 (Réalisations / Faits marquants)</label>
+                        <textarea id="pt-j1" rows="3" placeholder="Ce qui a été fait, difficultés rencontrées..."></textarea>
+                    </div>
+                    <div>
+                        <label>Prévision J+1 (Priorités & Terrain)</label>
+                        <textarea id="pt-jplus1" rows="3" placeholder="Actions incontournables demain..."></textarea>
+                    </div>
+                </div>
+                <div class="row3">
+                    <div>
+                        <label>Objectif M-1 (€)</label>
+                        <input type="number" id="pt-m1" placeholder="Ex: 20000" />
+                    </div>
+                    <div>
+                        <label>Objectif Mois (€)</label>
+                        <input type="number" id="pt-mois" placeholder="Ex: 25000" />
+                    </div>
+                    <div>
+                        <label>Objectif Annuel (€)</label>
+                        <input type="number" id="pt-an" placeholder="Ex: 300000" />
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="savePointQuotidien()" style="margin-top:8px;">Enregistrer le point du jour</button>
+            </div>
+
             <div class="section-header">
-                <span>Actions Rapides Terrain</span>
+                <span>Actions & Raccourcis Rapides</span>
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+                <button class="btn btn-secondary" onclick="toggleForm('point-form')">📌 Faire le Point du Jour</button>
+                <button class="btn btn-secondary" onclick="openClientForm()">+ Fiche Client/Prospect</button>
                 <button class="btn btn-secondary" onclick="openProjectForm()">+ Chantier</button>
                 <button class="btn btn-secondary" onclick="openDevisForm()">+ Devis DPGF</button>
-                <button class="btn btn-secondary" onclick="toggleForm('mensuel-form')">+ Bilan Mois</button>
-                <button class="btn btn-secondary" onclick="toggleForm('vehicule-form')">+ Véhicule</button>
             </div>
 
-            <!-- FORMULAIRE CHANTIER -->
+            <!-- FORMULAIRES RAPIDES MASQUABLES -->
+            <div class="card" id="client-form" style="display:none;">
+                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">Nouveau Contact CRM</h3>
+                <label>Nom ou Société</label>
+                <input type="text" id="cli-nom" placeholder="Ex: M. Dupont / SCI" />
+                <div class="row2">
+                    <div><label>Statut</label><select id="cli-type"><option value="Prospect">Prospect</option><option value="Client">Client Actif</option></select></div>
+                    <div><label>Téléphone</label><input type="tel" id="cli-tel" placeholder="06..." /></div>
+                </div>
+                <button class="btn btn-primary" onclick="saveClient()">Enregistrer</button>
+            </div>
+
             <div class="card" id="project-form" style="display:none;">
-                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);" id="proj-form-title">Nouveau Chantier</h3>
-                <label>Nom du chantier</label>
-                <input type="text" id="proj-nom" placeholder="Ex: Rénovation Thermique Villa Saint-Ouen" />
-                <label>Client</label>
-                <input type="text" id="proj-client" placeholder="Nom ou maître d'ouvrage" />
+                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">Nouveau Chantier</h3>
+                <label>Client associé</label><select id="proj-client-select"></select>
+                <label>Nom du chantier</label><input type="text" id="proj-nom" placeholder="Rénovation..." />
                 <div class="row2">
-                    <div>
-                        <label>Budget HT (€)</label>
-                        <input type="number" id="proj-budget" value="0" />
-                    </div>
-                    <div>
-                        <label>Marge cible (%)</label>
-                        <input type="number" id="proj-marge" value="30" />
-                    </div>
+                    <div><label>Budget HT</label><input type="number" id="proj-budget" value="0" /></div>
+                    <div><label>Marge %</label><input type="number" id="proj-marge" value="30" /></div>
                 </div>
-                <label>Notes / Localisation / Diagnostics</label>
-                <input type="text" id="proj-description" placeholder="Ex: Isolation thermique par l'intérieur + lots finitions" />
-                <button class="btn btn-primary" onclick="saveProject()" style="margin-top:8px;">Enregistrer le chantier</button>
+                <button class="btn btn-primary" onclick="saveProject()">Enregistrer</button>
             </div>
 
-            <!-- FORMULAIRE DEVIS & DPGF -->
             <div class="card" id="devis-form" style="display:none;">
-                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">Chiffrage & Analyse DPGF</h3>
-                <label>Chantier associé</label>
-                <select id="devis-projet"></select>
-                <label>Intitulé du lot ou de la prestation</label>
-                <input type="text" id="devis-titre" placeholder="Ex: Lot 01 - Gros Œuvre, Démolition & Isolation" />
+                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">Chiffrage & DPGF</h3>
+                <label>Chantier associé</label><select id="devis-projet"></select>
+                <label>Intitulé</label><input type="text" id="devis-titre" placeholder="Lot 01..." />
                 <div class="row2">
-                    <div>
-                        <label>Acompte (%)</label>
-                        <input type="number" id="devis-acompte" value="30" />
-                    </div>
-                    <div>
-                        <label>Taux Marge (%)</label>
-                        <input type="number" id="devis-marge" value="30" oninput="recalculateAllLignes()" />
-                    </div>
+                    <div><label>Acompte %</label><input type="number" id="devis-acompte" value="30" /></div>
+                    <div><label>Marge %</label><input type="number" id="devis-marge" value="30" oninput="recalculateAllLignes()" /></div>
                 </div>
-                <div class="section-header" style="margin:12px 0 6px 0;">
-                    <span>Lignes d'ouvrages (Déboursé Sec)</span>
-                    <span id="devis-total-preview" style="color:var(--gold); font-size:0.9rem;">0,00 € HT</span>
-                </div>
+                <div class="section-header" style="margin:8px 0;"><span>Lignes (Déboursé Sec)</span><span id="devis-total-preview" style="color:var(--gold);">0,00 € HT</span></div>
                 <div id="lignes-container"></div>
-                <button class="btn btn-secondary" onclick="addLigne()" style="font-size:0.8rem; margin-bottom:10px;">+ Ajouter une ligne d'ouvrage</button>
-                <button class="btn btn-primary" onclick="saveDevis()">Enregistrer & Générer le Devis</button>
-            </div>
-
-            <!-- FORMULAIRE MENSUEL -->
-            <div class="card" id="mensuel-form" style="display:none;">
-                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">Bilan financier mensuel</h3>
-                <label>Mois (ex: 2026-09)</label>
-                <input type="month" id="mensuel-periode" />
-                <div class="row2">
-                    <div>
-                        <label>CA Encaissé (€)</label>
-                        <input type="number" id="mensuel-ca" placeholder="0" />
-                    </div>
-                    <div>
-                        <label>Charges & Achats (€)</label>
-                        <input type="number" id="mensuel-charges" placeholder="0" />
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="saveRevenuMensuel()" style="margin-top:8px;">Valider le mois</button>
-            </div>
-
-            <!-- FORMULAIRE VEHICULE -->
-            <div class="card" id="vehicule-form" style="display:none;">
-                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">Suivi Flotte & Utilitaires</h3>
-                <label>Véhicule & Immatriculation</label>
-                <input type="text" id="veh-nom" placeholder="Ex: Ford Fiesta / Master Chantier" />
-                <div class="row2">
-                    <div>
-                        <label>Kilométrage actuel</label>
-                        <input type="number" id="veh-km" placeholder="140000" />
-                    </div>
-                    <div>
-                        <label>Frais journaliers (€)</label>
-                        <input type="number" id="veh-frais" value="27" />
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="saveVehicule()" style="margin-top:8px;">Enregistrer le véhicule</button>
+                <button class="btn btn-secondary" onclick="addLigne()" style="font-size:0.8rem; margin-bottom:8px;">+ Ajouter ligne</button>
+                <button class="btn btn-primary" onclick="saveDevis()">Enregistrer & PDF</button>
             </div>
 
             <div class="section-header">
-                <span>Derniers Chantiers Actifs</span>
+                <span>Dernier Point Quotidien & Historique</span>
             </div>
-            <div id="accueil-projets-list"></div>
+            <div id="points-list"></div>
         </div>
 
-        <!-- VUE 1 : CHANTIERS & DEVIS -->
+        <!-- VUE 1 : CRM -->
         <div class="view-section" id="view-1">
             <div class="section-header" style="margin-top:0;">
+                <span>Annuaire CRM (Clients & Prospects)</span>
+                <button class="action-link" onclick="toggleForm('client-form')">+ Contact</button>
+            </div>
+            <div id="client-list"></div>
+        </div>
+
+        <!-- VUE 2 : CHANTIERS & DEVIS -->
+        <div class="view-section" id="view-2">
+            <div class="section-header" style="margin-top:0;">
                 <span>Chantiers en cours</span>
-                <button class="action-link" onclick="openProjectForm()">+ Ajouter</button>
+                <button class="action-link" onclick="openProjectForm()">+ Chantier</button>
             </div>
             <div id="projet-list"></div>
 
             <div class="section-header">
                 <span>Devis & DPGF Rédigés</span>
-                <button class="action-link" onclick="openDevisForm()">+ Rédiger</button>
+                <button class="action-link" onclick="openDevisForm()">+ Devis</button>
             </div>
             <div id="devis-list"></div>
         </div>
 
-        <!-- VUE 2 : TRÉSO & FLOTTE -->
-        <div class="view-section" id="view-2">
+        <!-- VUE 3 : TRÉSO & OBJECTIFS GLOBAUX -->
+        <div class="view-section" id="view-3">
             <div class="section-header" style="margin-top:0;">
-                <span>Trésorerie & Bilans Mensuels</span>
-                <button class="action-link" onclick="toggleForm('mensuel-form')">+ Saisir</button>
+                <span>Synthèse Objectifs & Suivi Structure</span>
+                <button class="action-link" onclick="toggleForm('point-form')">+ Mettre à jour les objectifs</button>
             </div>
-            <div id="mensuel-list"></div>
+            <div class="card">
+                <h3 style="margin-top:0; color:var(--gold); font-size:1rem;">Trajectoire Financière</h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Les objectifs M-1, du mois et annuels sont pilotés directement depuis le Point Quotidien.</p>
+                <div id="synthese-objectifs-box"></div>
+            </div>
 
             <div class="section-header">
-                <span>Flotte Véhicules & Déplacements</span>
+                <span>Flotte Véhicules</span>
                 <button class="action-link" onclick="toggleForm('vehicule-form')">+ Véhicule</button>
             </div>
             <div id="vehicule-list"></div>
+            <div class="card" id="vehicule-form" style="display:none; margin-top:10px;">
+                <label>Nom</label><input type="text" id="veh-nom" placeholder="Utilitaire" />
+                <div class="row2">
+                    <div><label>Km</label><input type="number" id="veh-km" value="140000" /></div>
+                    <div><label>Frais/j (€)</label><input type="number" id="veh-frais" value="27" /></div>
+                </div>
+                <button class="btn btn-primary" onclick="saveVehicule()">Enregistrer</button>
+            </div>
         </div>
+
     </div>
 
-    <!-- Navigation inférieure -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchTab(0, this)">
-            <div class="nav-icon-pill">⚡</div>
-            <span>Tableau de bord</span>
+            <div class="nav-icon-pill">📌</div>
+            <span>Point & Tuto</span>
         </button>
         <button class="nav-item" onclick="switchTab(1, this)">
+            <div class="nav-icon-pill">👥</div>
+            <span>CRM</span>
+        </button>
+        <button class="nav-item" onclick="switchTab(2, this)">
             <div class="nav-icon-pill">🏗️</div>
             <span>Chantiers</span>
         </button>
-        <button class="nav-item" onclick="switchTab(2, this)">
+        <button class="nav-item" onclick="switchTab(3, this)">
             <div class="nav-icon-pill">💰</div>
-            <span>Trésorerie</span>
-        </button>
-        <button class="nav-item" onclick="exportData()">
-            <div class="nav-icon-pill">💾</div>
-            <span>Sauvegarde</span>
+            <span>Objectifs</span>
         </button>
     </nav>
 
 <script>
-// Données de base initiales (Donne une "âme" immédiate à l'app avec des exemples professionnels)
 const defaultDb = {
+    points: [
+        {
+            id: 'pt_1',
+            date: new Date().toISOString().slice(0,10),
+            j1: 'Validation des plans d’exécution et calepinage isolation sur le chantier Saint-Ouen.',
+            jplus1: 'Lancement de la pose des rails et coordination avec le lot électricité.',
+            m1: 19500,
+            mois: 26000,
+            an: 280000
+        }
+    ],
+    clients: [
+        { id: 'cli_1', nom: 'SCI Rives de Seine', type: 'Client', tel: '06 11 22 33 44', email: 'contact@rivesdeseine.fr', adresse: 'Paris / Saint-Ouen', notes: 'Client haussmannien régulier.' }
+    ],
     projets: [
-        {
-            id: 'proj_demo_1',
-            nom: 'Rénovation Globale Appartement Haussmannien',
-            client: 'SCI Rives de Seine',
-            budget: 48500,
-            marge: 32,
-            description: 'Dépose cloisons, isolation thermique renforcée et finitions peintures.',
-            date: '01/09/2026'
-        }
+        { id: 'proj_1', idClient: 'cli_1', nom: 'Rénovation Appartement Haussmannien', budget: 48500, marge: 32, description: 'Isolation + cloisons + finitions', date: '01/09/2026' }
     ],
-    devis: [
-        {
-            id: 'devis_demo_1',
-            idProjet: 'proj_demo_1',
-            projetNom: 'Rénovation Globale Appartement Haussmannien',
-            clientNom: 'SCI Rives de Seine',
-            titre: 'Lot 01 - Gros Œuvre & Isolation',
-            acompte: 30,
-            marge: 32,
-            lignes: [
-                { designation: 'Dépose et évacuation gravats', quantite: 1, debourse: 1200, puHT: 1584, totHT: 1584 },
-                { designation: 'Doublage isolation thermique murs périphériques', quantite: 65, debourse: 140, puHT: 184.8, totHT: 12012 }
-            ],
-            totalHT: 13596,
-            tva: 2719.2,
-            totalTTC: 16315.2,
-            margeEur: 3416,
-            date: '01/09/2026'
-        }
-    ],
-    revenus: [
-        { id: 1, periode: '2026-09', ca: 18500, charges: 6200 }
-    ],
-    vehicules: [
-        { id: 1, nom: 'Ford Fiesta Utilitiaire', km: 142000, frais: 27 }
-    ]
+    devis: [],
+    vehicules: [{ id: 1, nom: 'Ford Fiesta Utilitaire', km: 142000, frais: 27 }]
 };
 
 let db = {
+    points: JSON.parse(localStorage.getItem('assawin_points') || JSON.stringify(defaultDb.points)),
+    clients: JSON.parse(localStorage.getItem('assawin_clients') || JSON.stringify(defaultDb.clients)),
     projets: JSON.parse(localStorage.getItem('assawin_projets') || JSON.stringify(defaultDb.projets)),
     devis: JSON.parse(localStorage.getItem('assawin_devis') || JSON.stringify(defaultDb.devis)),
-    revenus: JSON.parse(localStorage.getItem('assawin_revenus') || JSON.stringify(defaultDb.revenus)),
     vehicules: JSON.parse(localStorage.getItem('assawin_vehicules') || JSON.stringify(defaultDb.vehicules))
 };
 
 let ligneCounter = 0;
-let editingProjectId = null;
 
 function saveData() {
+    localStorage.setItem('assawin_points', JSON.stringify(db.points));
+    localStorage.setItem('assawin_clients', JSON.stringify(db.clients));
     localStorage.setItem('assawin_projets', JSON.stringify(db.projets));
     localStorage.setItem('assawin_devis', JSON.stringify(db.devis));
-    localStorage.setItem('assawin_revenus', JSON.stringify(db.revenus));
     localStorage.setItem('assawin_vehicules', JSON.stringify(db.vehicules));
     renderAll();
 }
 
 function switchTab(index, btnElement) {
     document.querySelectorAll('.view-section').forEach((v, idx) => v.classList.toggle('active', idx === index));
-    
-    const navItems = document.querySelectorAll('.bottom-nav .nav-item');
-    navItems.forEach((nav, idx) => {
-        if(idx === index) nav.classList.add('active');
-        else nav.classList.remove('active');
-    });
-
+    document.querySelectorAll('.bottom-nav .nav-item').forEach((nav, idx) => nav.classList.toggle('active', idx === index));
     if(btnElement && btnElement.classList.contains('pill-btn')) {
         document.querySelectorAll('.pills-scroll .pill-btn').forEach(p => p.classList.remove('active'));
         btnElement.classList.add('active');
@@ -660,26 +446,63 @@ function switchTab(index, btnElement) {
 function toggleForm(formId) {
     const el = document.getElementById(formId);
     const isVisible = el.style.display === "block";
-    document.querySelectorAll('.card').forEach(c => {
-        if(c.id.includes('-form')) c.style.display = "none";
-    });
+    document.querySelectorAll('.card').forEach(c => { if(c.id.includes('-form') && c.id !== 'point-form') c.style.display = "none"; });
+    if(formId === 'point-form') {
+        document.getElementById('pt-date').value = new Date().toISOString().slice(0,10);
+    }
     el.style.display = isVisible ? "none" : "block";
 }
 
+function savePointQuotidien() {
+    const date = document.getElementById('pt-date').value || new Date().toISOString().slice(0,10);
+    const j1 = document.getElementById('pt-j1').value.trim();
+    const jplus1 = document.getElementById('pt-jplus1').value.trim();
+    const m1 = parseFloat(document.getElementById('pt-m1').value) || 0;
+    const mois = parseFloat(document.getElementById('pt-mois').value) || 0;
+    const an = parseFloat(document.getElementById('pt-an').value) || 0;
+
+    db.points.unshift({ id: 'pt_' + Date.now(), date, j1, jplus1, m1, mois, an });
+    saveData();
+    document.getElementById('point-form').style.display = "none";
+}
+
+function deletePoint(id) {
+    if(!confirm("Supprimer ce point quotidien ?")) return;
+    db.points = db.points.filter(p => p.id !== id);
+    saveData();
+}
+
+function saveClient() {
+    const nom = document.getElementById('cli-nom').value.trim();
+    const type = document.getElementById('cli-type').value;
+    const tel = document.getElementById('cli-tel').value.trim();
+    if(!nom) { alert("Nom obligatoire"); return; }
+    db.clients.push({ id: 'cli_' + Date.now(), nom, type, tel, email: '', adresse: '', notes: '' });
+    saveData();
+    document.getElementById('client-form').style.display = "none";
+}
+
 function openProjectForm() {
-    editingProjectId = null;
-    document.getElementById('proj-form-title').textContent = "Nouveau Chantier";
-    document.getElementById('proj-nom').value = "";
-    document.getElementById('proj-client').value = "";
-    document.getElementById('proj-budget').value = "0";
-    document.getElementById('proj-marge').value = "30";
-    document.getElementById('proj-description').value = "";
+    const sel = document.getElementById('proj-client-select');
+    sel.innerHTML = db.clients.map(c => `<option value="${c.id}">${c.nom} (${c.type})</option>`).join("");
     toggleForm('project-form');
     switchTab(0, null);
 }
 
+function saveProject() {
+    const idClient = document.getElementById('proj-client-select').value;
+    const nom = document.getElementById('proj-nom').value.trim();
+    const budget = parseFloat(document.getElementById('proj-budget').value) || 0;
+    const marge = parseFloat(document.getElementById('proj-marge').value) || 30;
+    if(!nom) { alert("Nom chantier obligatoire"); return; }
+    db.projets.push({ id: 'proj_' + Date.now(), idClient, nom, budget, marge, description: '', date: new Date().toLocaleDateString() });
+    saveData();
+    document.getElementById('project-form').style.display = "none";
+}
+
 function openDevisForm() {
-    refreshProjectSelect();
+    const sel = document.getElementById('devis-projet');
+    sel.innerHTML = db.projets.map(p => `<option value="${p.id}">${p.nom}</option>`).join("");
     document.getElementById('lignes-container').innerHTML = "";
     ligneCounter = 0;
     addLigne();
@@ -694,144 +517,67 @@ function addLigne(data = null) {
     const block = document.createElement('div');
     block.className = 'ligne-block';
     block.id = 'ligne-' + id;
-    
     block.innerHTML = `
-        <input type="text" placeholder="Désignation ouvrage (ex: Pose carrelage 60x60)" data-field="designation" value="${data ? data.designation || '' : ''}" style="margin-bottom:6px;" />
+        <input type="text" placeholder="Désignation" data-field="designation" style="margin-bottom:6px;" />
         <div class="row2">
-            <div>
-                <label>Quantité</label>
-                <input type="number" value="${data ? data.quantite || 1 : 1}" data-field="quantite" oninput="recalculateAllLignes()" />
-            </div>
-            <div>
-                <label>Déboursé sec unitaire HT (€)</label>
-                <input type="number" value="${data ? data.debourse || 0 : 0}" data-field="debourse" oninput="recalculateAllLignes()" />
-            </div>
+            <div><label>Qté</label><input type="number" value="1" data-field="quantite" oninput="recalculateAllLignes()" /></div>
+            <div><label>Déboursé unit. HT</label><input type="number" value="0" data-field="debourse" oninput="recalculateAllLignes()" /></div>
         </div>
-        <div style="font-size:0.8rem; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:6px; align-items:center;">
-            <span>Total ligne : <strong style="color:var(--gold)" data-out="total">0,00 €</strong></span>
-            <button type="button" class="action-link red" onclick="removeLigne(${id})">Supprimer</button>
+        <div style="font-size:0.8rem; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:6px;">
+            <span>Total : <strong style="color:var(--gold)" data-out="total">0,00 €</strong></span>
+            <button type="button" class="action-link red" onclick="document.getElementById('ligne-${id}').remove(); recalculateAllLignes();">Supprimer</button>
         </div>
     `;
     container.appendChild(block);
     recalculateAllLignes();
 }
 
-function removeLigne(id) {
-    document.getElementById('ligne-' + id)?.remove();
-    recalculateAllLignes();
-}
-
 function recalculateAllLignes() {
-    let totalGlobal = 0;
-    const margePct = parseFloat(document.getElementById('devis-marge').value) || 30;
-    const coef = 1 + (margePct / 100);
-
-    document.querySelectorAll('.ligne-block').forEach(block => {
-        const qte = parseFloat(block.querySelector('[data-field="quantite"]').value) || 0;
-        const deb = parseFloat(block.querySelector('[data-field="debourse"]').value) || 0;
-        const totalLigne = (deb * coef) * qte;
-        block.querySelector('[data-out="total"]').textContent = formatMoney(totalLigne);
-        totalGlobal += totalLigne;
+    let total = 0;
+    const marge = parseFloat(document.getElementById('devis-marge').value) || 30;
+    const coef = 1 + (marge / 100);
+    document.querySelectorAll('.ligne-block').forEach(b => {
+        const q = parseFloat(b.querySelector('[data-field="quantite"]').value) || 0;
+        const d = parseFloat(b.querySelector('[data-field="debourse"]').value) || 0;
+        const tot = (d * coef) * q;
+        b.querySelector('[data-out="total"]').textContent = formatMoney(tot);
+        total += tot;
     });
-
-    document.getElementById('devis-total-preview').textContent = formatMoney(totalGlobal) + " HT";
-}
-
-function refreshProjectSelect() {
-    const sel = document.getElementById('devis-projet');
-    sel.innerHTML = db.projets.length === 0 ? 
-        `<option value="">Aucun chantier disponible</option>` :
-        db.projets.map(p => `<option value="${p.id}">${p.nom} (${p.client || 'Client'})</option>`).join("");
-}
-
-function saveProject() {
-    const nom = document.getElementById('proj-nom').value.trim();
-    const client = document.getElementById('proj-client').value.trim();
-    const budget = parseFloat(document.getElementById('proj-budget').value) || 0;
-    const marge = parseFloat(document.getElementById('proj-marge').value) || 30;
-    const description = document.getElementById('proj-description').value.trim();
-
-    if (!nom) { alert("Veuillez indiquer un nom de chantier."); return; }
-
-    if (editingProjectId) {
-        const p = db.projets.find(item => item.id === editingProjectId);
-        if (p) { p.nom = nom; p.client = client; p.budget = budget; p.marge = marge; p.description = description; }
-    } else {
-        db.projets.push({ id: 'proj_' + Date.now(), nom, client, budget, marge, description, date: new Date().toLocaleDateString() });
-    }
-
-    saveData();
-    document.getElementById('project-form').style.display = "none";
-}
-
-function editProject(id) {
-    const p = db.projets.find(item => item.id === id);
-    if (!p) return;
-    editingProjectId = p.id;
-    document.getElementById('proj-form-title').textContent = "Modifier le chantier";
-    document.getElementById('proj-nom').value = p.nom;
-    document.getElementById('proj-client').value = p.client || "";
-    document.getElementById('proj-budget').value = p.budget;
-    document.getElementById('proj-marge').value = p.marge || 30;
-    document.getElementById('proj-description').value = p.description || "";
-    document.getElementById('project-form').style.display = "block";
-    switchTab(0, null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function deleteProject(id) {
-    if(!confirm("Supprimer ce chantier ?")) return;
-    db.projets = db.projets.filter(p => p.id !== id);
-    saveData();
+    document.getElementById('devis-total-preview').textContent = formatMoney(total) + " HT";
 }
 
 function saveDevis() {
     const idProjet = document.getElementById('devis-projet').value;
     const titre = document.getElementById('devis-titre').value.trim();
-    const acompte = parseFloat(document.getElementById('devis-acompte').value) || 30;
+    if(!titre) { alert("Titre obligatoire"); return; }
+    let lignes = [], totalHT = 0, totalDeb = 0;
     const marge = parseFloat(document.getElementById('devis-marge').value) || 30;
     const coef = 1 + (marge / 100);
 
-    if (!titre) { alert("Veuillez indiquer un titre de prestation."); return; }
-    if (!idProjet) { alert("Veuillez associer le devis à un chantier."); return; }
-
-    let lignes = [];
-    let totalHT = 0;
-    let totalDebourse = 0;
-
-    document.querySelectorAll('.ligne-block').forEach(block => {
-        const designation = block.querySelector('[data-field="designation"]').value || "Ouvrage";
-        const quantite = parseFloat(block.querySelector('[data-field="quantite"]').value) || 1;
-        const debourse = parseFloat(block.querySelector('[data-field="debourse"]').value) || 0;
+    document.querySelectorAll('.ligne-block').forEach(b => {
+        const designation = b.querySelector('[data-field="designation"]').value || "Ouvrage";
+        const quantite = parseFloat(b.querySelector('[data-field="quantite"]').value) || 1;
+        const debourse = parseFloat(b.querySelector('[data-field="debourse"]').value) || 0;
         const puHT = debourse * coef;
         const totHT = puHT * quantite;
         totalHT += totHT;
-        totalDebourse += (debourse * quantite);
+        totalDeb += (debourse * quantite);
         lignes.push({ designation, quantite, debourse, puHT, totHT });
     });
 
-    const tva = totalHT * 0.20;
-    const totalTTC = totalHT + tva;
-    const margeEur = totalHT - totalDebourse;
-    const projetAssocie = db.projets.find(p => p.id === idProjet);
+    const p = db.projets.find(item => item.id === idProjet);
+    const cli = p ? db.clients.find(c => c.id === p.idClient) : null;
 
     db.devis.push({
-        id: 'devis_' + Date.now(),
-        idProjet,
-        projetNom: projetAssocie ? projetAssocie.nom : 'Chantier',
-        clientNom: projetAssocie ? projetAssocie.client : '',
-        titre, acompte, marge, lignes, totalHT, tva, totalTTC, margeEur,
-        date: new Date().toLocaleDateString()
+        id: 'devis_' + Date.now(), idProjet,
+        projetNom: p ? p.nom : 'Chantier',
+        clientNom: cli ? cli.nom : 'Client',
+        titre, marge, lignes, totalHT,
+        tva: totalHT * 0.2, totalTTC: totalHT * 1.2,
+        margeEur: totalHT - totalDeb, date: new Date().toLocaleDateString()
     });
-
     saveData();
     document.getElementById('devis-form').style.display = "none";
-}
-
-function deleteDevis(id) {
-    if(!confirm("Supprimer ce devis ?")) return;
-    db.devis = db.devis.filter(d => d.id !== id);
-    saveData();
 }
 
 function generateDevisPDF(id) {
@@ -839,79 +585,33 @@ function generateDevisPDF(id) {
     if (!d) return;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-
-    // En-tête PDF élégant
     doc.setFillColor(18, 20, 26);
     doc.rect(0, 0, 210, 45, 'F');
     doc.setTextColor(245, 158, 11);
     doc.setFontSize(18);
-    doc.text("GROUPE ARTS — DEVIS COMMERCIAL", 15, 22);
+    doc.text("GROUPE ARTS — DEVIS", 15, 22);
     doc.setFontSize(10);
     doc.setTextColor(150, 150, 150);
     doc.text("Méthode : Diagnostiquer, Conseiller, Rénover", 15, 30);
-    doc.text("Réf : " + d.id.toUpperCase(), 155, 22);
-
     doc.setTextColor(40, 40, 40);
     doc.setFontSize(11);
-    doc.text("Chantier : " + d.projetNom, 15, 58);
-    if(d.clientNom) doc.text("Client : " + d.clientNom, 15, 65);
-    doc.text("Date : " + d.date, 15, 72);
-    doc.text("Lot / Prestation : " + d.titre, 15, 79);
-
-    let y = 92;
-    doc.setFillColor(240, 240, 240);
-    doc.rect(15, y, 180, 8, 'F');
-    doc.setTextColor(0, 0, 0);
-    doc.setFont(undefined, 'bold');
-    doc.text("Désignation des ouvrages", 20, y + 6);
-    doc.text("Qté", 125, y + 6);
-    doc.text("Total HT", 160, y + 6);
-    doc.setFont(undefined, 'normal');
-
-    y += 12;
+    doc.text("Client : " + d.clientNom, 15, 58);
+    doc.text("Prestation : " + d.titre, 15, 65);
+    
+    let y = 80;
     d.lignes.forEach(l => {
-        if(y > 270) { doc.addPage(); y = 20; }
-        doc.text(l.designation.substring(0, 55), 20, y);
-        doc.text(String(l.quantite), 125, y);
+        doc.text(l.designation + ` (x${l.quantite})`, 15, y);
         doc.text(formatMoney(l.totHT), 160, y);
-        y += 9;
+        y += 8;
     });
-
     y += 10;
-    doc.line(15, y, 195, y);
-    y += 12;
-    doc.text("Total HT : " + formatMoney(d.totalHT), 130, y);
-    y += 7;
-    doc.text("TVA (20%) : " + formatMoney(d.tva), 130, y);
-    y += 8;
     doc.setFont(undefined, 'bold');
-    doc.setTextColor(245, 158, 11);
     doc.text("Total TTC : " + formatMoney(d.totalTTC), 130, y);
-    y += 12;
-    doc.setFontSize(9);
-    doc.setTextColor(100, 100, 100);
-    doc.text(`Acompte à la commande (${d.acompte}%) : ${formatMoney(d.totalTTC * (d.acompte/100))}`, 15, y);
-
-    doc.save(`Devis_GroupeArts_${d.projetNom.replace(/\s+/g, '_')}.pdf`);
-}
-
-function saveRevenuMensuel() {
-    const periode = document.getElementById('mensuel-periode').value;
-    const ca = parseFloat(document.getElementById('mensuel-ca').value) || 0;
-    const charges = parseFloat(document.getElementById('mensuel-charges').value) || 0;
-    if(!periode) { alert("Veuillez indiquer le mois."); return; }
-    db.revenus.push({ id: Date.now(), periode, ca, charges });
-    saveData();
-    document.getElementById('mensuel-form').style.display = "none";
-}
-
-function deleteRevenu(id) {
-    db.revenus = db.revenus.filter(r => r.id !== id);
-    saveData();
+    doc.save(`Devis_${d.clientNom}.pdf`);
 }
 
 function saveVehicule() {
-    const nom = document.getElementById('veh-nom').value.trim() || "Véhicule Utilitiaire";
+    const nom = document.getElementById('veh-nom').value.trim() || "Véhicule";
     const km = parseFloat(document.getElementById('veh-km').value) || 0;
     const frais = parseFloat(document.getElementById('veh-frais').value) || 27;
     db.vehicules.push({ id: Date.now(), nom, km, frais });
@@ -919,134 +619,81 @@ function saveVehicule() {
     document.getElementById('vehicule-form').style.display = "none";
 }
 
-function deleteVehicule(id) {
-    db.vehicules = db.vehicules.filter(v => v.id !== id);
-    saveData();
-}
-
-function filterData(query) {
-    renderAll(query.toLowerCase());
-}
-
-function renderAll(searchQuery = '') {
-    const totalCA = db.projets.reduce((acc, p) => acc + (p.budget || 0), 0);
-    document.getElementById('kpi-ca').textContent = formatMoney(totalCA);
+function renderAll() {
+    const latestPt = db.points[0] || { m1: 0, mois: 0, an: 0, j1: 'Aucun', jplus1: 'Aucun' };
+    document.getElementById('kpi-obj-mois').textContent = formatMoney(latestPt.mois);
+    document.getElementById('kpi-obj-an').textContent = formatMoney(latestPt.an);
+    document.getElementById('kpi-m-1').textContent = formatMoney(latestPt.m1);
     document.getElementById('kpi-projets').textContent = db.projets.length;
-    document.getElementById('kpi-devis').textContent = db.devis.length;
 
-    const currentMonthStr = new Date().toISOString().slice(0, 7);
-    const currentRev = db.revenus.find(r => r.periode === currentMonthStr);
-    document.getElementById('kpi-mois').textContent = currentRev ? formatMoney(currentRev.ca - currentRev.charges) : "0,00 €";
-
-    const filteredProjets = db.projets.filter(p => !searchQuery || p.nom.toLowerCase().includes(searchQuery) || (p.client && p.client.toLowerCase().includes(searchQuery)));
-    const filteredDevis = db.devis.filter(d => !searchQuery || d.titre.toLowerCase().includes(searchQuery) || d.projetNom.toLowerCase().includes(searchQuery));
-
-    document.getElementById('accueil-projets-list').innerHTML = filteredProjets.slice(0, 3).length === 0 ?
-        `<p style="color:var(--text-muted);font-size:0.85rem; padding:4px 0;">Aucun chantier actif.</p>` :
-        filteredProjets.slice(0, 3).map(p => `
+    document.getElementById('points-list').innerHTML = db.points.length === 0 ? '<p style="color:var(--text-muted)">Aucun point.</p>' :
+        db.points.map(p => `
             <div class="list-item">
                 <div class="list-item-header">
-                    <span class="list-item-title">${p.nom}</span>
-                    <span class="list-item-value">${formatMoney(p.budget)} HT</span>
+                    <span class="list-item-title">📌 Point du ${p.date}</span>
+                    <button class="action-link red" onclick="deletePoint('${p.id}')">Supprimer</button>
                 </div>
-                <div class="list-item-subtitle">${p.client ? 'Client : ' + p.client : ''}</div>
-                <div class="list-item-actions">
-                    <button class="action-link" onclick="editProject('${p.id}')">Modifier</button>
-                    <button class="action-link red" onclick="deleteProject('${p.id}')">Supprimer</button>
+                <div class="list-item-subtitle">
+                    <strong>Bilan J-1 :</strong> ${p.j1 || '-'}<br>
+                    <strong>Prévision J+1 :</strong> ${p.jplus1 || '-'}<br>
+                    <strong>Cibles :</strong> M-1 (${formatMoney(p.m1)}) | Mois (${formatMoney(p.mois)}) | Année (${formatMoney(p.an)})
                 </div>
             </div>
         `).join("");
 
-    document.getElementById('projet-list').innerHTML = filteredProjets.length === 0 ?
-        `<p style="color:var(--text-muted);font-size:0.85rem; padding:4px 0;">Aucun chantier.</p>` :
-        filteredProjets.map(p => `
-            <div class="list-item">
-                <div class="list-item-header">
-                    <span class="list-item-title">${p.nom}</span>
-                    <span class="list-item-value">${formatMoney(p.budget)} HT</span>
-                </div>
-                <div class="list-item-subtitle">${p.client ? 'Client : ' + p.client + ' — ' : ''}${p.description || ''}</div>
-                <div class="list-item-actions">
-                    <button class="action-link" onclick="editProject('${p.id}')">Modifier</button>
-                    <button class="action-link red" onclick="deleteProject('${p.id}')">Supprimer</button>
-                </div>
-            </div>
-        `).join("");
+    document.getElementById('synthese-objectifs-box').innerHTML = `
+        <div style="font-size:0.9rem; line-height:1.6;">
+            <strong>Dernier objectif M-1 enregistré :</strong> ${formatMoney(latestPt.m1)}<br>
+            <strong>Objectif du Mois en cours :</strong> ${formatMoney(latestPt.mois)}<br>
+            <strong>Trajectoire Objectif Annuel :</strong> ${formatMoney(latestPt.an)}
+        </div>
+    `;
 
-    document.getElementById('devis-list').innerHTML = filteredDevis.length === 0 ?
-        `<p style="color:var(--text-muted);font-size:0.85rem; padding:4px 0;">Aucun devis.</p>` :
-        filteredDevis.map(d => `
-            <div class="list-item">
-                <div class="list-item-header">
-                    <span class="list-item-title">${d.titre}</span>
-                    <span class="list-item-value">${formatMoney(d.totalTTC)} TTC</span>
-                </div>
-                <div class="list-item-subtitle">Chantier : ${d.projetNom} — Marge estimée : ${formatMoney(d.margeEur)}</div>
-                <div class="list-item-actions">
-                    <button class="action-link" onclick="generateDevisPDF('${d.id}')">📄 Télécharger PDF Pro</button>
-                    <button class="action-link red" onclick="deleteDevis('${d.id}')">Supprimer</button>
-                </div>
-            </div>
-        `).join("");
+    document.getElementById('client-list').innerHTML = db.clients.map(c => `
+        <div class="list-item">
+            <div class="list-item-header"><span class="list-item-title">${c.nom}</span><span class="badge ${c.type==='Prospect'?'badge-prospect':'badge-client'}">${c.type}</span></div>
+            <div class="list-item-subtitle">${c.tel} — ${c.notes}</div>
+        </div>
+    `).join("");
 
-    document.getElementById('mensuel-list').innerHTML = db.revenus.length === 0 ?
-        `<p style="color:var(--text-muted);font-size:0.85rem; padding:4px 0;">Aucun bilan.</p>` :
-        db.revenus.map(r => `
-            <div class="list-item">
-                <div class="list-item-header">
-                    <span class="list-item-title">Mois : ${r.periode}</span>
-                    <span class="list-item-value">${formatMoney(r.ca)} CA</span>
-                </div>
-                <div class="list-item-subtitle">Charges : ${formatMoney(r.charges)} | Net : ${formatMoney(r.ca - r.charges)}</div>
-                <div class="list-item-actions">
-                    <button class="action-link red" onclick="deleteRevenu(${r.id})">Supprimer</button>
-                </div>
-            </div>
-        `).join("");
+    document.getElementById('projet-list').innerHTML = db.projets.map(p => `
+        <div class="list-item">
+            <div class="list-item-header"><span class="list-item-title">${p.nom}</span><span class="list-item-value">${formatMoney(p.budget)} HT</span></div>
+        </div>
+    `).join("");
 
-    document.getElementById('vehicule-list').innerHTML = db.vehicules.length === 0 ?
-        `<p style="color:var(--text-muted);font-size:0.85rem; padding:4px 0;">Aucun véhicule.</p>` :
-        db.vehicules.map(v => `
-            <div class="list-item">
-                <div class="list-item-header">
-                    <span class="list-item-title">${v.nom}</span>
-                    <span class="list-item-value">${formatMoney(v.frais)} / j</span>
-                </div>
-                <div class="list-item-subtitle">Kilométrage : ${v.km.toLocaleString()} km</div>
-                <div class="list-item-actions">
-                    <button class="action-link red" onclick="deleteVehicule(${v.id})">Supprimer</button>
-                </div>
-            </div>
-        `).join("");
+    document.getElementById('devis-list').innerHTML = db.devis.map(d => `
+        <div class="list-item">
+            <div class="list-item-header"><span class="list-item-title">${d.titre}</span><span class="list-item-value">${formatMoney(d.totalTTC)} TTC</span></div>
+            <div class="list-item-actions"><button class="action-link" onclick="generateDevisPDF('${d.id}')">📄 PDF Pro</button></div>
+        </div>
+    `).join("");
+
+    document.getElementById('vehicule-list').innerHTML = db.vehicules.map(v => `
+        <div class="list-item">
+            <div class="list-item-header"><span class="list-item-title">${v.nom}</span><span class="list-item-value">${formatMoney(v.frais)} / j</span></div>
+            <div class="list-item-subtitle">${v.km.toLocaleString()} km</div>
+        </div>
+    `).join("");
 }
 
 function exportData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", "assawin_groupe_arts_" + new Date().toISOString().slice(0,10) + ".json");
-    document.body.appendChild(dlAnchor);
-    dlAnchor.click();
-    dlAnchor.remove();
+    const dl = document.createElement('a');
+    dl.setAttribute("href", dataStr);
+    dl.setAttribute("download", "assawin_gestion_" + new Date().toISOString().slice(0,10) + ".json");
+    document.body.appendChild(dl); dl.click(); dl.remove();
 }
 
 function triggerImport() { document.getElementById('import-file').click(); }
-
-function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const imported = JSON.parse(e.target.result);
-            if(imported.projets && imported.devis) {
-                db = imported;
-                saveData();
-                alert("Données restaurées avec succès !");
-            } else { alert("Format de fichier invalide."); }
-        } catch(err) { alert("Erreur lors de la lecture du fichier."); }
+function importData(e) {
+    const f = e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = function(evt) {
+        try { db = JSON.parse(evt.target.result); saveData(); alert("Restauré !"); } catch(err) { alert("Erreur"); }
     };
-    reader.readAsText(file);
+    r.readAsText(f);
 }
 
 function formatMoney(val) {
