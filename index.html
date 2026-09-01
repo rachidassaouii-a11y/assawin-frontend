@@ -324,7 +324,7 @@ body {
         <div class="section-title">Actions</div>
         <button class="btn-gold" onclick="toggleProjectForm()">+ Nouveau projet</button>
         <button class="btn-secondary" onclick="toggleDevisForm()">+ Nouveau devis</button>
-        <button class="btn-secondary" onclick="openDevisModal()">📋 Gérer mes devis</button>
+        <button class="btn-secondary" onclick="openDevisModal()">Gérer mes devis</button>
 
         <!-- Formulaire Nouveau Projet -->
         <div class="form-card" id="project-form">
@@ -459,7 +459,7 @@ async function fetchAndRenderProjectsModal() {
         });
         const data = await res.json();
         if (!res.ok) {
-            container.innerHTML = "<p style='color:var(--accent-red)'>Erreur de chargement.</p>";
+            container.innerHTML = `<p style='color:var(--accent-red)'>Erreur : ${data.detail || 'Chargement impossible'}</p>`;
             return;
         }
         cachedProjects = data;
@@ -572,7 +572,9 @@ async function fetchAndRenderDevisModal() {
         });
         const data = await res.json();
         if (!res.ok) {
-            container.innerHTML = "<p style='color:var(--accent-red)'>Erreur de chargement des devis.</p>";
+            // Affichage de l'erreur exacte renvoyée par le serveur backend
+            const errDetail = typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail || 'Erreur inconnue');
+            container.innerHTML = `<p style='color:var(--accent-red)'>Erreur serveur : ${errDetail}</p>`;
             return;
         }
         cachedDevis = data;
@@ -992,7 +994,6 @@ function generatePDF(devisObj) {
     doc.text("Total HT", 175, y + 5.5);
     y += 8;
 
-    // Récupération des lignes (gère le format direct ou les lots)
     let lignesList = devisObj.lignes || [];
     if (devisObj.lots && devisObj.lots.length > 0 && lignesList.length === 0) {
         devisObj.lots.forEach(lot => {
