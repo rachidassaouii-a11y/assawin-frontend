@@ -174,7 +174,7 @@ body {
     display: none;
 }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-#status, #auth-status, #proj-status, #devis-status, #modal-proj-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
+#status, #auth-status, #proj-status, #devis-status, #modal-proj-status, #modal-devis-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
 #app, #register-section, #project-form, #devis-form { display: none; }
 .ligne-block {
     border: 1px solid var(--border-glass);
@@ -210,7 +210,7 @@ body {
 .result-line.total { color: var(--gold-primary); font-weight: bold; font-size: 1rem; border-top: 1px solid var(--border-glass); margin-top: 0.4rem; padding-top: 0.5rem; }
 .project-select { margin-bottom: 1rem; }
 
-/* Modal Projets */
+/* Modals */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -240,7 +240,7 @@ body {
 }
 .modal-header h2 { color: var(--gold-primary); font-size: 1.2rem; margin: 0; }
 .close-modal { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
-.project-item-card {
+.project-item-card, .devis-item-card {
     background: rgba(255,255,255,0.03);
     border: 1px solid var(--border-glass);
     border-radius: 0.5rem;
@@ -259,7 +259,7 @@ body {
     font-size: 0.9rem;
 }
 .project-item-card label { font-size: 0.75rem; color: var(--text-muted); display: block; }
-.project-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+.project-actions, .devis-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
 </style>
 </head>
 <body>
@@ -310,11 +310,10 @@ body {
             <div class="glass-card kpi-card"><h3>CA total</h3><div class="value" id="ca">—</div></div>
             <div class="glass-card kpi-card"><h3>Marge brute</h3><div class="value" id="marge">—</div></div>
             <div class="glass-card kpi-card"><h3>Taux de marque</h3><div class="value" id="taux">—</div></div>
-            <!-- CARTE PROJET CLIQUABLE -->
             <div class="glass-card kpi-card clickable" onclick="openProjectsModal()" title="Cliquer pour voir et modifier les projets">
                 <h3>Projets</h3>
                 <div class="value" id="projets">—</div>
-                <div style="font-size:0.75rem; color:var(--gold-primary); margin-top:0.25rem;">Modifier ↗</div>
+                <div style="font-size:0.75rem; color:var(--gold-primary); margin-top:0.25rem;">Gérer ↗</div>
             </div>
         </div>
 
@@ -325,6 +324,7 @@ body {
         <div class="section-title">Actions</div>
         <button class="btn-gold" onclick="toggleProjectForm()">+ Nouveau projet</button>
         <button class="btn-secondary" onclick="toggleDevisForm()">+ Nouveau devis</button>
+        <button class="btn-secondary" onclick="openDevisModal()">📋 Gérer mes devis</button>
 
         <!-- Formulaire Nouveau Projet -->
         <div class="form-card" id="project-form">
@@ -368,14 +368,14 @@ body {
             <button class="btn-small" type="button" onclick="addLigne()">+ Ajouter une intervention</button>
 
             <button class="btn-gold" onclick="createDevis()" style="margin-top:1rem">Créer le devis</button>
-            <button class="btn-pdf" id="btn-pdf" onclick="generatePDF()">📄 Télécharger le PDF du devis</button>
+            <button class="btn-pdf" id="btn-pdf" onclick="generatePDF(lastDevis)">📄 Télécharger le PDF du devis</button>
             <div id="devis-status"></div>
         </div>
     </div>
 </div>
 </div>
 
-<!-- MODAL GESTION / MODIFICATION DES PROJETS -->
+<!-- MODAL GESTION DES PROJETS -->
 <div class="modal-overlay" id="projects-modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -383,9 +383,23 @@ body {
             <button class="close-modal" onclick="closeProjectsModal()">&times;</button>
         </div>
         <div id="projects-list-container">
-            <p style="color:var(--text-muted)">Chargement des projets...</p>
+            <p style="color:var(--text-muted)">Chargement...</p>
         </div>
         <div id="modal-proj-status"></div>
+    </div>
+</div>
+
+<!-- MODAL GESTION DES DEVIS -->
+<div class="modal-overlay" id="devis-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Gestion de vos Devis</h2>
+            <button class="close-modal" onclick="closeDevisModal()">&times;</button>
+        </div>
+        <div id="devis-list-container">
+            <p style="color:var(--text-muted)">Chargement...</p>
+        </div>
+        <div id="modal-devis-status"></div>
     </div>
 </div>
 
@@ -393,6 +407,7 @@ body {
 const API_URL = "https://assawin-backend.onrender.com";
 let token = null;
 let cachedProjects = [];
+let cachedDevis = [];
 let ligneCounter = 0;
 let lastDevis = null;
 
@@ -425,11 +440,11 @@ async function toggleDevisForm() {
     }
 }
 
+// Gestion Modale Projets
 async function openProjectsModal() {
     document.getElementById('projects-modal').style.display = "flex";
     await fetchAndRenderProjectsModal();
 }
-
 function closeProjectsModal() {
     document.getElementById('projects-modal').style.display = "none";
     loadDashboard();
@@ -444,12 +459,12 @@ async function fetchAndRenderProjectsModal() {
         });
         const data = await res.json();
         if (!res.ok) {
-            container.innerHTML = "<p style='color:var(--accent-red)'>Erreur de chargement des projets.</p>";
+            container.innerHTML = "<p style='color:var(--accent-red)'>Erreur de chargement.</p>";
             return;
         }
         cachedProjects = data;
         if (data.length === 0) {
-            container.innerHTML = "<p style='color:var(--text-muted)'>Aucun projet enregistré pour l'instant.</p>";
+            container.innerHTML = "<p style='color:var(--text-muted)'>Aucun projet enregistré.</p>";
             return;
         }
 
@@ -496,7 +511,6 @@ async function saveProjectUpdate(id_projet) {
     const description = document.getElementById(`edit-desc-${id_projet}`).value;
 
     statusDiv.textContent = "Enregistrement...";
-
     try {
         const res = await fetch(API_URL + `/api/v1/projets/${id_projet}`, {
             method: "PUT",
@@ -505,10 +519,10 @@ async function saveProjectUpdate(id_projet) {
         });
         const data = await res.json();
         if (!res.ok) {
-            statusDiv.textContent = "Erreur : " + (data.detail || "Mise à jour échouée");
+            statusDiv.textContent = "Erreur : " + (data.detail || "Échec");
             return;
         }
-        statusDiv.textContent = "Projet mis à jour avec succès !";
+        statusDiv.textContent = "Projet mis à jour !";
         setTimeout(() => statusDiv.textContent = "", 2500);
         await refreshProjectSelect();
     } catch (err) {
@@ -527,12 +541,87 @@ async function deleteProject(id_projet) {
         });
         if (!res.ok) {
             const data = await res.json();
-            statusDiv.textContent = "Erreur : " + (data.detail || "Suppression refusée");
+            statusDiv.textContent = "Erreur : " + (data.detail || "Refusée");
             return;
         }
         statusDiv.textContent = "Projet supprimé.";
         await fetchAndRenderProjectsModal();
         await refreshProjectSelect();
+        loadDashboard();
+    } catch (err) {
+        statusDiv.textContent = "Erreur réseau : " + err.message;
+    }
+}
+
+// Gestion Modale Devis
+async function openDevisModal() {
+    document.getElementById('devis-modal').style.display = "flex";
+    await fetchAndRenderDevisModal();
+}
+function closeDevisModal() {
+    document.getElementById('devis-modal').style.display = "none";
+    loadDashboard();
+}
+
+async function fetchAndRenderDevisModal() {
+    const container = document.getElementById('devis-list-container');
+    container.innerHTML = "<p style='color:var(--text-muted)'>Chargement...</p>";
+    try {
+        const res = await fetch(API_URL + "/api/v1/devis/", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            container.innerHTML = "<p style='color:var(--accent-red)'>Erreur de chargement des devis.</p>";
+            return;
+        }
+        cachedDevis = data;
+        if (data.length === 0) {
+            container.innerHTML = "<p style='color:var(--text-muted)'>Aucun devis enregistré pour l'instant.</p>";
+            return;
+        }
+
+        container.innerHTML = data.map(d => `
+            <div class="devis-item-card" id="devis-card-${d.id_devis || d.id}">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                    <strong style="color:var(--gold-primary)">${d.reference || 'Devis'}</strong>
+                    <span style="font-size:0.85rem; color:var(--text-muted)">${formatMoney(d.total_ttc)} TTC</span>
+                </div>
+                <div style="font-size:0.9rem; margin-bottom:0.5rem;">${d.titre || 'Sans titre'}</div>
+                <div class="devis-actions">
+                    <button class="btn-gold" style="padding:0.5rem; font-size:0.85rem;" onclick="downloadDevisPDF('${d.id_devis || d.id}')">📄 Télécharger PDF</button>
+                    <button class="btn-remove" onclick="deleteDevis('${d.id_devis || d.id}')">Supprimer</button>
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        container.innerHTML = "<p style='color:var(--accent-red)'>Erreur réseau : " + err.message + "</p>";
+    }
+}
+
+async function downloadDevisPDF(id_devis) {
+    const devis = cachedDevis.find(d => (d.id_devis === id_devis || d.id === id_devis));
+    if (devis) {
+        generatePDF(devis);
+    }
+}
+
+async function deleteDevis(id_devis) {
+    if (!confirm("Voulez-vous vraiment supprimer ce devis ?")) return;
+    const statusDiv = document.getElementById('modal-devis-status');
+    statusDiv.textContent = "Suppression...";
+    try {
+        const res = await fetch(API_URL + `/api/v1/devis/${id_devis}`, {
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + token }
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            statusDiv.textContent = "Erreur : " + (data.detail || "Suppression refusée");
+            return;
+        }
+        statusDiv.textContent = "Devis supprimé.";
+        await fetchAndRenderDevisModal();
         loadDashboard();
     } catch (err) {
         statusDiv.textContent = "Erreur réseau : " + err.message;
@@ -864,8 +953,8 @@ async function createDevis() {
     }
 }
 
-function generatePDF() {
-    if (!lastDevis) return;
+function generatePDF(devisObj) {
+    if (!devisObj) return;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     const gold = [245, 158, 11];
@@ -883,13 +972,11 @@ function generatePDF() {
     let y = 34;
     doc.setTextColor(...dark);
     doc.setFontSize(14);
-    doc.text(lastDevis.titre, 14, y);
+    doc.text(devisObj.titre || 'Devis', 14, y);
     y += 7;
     doc.setFontSize(10);
     doc.setTextColor(...muted);
-    doc.text("Client / Projet : " + lastDevis.nomProjet, 14, y);
-    y += 5;
-    doc.text("Référence : " + lastDevis.reference, 14, y);
+    doc.text("Référence : " + (devisObj.reference || 'N/A'), 14, y);
     y += 5;
     doc.text("Date : " + new Date().toLocaleDateString('fr-FR'), 14, y);
     y += 10;
@@ -905,13 +992,21 @@ function generatePDF() {
     doc.text("Total HT", 175, y + 5.5);
     y += 8;
 
-    lastDevis.lignes.forEach(l => {
+    // Récupération des lignes (gère le format direct ou les lots)
+    let lignesList = devisObj.lignes || [];
+    if (devisObj.lots && devisObj.lots.length > 0 && lignesList.length === 0) {
+        devisObj.lots.forEach(lot => {
+            if (lot.lignes) lignesList = lignesList.concat(lot.lignes);
+        });
+    }
+
+    lignesList.forEach(l => {
         const totalLigne = l.prix_unitaire_ht * l.quantite;
         doc.setFontSize(9);
         doc.setTextColor(...dark);
-        doc.text(String(l.designation).substring(0, 45), 16, y + 5.5);
-        doc.text(String(l.quantite), 110, y + 5.5);
-        doc.text(String(l.unite), 128, y + 5.5);
+        doc.text(String(l.designation || '').substring(0, 45), 16, y + 5.5);
+        doc.text(String(l.quantite || 1), 110, y + 5.5);
+        doc.text(String(l.unite || 'u'), 128, y + 5.5);
         doc.text(formatMoney(l.prix_unitaire_ht), 148, y + 5.5);
         doc.text(formatMoney(totalLigne), 175, y + 5.5);
         y += 8;
@@ -921,10 +1016,10 @@ function generatePDF() {
 
     y += 8;
     const lines = [
-        ["Total HT", lastDevis.total_ht],
-        ["TVA", lastDevis.total_tva],
-        ["Total TTC", lastDevis.total_ttc],
-        ["Acompte (" + lastDevis.acompte_pct + "%)", lastDevis.acompte_montant]
+        ["Total HT", devisObj.total_ht],
+        ["TVA", devisObj.total_tva],
+        ["Total TTC", devisObj.total_ttc],
+        ["Acompte (" + (devisObj.acompte_pct || 30) + "%)", devisObj.acompte_montant]
     ];
     lines.forEach(([label, val], i) => {
         doc.setFontSize(i === 2 ? 12 : 10);
@@ -939,7 +1034,7 @@ function generatePDF() {
     doc.setTextColor(...muted);
     doc.text("Devis généré via ASSAWIN — sous réserve d'acceptation. Validité 30 jours.", 14, y);
 
-    doc.save((lastDevis.reference || "devis") + ".pdf");
+    doc.save((devisObj.reference || "devis") + ".pdf");
 }
 </script>
 </body>
