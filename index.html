@@ -52,7 +52,7 @@ body {
     backdrop-filter: blur(8px);
 }
 .form-card { max-width: 600px; margin-bottom: 1.5rem; }
-.auth-card input, .form-card input, .form-card select, .form-card textarea {
+.auth-card input, .form-card input, .form-card select {
     width: 100%;
     padding: 0.85rem;
     margin-bottom: 1rem;
@@ -65,33 +65,6 @@ body {
 .form-card label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
 .switch-link { text-align: center; color: var(--text-muted); font-size: 0.9rem; max-width: 400px; margin: 0 auto 2rem; }
 .switch-link a { color: var(--gold-primary); cursor: pointer; text-decoration: underline; }
-
-/* Centre de Notifications Écran */
-.notification-banner {
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid var(--accent-red);
-    border-radius: 1rem;
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
-    max-width: 600px;
-    width: 100%;
-    display: none;
-    animation: pulseAlert 2s infinite;
-}
-.notification-banner.info {
-    background: rgba(245, 158, 11, 0.12);
-    border-color: var(--gold-primary);
-    animation: none;
-}
-@keyframes pulseAlert {
-    0% { border-color: rgba(239, 68, 68, 0.4); }
-    50% { border-color: rgba(239, 68, 68, 1); }
-    100% { border-color: rgba(239, 68, 68, 0.4); }
-}
-.notif-title { font-weight: bold; color: var(--accent-red); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
-.notif-title.info { color: var(--gold-primary); }
-.notif-text { font-size: 0.9rem; color: var(--text-primary); margin-bottom: 0.5rem; }
-
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
 .glass-card {
     background: var(--bg-card-glass);
@@ -117,7 +90,7 @@ body {
 .btn-remove { background: transparent; color: var(--accent-red); border: none; cursor: pointer; font-size: 0.85rem; padding: 0.4rem 0; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 #status, #auth-status, #proj-status, #devis-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
-#app, #register-section, #project-form, #devis-form, #vehicule-form, #mensuel-form, #rdv-form { display: none; }
+#app, #register-section, #project-form, #devis-form, #vehicule-form, #mensuel-form { display: none; }
 .ligne-block { border: 1px solid var(--border-glass); border-radius: 0.65rem; padding: 1rem; margin-bottom: 0.85rem; background: rgba(255,255,255,0.02); }
 .ligne-top-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem; }
 .ligne-top-row input { margin-bottom: 0; }
@@ -133,17 +106,16 @@ body {
 .project-select { margin-bottom: 1rem; }
 
 /* Listes */
-.devis-list, .projet-list, .vehicule-list, .mensuel-list, .rdv-list { max-width: 600px; width: 100%; margin: 0 auto; }
-.devis-card, .projet-card, .vehicule-card, .mensuel-card, .rdv-card { background: var(--bg-card-glass); border: 1px solid var(--border-glass); border-radius: 0.75rem; padding: 1rem 1.2rem; margin-bottom: 0.75rem; transition: border-color 0.3s; }
-.devis-header, .projet-header, .vehicule-header, .mensuel-header, .rdv-header { display: flex; justify-content: space-between; align-items: baseline; }
-.devis-titre, .projet-titre, .vehicule-titre, .mensuel-titre, .rdv-titre { font-weight: bold; color: var(--text-primary); }
+.devis-list, .projet-list, .vehicule-list, .mensuel-list { max-width: 600px; width: 100%; margin: 0 auto; }
+.devis-card, .projet-card, .vehicule-card, .mensuel-card { background: var(--bg-card-glass); border: 1px solid var(--border-glass); border-radius: 0.75rem; padding: 1rem 1.2rem; margin-bottom: 0.75rem; transition: border-color 0.3s; }
+.devis-header, .projet-header, .vehicule-header, .mensuel-header { display: flex; justify-content: space-between; align-items: baseline; }
+.devis-titre, .projet-titre, .vehicule-titre, .mensuel-titre { font-weight: bold; color: var(--text-primary); }
 .devis-montant, .mensuel-montant { color: var(--gold-primary); font-weight: bold; }
-.devis-sous-titre, .projet-sous-titre, .vehicule-sous-titre, .mensuel-sous-titre, .rdv-sous-titre { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
-.badge-vert, .badge-orange, .badge-red, .badge-blue { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold; margin-top: 0.5rem; }
+.devis-sous-titre, .projet-sous-titre, .vehicule-sous-titre, .mensuel-sous-titre { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
+.badge-vert, .badge-orange, .badge-red { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold; margin-top: 0.5rem; }
 .badge-vert { background: rgba(16,185,129,0.15); color: var(--accent-emerald); border: 1px solid var(--accent-emerald); }
 .badge-orange { background: rgba(249,115,22,0.15); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
 .badge-red { background: rgba(239,68,68,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
-.badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid #60a5fa; }
 </style>
 </head>
 <body>
@@ -182,13 +154,6 @@ body {
     </div>
 
     <div id="app">
-        <!-- Bannière de Notification sur l'écran (Alertes Oublis / RDV) -->
-        <div class="notification-banner" id="notif-banner">
-            <div class="notif-title" id="notif-banner-title">⚠️ Alerte / Oubli détecté</div>
-            <div class="notif-text" id="notif-banner-text">Message d'alerte...</div>
-            <button class="btn-small" id="notif-banner-action" onclick="handleNotifAction()">Agir maintenant</button>
-        </div>
-
         <!-- KPIs cliquables -->
         <div class="kpi-grid">
             <div class="glass-card kpi-card" onclick="loadDashboard()"><h3>CA total</h3><div class="value" id="ca">—</div></div>
@@ -197,42 +162,11 @@ body {
             <div class="glass-card kpi-card" onclick="loadProjetsList()"><h3>Projets</h3><div class="value" id="projets">—</div></div>
         </div>
 
-        <div class="section-title">Actions rapides & Alertes</div>
-        <button class="btn-gold" onclick="toggleRdvForm()">📅 + Planifier un RDV Client (Pipeline)</button>
-        <button class="btn-secondary" onclick="toggleProjectForm()">+ Nouveau projet & client</button>
+        <div class="section-title">Actions rapides</div>
+        <button class="btn-gold" onclick="toggleProjectForm()">+ Nouveau projet & client</button>
         <button class="btn-secondary" onclick="toggleDevisForm()">+ Nouveau devis</button>
         <button class="btn-secondary" style="border-color: var(--text-muted); color: var(--text-muted);" onclick="toggleVehiculeForm()">+ Passeport Véhicule & Dépenses</button>
         <button class="btn-secondary" style="border-color: var(--gold-light); color: var(--gold-light);" onclick="toggleMensuelForm()">+ Saisir / Suivre Revenu Mensuel</button>
-        <button class="btn-small" style="margin-top:0.75rem;" onclick="requestBrowserNotifications()">🔔 Activer les notifications push écran</button>
-
-        <!-- Formulaire RDV Client & Pipeline -->
-        <div class="form-card" id="rdv-form">
-            <label>Nom du Client / Prospect</label>
-            <input type="text" id="rdv-client" placeholder="Ex: M. Martin ou SCI Horizon" />
-            
-            <label>Étape du cycle commercial & chantier</label>
-            <select id="rdv-etape">
-                <option value="AVANT_DEVIS">1. Avant devis (Premier contact / Prise de côtes)</option>
-                <option value="LIVRAISON_DEVIS">2. Pendant la livraison du devis (Présentation / Explication)</option>
-                <option value="NEGOCIATION">3. RDV de négociation (Ajustements / Signature)</option>
-            </select>
-
-            <div class="row2">
-                <div>
-                    <label>Date & Heure du RDV</label>
-                    <input type="datetime-local" id="rdv-date" />
-                </div>
-                <div>
-                    <label>Projet associé (Optionnel)</label>
-                    <input type="text" id="rdv-projet-nom" placeholder="Ex: Rénovation Cuisine" />
-                </div>
-            </div>
-
-            <label>Notes & Objectifs du RDV</label>
-            <textarea id="rdv-notes" rows="3" placeholder="Ex: Valider les choix de matériaux et négocier l'acompte à 40%..."></textarea>
-            
-            <button class="btn-gold" onclick="saveRdvClient()">Enregistrer le RDV & Programmer l'alerte</button>
-        </div>
 
         <!-- Formulaire Saisie Revenu Mensuel -->
         <div class="form-card" id="mensuel-form">
@@ -253,7 +187,7 @@ body {
             <button class="btn-gold" onclick="saveRevenuMensuel()">Enregistrer le bilan du mois</button>
         </div>
 
-        <!-- Formulaire Véhicule -->
+        <!-- Formulaire Véhicule & Suivi Technique -->
         <div class="form-card" id="vehicule-form">
             <label>Passeport Véhicule (Modèle / Immatriculation)</label>
             <input type="text" id="veh-nom" placeholder="Ex: Ford Fiesta - AB-123-CD" />
@@ -342,12 +276,6 @@ body {
             <div id="devis-status"></div>
         </div>
         
-        <!-- Agenda & Suivi RDV Clients -->
-        <div class="section-title">Agenda & RDV Clients (Pipeline)</div>
-        <div class="rdv-list" id="rdv-list">
-            <p style='color:var(--text-muted);text-align:center;font-size:0.9rem;'>Aucun RDV client programmé.</p>
-        </div>
-
         <!-- Suivi des Revenus Mensuels -->
         <div class="section-title">Suivi des Revenus Mensuels</div>
         <div class="mensuel-list" id="mensuel-list">
@@ -384,9 +312,6 @@ let editingDevisId = null;
 
 let flotteVehicules = JSON.parse(localStorage.getItem('assawin_vehicules') || '[]');
 let revenusMensuels = JSON.parse(localStorage.getItem('assawin_revenus_mensuels') || '[]');
-let rdvClients = JSON.parse(localStorage.getItem('assawin_rdv_clients') || '[]');
-
-let currentNotificationAction = null;
 
 function showRegister() {
     document.getElementById('login-section').style.display = "none";
@@ -417,11 +342,6 @@ function toggleMensuelForm() {
     el.style.display = el.style.display === "block" ? "none" : "block";
 }
 
-function toggleRdvForm() {
-    const el = document.getElementById('rdv-form');
-    el.style.display = el.style.display === "block" ? "none" : "block";
-}
-
 async function toggleDevisForm() {
     const el = document.getElementById('devis-form');
     const willShow = el.style.display !== "block";
@@ -430,162 +350,6 @@ async function toggleDevisForm() {
         await refreshProjectSelect();
         if (document.getElementById('lignes-container').children.length === 0) addLigne();
     }
-}
-
-// Système de Notifications & Alertes Écran
-function triggerScreenNotification(title, text, actionType, actionText) {
-    const banner = document.getElementById('notif-banner');
-    const titleEl = document.getElementById('notif-banner-title');
-    const textEl = document.getElementById('notif-banner-text');
-    const btnEl = document.getElementById('notif-banner-action');
-
-    titleEl.textContent = title;
-    textEl.textContent = text;
-    if(actionText) {
-        btnEl.textContent = actionText;
-        btnEl.style.display = "block";
-        currentNotificationAction = actionType;
-    } else {
-        btnEl.style.display = "none";
-    }
-
-    banner.style.display = "block";
-
-    // Également déclencher une notification système navigateur si autorisée
-    if (window.Notification && Notification.permission === "granted") {
-        new Notification(title, { body: text });
-    }
-}
-
-function requestBrowserNotifications() {
-    if (!window.Notification) {
-        alert("Ce navigateur ne supporte pas les notifications push.");
-        return;
-    }
-    Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-            alert("Notifications activées avec succès !");
-            new Notification("ASSAWIN", { body: "Vos alertes de chantier et RDV sont actives." });
-        } else {
-            alert("Permission refusée pour les notifications.");
-        }
-    });
-}
-
-function handleNotifAction() {
-    if(currentNotificationAction === 'mensuel') {
-        toggleMensuelForm();
-        document.getElementById('mensuel-periode').focus();
-    } else if(currentNotificationAction === 'rdv') {
-        toggleRdvForm();
-        document.getElementById('rdv-client').focus();
-    }
-}
-
-function checkOublisAndAlerts() {
-    // 1. Vérifier si le revenu du mois en cours est enregistré
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
-    const currentKey = `${currentYear}-${currentMonth}`;
-
-    const foundRevenu = revenusMensuels.find(r => r.periode === currentKey);
-    if (!foundRevenu) {
-        triggerScreenNotification(
-            "⚠️ Oubli Bilan Mensuel", 
-            `Vous n'avez pas encore saisi le chiffre d'affaires ni les charges pour ce mois (${currentMonth}/${currentYear}). Pensez à faire votre bilan !`, 
-            'mensuel', 
-            'Saisir le revenu du mois'
-        );
-        return;
-    }
-
-    // 2. Vérifier les RDV du jour ou imminents
-    const todayStr = now.toISOString().split('T')[0];
-    const imminentRdv = rdvClients.find(r => r.date_rdv && r.date_rdv.startsWith(todayStr));
-    if (imminentRdv) {
-        triggerScreenNotification(
-            "📅 RDV Client Prévu Aujourd'hui !", 
-            `Client : ${imminentRdv.client} (${getEtapeLabel(imminentRdv.etape)}) à ${imminentRdv.date_rdv.split('T')[1] || 'horaire non précisé'}.`, 
-            'rdv', 
-            'Voir l\'agenda'
-        );
-        return;
-    }
-
-    // Si tout est OK, cacher la bannière d'alerte critique
-    document.getElementById('notif-banner').style.display = "none";
-}
-
-// Logique RDV Clients & Pipeline
-function saveRdvClient() {
-    const client = document.getElementById('rdv-client').value;
-    const etape = document.getElementById('rdv-etape').value;
-    const date_rdv = document.getElementById('rdv-date').value;
-    const projet_nom = document.getElementById('rdv-projet-nom').value || "Général";
-    const notes = document.getElementById('rdv-notes').value;
-
-    if (!client || !date_rdv) {
-        alert("Veuillez renseigner le nom du client et la date du RDV.");
-        return;
-    }
-
-    rdvClients.push({ client, etape, date_rdv, projet_nom, notes, id: Date.now() });
-    // Trier par date croissante
-    rdvClients.sort((a, b) => a.date_rdv.localeCompare(b.date_rdv));
-
-    localStorage.setItem('assawin_rdv_clients', JSON.stringify(rdvClients));
-    renderRdvs();
-
-    document.getElementById('rdv-client').value = "";
-    document.getElementById('rdv-notes').value = "";
-    toggleRdvForm();
-    checkOublisAndAlerts();
-}
-
-function getEtapeLabel(etape) {
-    if(etape === 'AVANT_DEVIS') return "Avant Devis";
-    if(etape === 'LIVRAISON_DEVIS') return "Livraison Devis";
-    if(etape === 'NEGOCIATION') return "Négociation";
-    return etape;
-}
-
-function getEtapeBadgeClass(etape) {
-    if(etape === 'AVANT_DEVIS') return "badge-orange";
-    if(etape === 'LIVRAISON_DEVIS') return "badge-blue";
-    if(etape === 'NEGOCIATION') return "badge-vert";
-    return "badge-orange";
-}
-
-function renderRdvs() {
-    const container = document.getElementById('rdv-list');
-    if(rdvClients.length === 0) {
-        container.innerHTML = "<p style='color:var(--text-muted);text-align:center;font-size:0.9rem;'>Aucun RDV client programmé.</p>";
-        return;
-    }
-
-    container.innerHTML = rdvClients.map((r, index) => {
-        const dateFormatted = r.date_rdv ? r.date_rdv.replace('T', ' à ') : "Date non fixée";
-        return `
-        <div class="rdv-card">
-            <div class="rdv-header">
-                <span class="rdv-titre">${r.client}</span>
-                <span style="font-size:0.85rem; color:var(--gold-primary); font-weight:bold;">${dateFormatted}</span>
-            </div>
-            <div class="rdv-sous-titre">Projet : ${r.projet_nom}</div>
-            ${r.notes ? `<div style="font-size:0.85rem; color:var(--text-muted); margin-top:0.3rem;">Notes : ${r.notes}</div>` : ''}
-            <div><span class="${getEtapeBadgeClass(r.etape)}">${getEtapeLabel(r.etape)}</span></div>
-            <button class="btn-remove" style="display:block; margin-top:0.5rem;" onclick="removeRdv(${index})">Supprimer ce RDV</button>
-        </div>
-        `;
-    }).join("");
-}
-
-function removeRdv(index) {
-    rdvClients.splice(index, 1);
-    localStorage.setItem('assawin_rdv_clients', JSON.stringify(rdvClients));
-    renderRdvs();
-    checkOublisAndAlerts();
 }
 
 // Logique Revenu Mensuel
@@ -599,6 +363,7 @@ function saveRevenuMensuel() {
         return;
     }
 
+    // Vérifier si la période existe déjà pour la mettre à jour, sinon l'ajouter
     const index = revenusMensuels.findIndex(r => r.periode === periode);
     if (index >= 0) {
         revenusMensuels[index] = { periode, ca, charges };
@@ -606,12 +371,12 @@ function saveRevenuMensuel() {
         revenusMensuels.push({ periode, ca, charges });
     }
 
+    // Trier par date décroissante
     revenusMensuels.sort((a, b) => b.periode.localeCompare(a.periode));
 
     localStorage.setItem('assawin_revenus_mensuels', JSON.stringify(revenusMensuels));
     renderRevenusMensuels();
     updateDashboardMois(ca);
-    checkOublisAndAlerts();
 
     document.getElementById('mensuel-ca').value = "";
     document.getElementById('mensuel-charges').value = "";
@@ -650,10 +415,10 @@ function removeRevenuMensuel(index) {
     localStorage.setItem('assawin_revenus_mensuels', JSON.stringify(revenusMensuels));
     renderRevenusMensuels();
     updateDashboardMois(0);
-    checkOublisAndAlerts();
 }
 
 function updateDashboardMois(defaultCa = 0) {
+    // Cherche si le mois en cours (YYYY-MM) existe
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
@@ -897,9 +662,7 @@ async function login() {
         loadDevisList();
         renderVehicules();
         renderRevenusMensuels();
-        renderRdvs();
         updateDashboardMois();
-        checkOublisAndAlerts();
     } catch (err) { statusDiv.textContent = "Erreur réseau"; }
 }
 
@@ -912,7 +675,6 @@ async function loadDashboard() {
         document.getElementById('projets').textContent = data.nombre_projets;
         document.getElementById('nb-devis-kpi').textContent = data.nombre_devis;
         updateDashboardMois();
-        checkOublisAndAlerts();
     } catch (err) {}
 }
 
