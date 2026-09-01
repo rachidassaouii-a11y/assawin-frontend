@@ -3,21 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASSAWIN - Pilotage BTP</title>
+<title>ASSAWIN — Pilotage BTP & Expertise GROUPE ARTS</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
-    --bg-main: #121212;
-    --surface: #1e1e1e;
-    --border-color: rgba(255, 255, 255, 0.12);
+    --bg-main: #0c0d0f;
+    --surface: #16181d;
+    --surface-card: #1e2128;
+    --border-color: rgba(245, 158, 11, 0.18);
     --gold: #f59e0b;
     --gold-hover: #d97706;
-    --text-main: #e8eaed;
-    --text-muted: #9aa0a6;
-    --blue: #8ab4f8;
-    --red: #f28b82;
-    --pill-bg: #303134;
-    --pill-hover: #3c4043;
+    --gold-glow: rgba(245, 158, 11, 0.15);
+    --text-main: #f1f3f5;
+    --text-muted: #94a3b8;
+    --blue: #38bdf8;
+    --green: #4ade80;
+    --red: #f87171;
+    --pill-bg: #262932;
+    --pill-hover: #323642;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body {
@@ -29,12 +32,16 @@ body {
     padding-bottom: 90px;
 }
 
-/* En-tête style Google App */
+/* En-tête Signature */
 .google-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
+    padding: 14px 20px;
+    background: linear-gradient(180deg, rgba(22,24,29,0.9) 0%, rgba(12,13,15,0.8) 100%);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky; top: 0; z-index: 999;
+    backdrop-filter: blur(10px);
 }
 .header-left {
     display: flex;
@@ -42,40 +49,53 @@ body {
     gap: 12px;
 }
 .icon-menu {
-    background: none; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; padding: 4px;
+    background: var(--pill-bg); border: 1px solid var(--border-color); color: var(--gold); 
+    width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; cursor: pointer; transition: all 0.2s;
 }
-.app-logo-text {
-    font-size: 1.3rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+.icon-menu:hover { background: var(--gold-glow); }
+.app-logo-container h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
     background: linear-gradient(90deg, #f59e0b, #fbbf24, #ffffff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
 }
+.app-subtitle {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-top: 2px;
+}
 .profile-avatar {
-    width: 32px; height: 32px;
-    background: #ea4335;
-    color: white;
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #f59e0b, #b45309);
+    color: #000;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 600; font-size: 0.9rem;
+    font-weight: 700; font-size: 0.95rem;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
     cursor: pointer;
 }
 
-/* Barre de recherche style Google */
+/* Barre de recherche & Actions */
 .search-container {
-    padding: 4px 16px 12px 16px;
+    padding: 12px 16px 4px 16px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 .search-bar {
-    background: #202124;
+    background: var(--surface);
     border: 1px solid var(--border-color);
-    border-radius: 28px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
-    padding: 8px 16px;
+    padding: 10px 16px;
     gap: 12px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 .search-bar input {
     flex: 1;
@@ -89,18 +109,20 @@ body {
 .search-tools {
     display: flex;
     gap: 12px;
-    color: var(--text-muted);
+    color: var(--gold);
     font-size: 1.1rem;
     cursor: pointer;
 }
 
-/* Pastilles / Filtres rapides sous la barre */
+/* Pastilles / Filtres Rapides */
 .pills-scroll {
     display: flex;
     gap: 8px;
-    padding: 4px 16px 12px 16px;
+    padding: 10px 16px;
     overflow-x: auto;
     scrollbar-width: none;
+    max-width: 600px;
+    margin: 0 auto;
 }
 .pills-scroll::-webkit-scrollbar { display: none; }
 .pill-btn {
@@ -108,26 +130,48 @@ body {
     border: 1px solid var(--border-color);
     color: var(--text-main);
     padding: 8px 14px;
-    border-radius: 20px;
+    border-radius: 12px;
     font-size: 0.8rem;
     white-space: nowrap;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: background 0.2s;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 .pill-btn:active, .pill-btn.active {
-    background: var(--pill-hover);
+    background: var(--gold-glow);
     border-color: var(--gold);
     color: var(--gold);
 }
 
-/* Contenu Principal (Flux de cartes) */
+/* Contenu Principal */
 .content-wrapper {
     max-width: 600px;
     margin: 0 auto;
-    padding: 0 16px;
+    padding: 8px 16px;
+}
+
+/* Manifeste Banner (L'âme du Groupe Arts) */
+.manifesto-card {
+    background: linear-gradient(135deg, #1e2128 0%, #16181d 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+}
+.manifesto-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--gold);
+}
+.manifesto-title {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); font-weight: 700; margin-bottom: 4px;
+}
+.manifesto-text {
+    font-size: 0.9rem; color: var(--text-main); font-style: italic; line-height: 1.4;
 }
 
 .card {
@@ -135,24 +179,26 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 
 .kpi-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 .kpi-card {
-    background: #252525;
+    background: var(--surface-card);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 14px;
     text-align: center;
     cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
 }
+.kpi-card:hover { border-color: var(--gold); transform: translateY(-2px); }
 .kpi-card span {
     display: block;
     font-size: 0.75rem;
@@ -162,7 +208,7 @@ body {
     margin-bottom: 4px;
 }
 .kpi-card strong {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     color: var(--gold);
 }
 
@@ -170,97 +216,116 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 16px 0 10px 0;
+    margin: 18px 0 10px 0;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-main);
+    letter-spacing: 0.02em;
 }
 
-/* Formulaires & Champs */
+/* Formulaires & Champs stylés */
 input[type="text"], input[type="number"], input[type="month"], select, textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 10px;
-    background: #252525;
+    background: var(--surface-card);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 10px;
     color: var(--text-main);
     font-size: 0.95rem;
+    transition: border-color 0.2s;
 }
 input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--gold);
+    box-shadow: 0 0 8px var(--gold-glow);
 }
 label {
     font-size: 0.8rem;
     color: var(--text-muted);
     display: block;
     margin-bottom: 4px;
+    font-weight: 500;
 }
 
 .btn {
     width: 100%;
     padding: 12px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     border: none;
     text-align: center;
-    transition: background 0.2s;
+    transition: all 0.2s;
 }
-.btn-primary { background: var(--gold); color: #000; }
-.btn-primary:active { background: var(--gold-hover); }
-.btn-secondary { background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color); margin-bottom: 8px; }
+.btn-primary { 
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
+    color: #000; 
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+.btn-primary:active { transform: scale(0.98); }
+.btn-secondary { 
+    background: var(--surface-card); 
+    color: var(--text-main); 
+    border: 1px solid var(--border-color); 
+    margin-bottom: 8px; 
+}
+.btn-secondary:hover { background: var(--pill-hover); }
 
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-/* Listes d'éléments */
+/* Listes d'éléments vivantes */
 .list-item {
-    background: #252525;
+    background: var(--surface-card);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 14px;
     margin-bottom: 10px;
+    transition: border-color 0.2s;
 }
+.list-item:hover { border-color: rgba(245, 158, 11, 0.4); }
 .list-item-header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     margin-bottom: 4px;
 }
-.list-item-title { font-weight: 600; font-size: 0.95rem; color: var(--text-main); }
-.list-item-value { color: var(--gold); font-weight: 600; }
-.list-item-subtitle { font-size: 0.8rem; color: var(--text-muted); }
+.list-item-title { font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
+.list-item-value { color: var(--gold); font-weight: 700; }
+.list-item-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 .list-item-actions {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     margin-top: 10px;
     padding-top: 8px;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid rgba(255,255,255,0.06);
 }
 .action-link {
-    background: none; border: none; color: var(--blue); font-size: 0.8rem; cursor: pointer; padding: 0;
+    background: none; border: none; color: var(--blue); font-size: 0.8rem; font-weight: 600; cursor: pointer; padding: 0;
+    transition: opacity 0.2s;
 }
+.action-link:hover { opacity: 0.8; }
 .action-link.red { color: var(--red); }
 
 .ligne-block {
-    background: rgba(255,255,255,0.02);
+    background: rgba(0,0,0,0.2);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 8px;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
 }
 
-/* Barre de navigation inférieure style Google App */
+/* Navigation inférieure */
 .bottom-nav {
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    background: #181818;
+    background: rgba(18, 20, 26, 0.95);
+    backdrop-filter: blur(12px);
     border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: space-around;
-    padding: 8px 0 16px 0;
+    padding: 8px 0 14px 0;
     z-index: 1000;
 }
 .nav-item {
@@ -271,27 +336,29 @@ label {
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 500;
     cursor: pointer;
     flex: 1;
     transition: color 0.2s;
 }
 .nav-item.active {
-    color: var(--blue);
+    color: var(--gold);
 }
 .nav-item.active .nav-icon-pill {
-    background: rgba(138, 180, 248, 0.16);
-    color: var(--blue);
+    background: var(--gold-glow);
+    color: var(--gold);
+    border: 1px solid var(--border-color);
 }
 .nav-icon-pill {
-    width: 52px;
-    height: 28px;
-    border-radius: 14px;
+    width: 46px;
+    height: 26px;
+    border-radius: 13px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
-    transition: background 0.2s;
+    font-size: 1.05rem;
+    transition: all 0.2s;
 }
 
 .view-section { display: none; }
@@ -300,20 +367,23 @@ label {
 </head>
 <body>
 
-    <!-- En-tête Google style -->
+    <!-- En-tête -->
     <div class="google-header">
         <div class="header-left">
-            <button class="icon-menu" onclick="exportData()" title="Sauvegarder">⚙️</button>
-            <h1 class="app-logo-text">ASSAWIN</h1>
+            <button class="icon-menu" onclick="exportData()" title="Sauvegarder JSON">💾</button>
+            <div class="app-logo-container">
+                <h1>ASSAWIN</h1>
+                <div class="app-subtitle">GROUPE ARTS — Pilotage BTP</div>
+            </div>
         </div>
-        <div class="profile-avatar" title="Rachid Assaoui">R</div>
+        <div class="profile-avatar" title="Rachid Assaoui">RA</div>
     </div>
 
     <!-- Barre de recherche -->
     <div class="search-container">
         <div class="search-bar">
             <span>🔍</span>
-            <input type="text" id="global-search" placeholder="Rechercher chantier, client, devis..." oninput="filterData(this.value)" />
+            <input type="text" id="global-search" placeholder="Rechercher chantier, client, lot DPGF..." oninput="filterData(this.value)" />
             <div class="search-tools">
                 <span onclick="openProjectForm()" title="Nouveau Chantier">➕</span>
                 <span onclick="triggerImport()" title="Restaurer sauvegarde">📂</span>
@@ -322,30 +392,36 @@ label {
         </div>
     </div>
 
-    <!-- Pastilles / Filtres Rapides -->
+    <!-- Pastilles de navigation rapide -->
     <div class="pills-scroll">
-        <button class="pill-btn active" onclick="switchTab(0, this)">🏠 Accueil & KPIs</button>
+        <button class="pill-btn active" onclick="switchTab(0, this)">⚡ Tableau de Bord</button>
         <button class="pill-btn" onclick="switchTab(1, this)">🏗️ Chantiers & Devis</button>
-        <button class="pill-btn" onclick="switchTab(2, this)">💰 Trésorerie</button>
+        <button class="pill-btn" onclick="switchTab(2, this)">💰 Trésorerie & Flotte</button>
         <button class="pill-btn" onclick="openProjectForm()">➕ Nouveau Chantier</button>
         <button class="pill-btn" onclick="openDevisForm()">📄 Rédiger Devis / DPGF</button>
     </div>
 
     <div class="content-wrapper">
 
-        <!-- VUE 0 : ACCUEIL & PILOTAGE -->
+        <!-- MANIFESTE / CITATION D'ESPRIT -->
+        <div class="manifesto-card">
+            <div class="manifesto-title">La Méthode Groupe Arts</div>
+            <div class="manifesto-text">"Diagnostiquer avec précision, conseiller avec clarté, rénover avec excellence."</div>
+        </div>
+
+        <!-- VUE 0 : TABLEAU DE BORD & PILOTAGE -->
         <div class="view-section active" id="view-0">
             <div class="kpi-grid">
                 <div class="kpi-card" onclick="switchTab(1, null)">
-                    <span>CA Chantiers</span>
+                    <span>CA Engagé</span>
                     <strong id="kpi-ca">0,00 €</strong>
                 </div>
                 <div class="kpi-card" onclick="switchTab(2, null)">
-                    <span>Mois en cours</span>
+                    <span>Tréso Mois</span>
                     <strong id="kpi-mois">0,00 €</strong>
                 </div>
                 <div class="kpi-card" onclick="switchTab(1, null)">
-                    <span>Devis DPGF</span>
+                    <span>Devis & DPGF</span>
                     <strong id="kpi-devis">0</strong>
                 </div>
                 <div class="kpi-card" onclick="switchTab(1, null)">
@@ -357,7 +433,7 @@ label {
             <div class="section-header">
                 <span>Actions Rapides Terrain</span>
             </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
                 <button class="btn btn-secondary" onclick="openProjectForm()">+ Chantier</button>
                 <button class="btn btn-secondary" onclick="openDevisForm()">+ Devis DPGF</button>
                 <button class="btn btn-secondary" onclick="toggleForm('mensuel-form')">+ Bilan Mois</button>
@@ -368,9 +444,9 @@ label {
             <div class="card" id="project-form" style="display:none;">
                 <h3 style="margin-top:0; font-size:1rem; color:var(--gold);" id="proj-form-title">Nouveau Chantier</h3>
                 <label>Nom du chantier</label>
-                <input type="text" id="proj-nom" placeholder="Ex: Rénovation Appartement Paris 11" />
+                <input type="text" id="proj-nom" placeholder="Ex: Rénovation Thermique Villa Saint-Ouen" />
                 <label>Client</label>
-                <input type="text" id="proj-client" placeholder="Nom ou entreprise" />
+                <input type="text" id="proj-client" placeholder="Nom ou maître d'ouvrage" />
                 <div class="row2">
                     <div>
                         <label>Budget HT (€)</label>
@@ -381,18 +457,18 @@ label {
                         <input type="number" id="proj-marge" value="30" />
                     </div>
                 </div>
-                <label>Notes / Localisation</label>
-                <input type="text" id="proj-description" placeholder="Informations complémentaires" />
+                <label>Notes / Localisation / Diagnostics</label>
+                <input type="text" id="proj-description" placeholder="Ex: Isolation thermique par l'intérieur + lots finitions" />
                 <button class="btn btn-primary" onclick="saveProject()" style="margin-top:8px;">Enregistrer le chantier</button>
             </div>
 
-            <!-- FORMULAIRE DEVIS -->
+            <!-- FORMULAIRE DEVIS & DPGF -->
             <div class="card" id="devis-form" style="display:none;">
-                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">Nouveau Devis & DPGF</h3>
+                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">Chiffrage & Analyse DPGF</h3>
                 <label>Chantier associé</label>
                 <select id="devis-projet"></select>
-                <label>Titre de la prestation</label>
-                <input type="text" id="devis-titre" placeholder="Ex: Lot Gros Œuvre & Finitions" />
+                <label>Intitulé du lot ou de la prestation</label>
+                <input type="text" id="devis-titre" placeholder="Ex: Lot 01 - Gros Œuvre, Démolition & Isolation" />
                 <div class="row2">
                     <div>
                         <label>Acompte (%)</label>
@@ -403,12 +479,12 @@ label {
                         <input type="number" id="devis-marge" value="30" oninput="recalculateAllLignes()" />
                     </div>
                 </div>
-                <div class="section-header" style="margin:10px 0 6px 0;">
-                    <span>Lignes d'ouvrages</span>
+                <div class="section-header" style="margin:12px 0 6px 0;">
+                    <span>Lignes d'ouvrages (Déboursé Sec)</span>
                     <span id="devis-total-preview" style="color:var(--gold); font-size:0.9rem;">0,00 € HT</span>
                 </div>
                 <div id="lignes-container"></div>
-                <button class="btn btn-secondary" onclick="addLigne()" style="font-size:0.8rem; margin-bottom:10px;">+ Ajouter une ligne</button>
+                <button class="btn btn-secondary" onclick="addLigne()" style="font-size:0.8rem; margin-bottom:10px;">+ Ajouter une ligne d'ouvrage</button>
                 <button class="btn btn-primary" onclick="saveDevis()">Enregistrer & Générer le Devis</button>
             </div>
 
@@ -432,16 +508,16 @@ label {
 
             <!-- FORMULAIRE VEHICULE -->
             <div class="card" id="vehicule-form" style="display:none;">
-                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">Suivi Véhicule Utilitiaire</h3>
-                <label>Nom & Immatriculation</label>
-                <input type="text" id="veh-nom" placeholder="Ex: Ford Fiesta / Master AB-123-CD" />
+                <h3 style="margin-top:0; font-size:1rem; color:var(--gold);">Suivi Flotte & Utilitaires</h3>
+                <label>Véhicule & Immatriculation</label>
+                <input type="text" id="veh-nom" placeholder="Ex: Ford Fiesta / Master Chantier" />
                 <div class="row2">
                     <div>
                         <label>Kilométrage actuel</label>
                         <input type="number" id="veh-km" placeholder="140000" />
                     </div>
                     <div>
-                        <label>Coût journalier (€)</label>
+                        <label>Frais journaliers (€)</label>
                         <input type="number" id="veh-frais" value="27" />
                     </div>
                 </div>
@@ -485,11 +561,11 @@ label {
         </div>
     </div>
 
-    <!-- Barre de navigation inférieure -->
+    <!-- Navigation inférieure -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchTab(0, this)">
-            <div class="nav-icon-pill">🏠</div>
-            <span>Accueil</span>
+            <div class="nav-icon-pill">⚡</div>
+            <span>Tableau de bord</span>
         </button>
         <button class="nav-item" onclick="switchTab(1, this)">
             <div class="nav-icon-pill">🏗️</div>
@@ -506,11 +582,52 @@ label {
     </nav>
 
 <script>
+// Données de base initiales (Donne une "âme" immédiate à l'app avec des exemples professionnels)
+const defaultDb = {
+    projets: [
+        {
+            id: 'proj_demo_1',
+            nom: 'Rénovation Globale Appartement Haussmannien',
+            client: 'SCI Rives de Seine',
+            budget: 48500,
+            marge: 32,
+            description: 'Dépose cloisons, isolation thermique renforcée et finitions peintures.',
+            date: '01/09/2026'
+        }
+    ],
+    devis: [
+        {
+            id: 'devis_demo_1',
+            idProjet: 'proj_demo_1',
+            projetNom: 'Rénovation Globale Appartement Haussmannien',
+            clientNom: 'SCI Rives de Seine',
+            titre: 'Lot 01 - Gros Œuvre & Isolation',
+            acompte: 30,
+            marge: 32,
+            lignes: [
+                { designation: 'Dépose et évacuation gravats', quantite: 1, debourse: 1200, puHT: 1584, totHT: 1584 },
+                { designation: 'Doublage isolation thermique murs périphériques', quantite: 65, debourse: 140, puHT: 184.8, totHT: 12012 }
+            ],
+            totalHT: 13596,
+            tva: 2719.2,
+            totalTTC: 16315.2,
+            margeEur: 3416,
+            date: '01/09/2026'
+        }
+    ],
+    revenus: [
+        { id: 1, periode: '2026-09', ca: 18500, charges: 6200 }
+    ],
+    vehicules: [
+        { id: 1, nom: 'Ford Fiesta Utilitiaire', km: 142000, frais: 27 }
+    ]
+};
+
 let db = {
-    projets: JSON.parse(localStorage.getItem('assawin_projets') || '[]'),
-    devis: JSON.parse(localStorage.getItem('assawin_devis') || '[]'),
-    revenus: JSON.parse(localStorage.getItem('assawin_revenus') || '[]'),
-    vehicules: JSON.parse(localStorage.getItem('assawin_vehicules') || '[]')
+    projets: JSON.parse(localStorage.getItem('assawin_projets') || JSON.stringify(defaultDb.projets)),
+    devis: JSON.parse(localStorage.getItem('assawin_devis') || JSON.stringify(defaultDb.devis)),
+    revenus: JSON.parse(localStorage.getItem('assawin_revenus') || JSON.stringify(defaultDb.revenus)),
+    vehicules: JSON.parse(localStorage.getItem('assawin_vehicules') || JSON.stringify(defaultDb.vehicules))
 };
 
 let ligneCounter = 0;
@@ -579,7 +696,7 @@ function addLigne(data = null) {
     block.id = 'ligne-' + id;
     
     block.innerHTML = `
-        <input type="text" placeholder="Désignation ouvrage (ex: Dépose cloisons)" data-field="designation" value="${data ? data.designation || '' : ''}" style="margin-bottom:6px;" />
+        <input type="text" placeholder="Désignation ouvrage (ex: Pose carrelage 60x60)" data-field="designation" value="${data ? data.designation || '' : ''}" style="margin-bottom:6px;" />
         <div class="row2">
             <div>
                 <label>Quantité</label>
@@ -590,8 +707,8 @@ function addLigne(data = null) {
                 <input type="number" value="${data ? data.debourse || 0 : 0}" data-field="debourse" oninput="recalculateAllLignes()" />
             </div>
         </div>
-        <div style="font-size:0.8rem; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:4px; align-items:center;">
-            <span>Total : <strong style="color:var(--gold)" data-out="total">0,00 €</strong></span>
+        <div style="font-size:0.8rem; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:6px; align-items:center;">
+            <span>Total ligne : <strong style="color:var(--gold)" data-out="total">0,00 €</strong></span>
             <button type="button" class="action-link red" onclick="removeLigne(${id})">Supprimer</button>
         </div>
     `;
@@ -723,50 +840,59 @@ function generateDevisPDF(id) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    doc.setFillColor(18, 22, 32);
-    doc.rect(0, 0, 210, 40, 'F');
+    // En-tête PDF élégant
+    doc.setFillColor(18, 20, 26);
+    doc.rect(0, 0, 210, 45, 'F');
     doc.setTextColor(245, 158, 11);
-    doc.setFontSize(20);
-    doc.text("DEVIS / PROPOSITION COMMERCIALE", 15, 25);
-    doc.setTextColor(100, 100, 100);
+    doc.setFontSize(18);
+    doc.text("GROUPE ARTS — DEVIS COMMERCIAL", 15, 22);
     doc.setFontSize(10);
-    doc.text("Réf : " + d.id.toUpperCase(), 155, 25);
+    doc.setTextColor(150, 150, 150);
+    doc.text("Méthode : Diagnostiquer, Conseiller, Rénover", 15, 30);
+    doc.text("Réf : " + d.id.toUpperCase(), 155, 22);
 
     doc.setTextColor(40, 40, 40);
     doc.setFontSize(11);
-    doc.text("Chantier : " + d.projetNom, 15, 55);
-    if(d.clientNom) doc.text("Client : " + d.clientNom, 15, 62);
-    doc.text("Date : " + d.date, 15, 69);
-    doc.text("Prestation : " + d.titre, 15, 76);
+    doc.text("Chantier : " + d.projetNom, 15, 58);
+    if(d.clientNom) doc.text("Client : " + d.clientNom, 15, 65);
+    doc.text("Date : " + d.date, 15, 72);
+    doc.text("Lot / Prestation : " + d.titre, 15, 79);
 
-    let y = 90;
+    let y = 92;
     doc.setFillColor(240, 240, 240);
     doc.rect(15, y, 180, 8, 'F');
     doc.setTextColor(0, 0, 0);
-    doc.text("Désignation", 20, y + 6);
-    doc.text("Qté", 120, y + 6);
+    doc.setFont(undefined, 'bold');
+    doc.text("Désignation des ouvrages", 20, y + 6);
+    doc.text("Qté", 125, y + 6);
     doc.text("Total HT", 160, y + 6);
+    doc.setFont(undefined, 'normal');
 
     y += 12;
     d.lignes.forEach(l => {
-        doc.text(l.designation.substring(0, 50), 20, y);
-        doc.text(String(l.quantite), 120, y);
+        if(y > 270) { doc.addPage(); y = 20; }
+        doc.text(l.designation.substring(0, 55), 20, y);
+        doc.text(String(l.quantite), 125, y);
         doc.text(formatMoney(l.totHT), 160, y);
-        y += 8;
+        y += 9;
     });
 
     y += 10;
     doc.line(15, y, 195, y);
-    y += 10;
+    y += 12;
     doc.text("Total HT : " + formatMoney(d.totalHT), 130, y);
-    y += 6;
+    y += 7;
     doc.text("TVA (20%) : " + formatMoney(d.tva), 130, y);
-    y += 6;
+    y += 8;
     doc.setFont(undefined, 'bold');
     doc.setTextColor(245, 158, 11);
     doc.text("Total TTC : " + formatMoney(d.totalTTC), 130, y);
+    y += 12;
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Acompte à la commande (${d.acompte}%) : ${formatMoney(d.totalTTC * (d.acompte/100))}`, 15, y);
 
-    doc.save(`Devis_${d.projetNom.replace(/\s+/g, '_')}.pdf`);
+    doc.save(`Devis_GroupeArts_${d.projetNom.replace(/\s+/g, '_')}.pdf`);
 }
 
 function saveRevenuMensuel() {
@@ -855,9 +981,9 @@ function renderAll(searchQuery = '') {
                     <span class="list-item-title">${d.titre}</span>
                     <span class="list-item-value">${formatMoney(d.totalTTC)} TTC</span>
                 </div>
-                <div class="list-item-subtitle">Chantier : ${d.projetNom} — Marge : ${formatMoney(d.margeEur)}</div>
+                <div class="list-item-subtitle">Chantier : ${d.projetNom} — Marge estimée : ${formatMoney(d.margeEur)}</div>
                 <div class="list-item-actions">
-                    <button class="action-link" onclick="generateDevisPDF('${d.id}')">📄 Télécharger PDF</button>
+                    <button class="action-link" onclick="generateDevisPDF('${d.id}')">📄 Télécharger PDF Pro</button>
                     <button class="action-link red" onclick="deleteDevis('${d.id}')">Supprimer</button>
                 </div>
             </div>
@@ -898,7 +1024,7 @@ function exportData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
     const dlAnchor = document.createElement('a');
     dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", "assawin_google_style_" + new Date().toISOString().slice(0,10) + ".json");
+    dlAnchor.setAttribute("download", "assawin_groupe_arts_" + new Date().toISOString().slice(0,10) + ".json");
     document.body.appendChild(dlAnchor);
     dlAnchor.click();
     dlAnchor.remove();
@@ -918,7 +1044,7 @@ function importData(event) {
                 saveData();
                 alert("Données restaurées avec succès !");
             } else { alert("Format de fichier invalide."); }
-        } catch(err) { alert("Erreur lors de la lecture."); }
+        } catch(err) { alert("Erreur lors de la lecture du fichier."); }
     };
     reader.readAsText(file);
 }
