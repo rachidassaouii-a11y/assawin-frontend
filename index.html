@@ -423,14 +423,19 @@ function recalc(id) {
     const margeUnitaire = prixUnitaire - debourseUnitaire;
     const totalLigne = prixUnitaire * quantite;
 
-    block.querySelector('[data-out="prix-unitaire"]').textContent = prixUnitaire.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
-    block.querySelector('[data-out="marge-unitaire"]').textContent = margeUnitaire.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
-    block.querySelector('[data-out="total-ligne"]').textContent = totalLigne.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+    block.querySelector('[data-out="prix-unitaire"]').textContent = formatMoney(prixUnitaire);
+    block.querySelector('[data-out="marge-unitaire"]').textContent = formatMoney(margeUnitaire);
+    block.querySelector('[data-out="total-ligne"]').textContent = formatMoney(totalLigne);
 }
 
 function removeLigne(id) {
     const el = document.getElementById('ligne-' + id);
     if (el) el.remove();
+}
+
+function formatMoney(val) {
+    const num = parseFloat(val) || 0;
+    return num.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' €';
 }
 
 function collectLignes() {
@@ -555,15 +560,15 @@ async function loadDashboard() {
             return;
         }
 
-        document.getElementById('ca').textContent = data.chiffre_affaires_total.toLocaleString('fr-FR') + " €";
-        document.getElementById('marge').textContent = data.marge_brute_eur.toLocaleString('fr-FR') + " €";
+        document.getElementById('ca').textContent = formatMoney(data.chiffre_affaires_total);
+        document.getElementById('marge').textContent = formatMoney(data.marge_brute_eur);
         document.getElementById('taux').textContent = data.taux_marque_pct + " %";
         document.getElementById('projets').textContent = data.nombre_projets;
 
         document.getElementById('details').innerHTML =
             "<div style='display:flex;justify-content:space-between;padding:8px 0'><span>Chantiers en cours</span><span>" + data.chantiers_en_cours + "</span></div>" +
             "<div style='display:flex;justify-content:space-between;padding:8px 0'><span>Nombre de devis</span><span>" + data.nombre_devis + "</span></div>" +
-            "<div style='display:flex;justify-content:space-between;padding:8px 0'><span>Coût total</span><span>" + data.cout_total.toLocaleString('fr-FR') + " €</span></div>";
+            "<div style='display:flex;justify-content:space-between;padding:8px 0'><span>Coût total</span><span>" + formatMoney(data.cout_total) + "</span></div>";
     } catch (err) {
         document.getElementById('details').innerHTML = "<p>Erreur réseau : " + err.message + "</p>";
     }
@@ -648,7 +653,7 @@ async function createDevis() {
             return;
         }
 
-        statusDiv.textContent = "Devis créé ! Marge : " + data.marge_brute_eur + " € (" + data.taux_marque_pct + "%)";
+        statusDiv.textContent = "Devis créé ! Marge : " + formatMoney(data.marge_brute_eur) + " (" + data.taux_marque_pct + "%)";
 
         lastDevis = { ...data, titre, nomProjet, acompte_pct, lignes };
         btnPdf.style.display = "block";
@@ -710,8 +715,8 @@ function generatePDF() {
         doc.text(String(l.designation).substring(0, 45), 16, y + 5.5);
         doc.text(String(l.quantite), 110, y + 5.5);
         doc.text(String(l.unite), 128, y + 5.5);
-        doc.text(l.prix_unitaire_ht.toLocaleString('fr-FR', {minimumFractionDigits:2}) + " €", 148, y + 5.5);
-        doc.text(totalLigne.toLocaleString('fr-FR', {minimumFractionDigits:2}) + " €", 175, y + 5.5);
+        doc.text(formatMoney(l.prix_unitaire_ht), 148, y + 5.5);
+        doc.text(formatMoney(totalLigne), 175, y + 5.5);
         y += 8;
         doc.setDrawColor(230,230,230);
         doc.line(14, y, 196, y);
@@ -728,7 +733,7 @@ function generatePDF() {
         doc.setFontSize(i === 2 ? 12 : 10);
         doc.setTextColor(i === 2 ? gold[0] : dark[0], i === 2 ? gold[1] : dark[1], i === 2 ? gold[2] : dark[2]);
         doc.text(label, 130, y);
-        doc.text(Number(val).toLocaleString('fr-FR', {minimumFractionDigits:2}) + " €", 175, y);
+        doc.text(formatMoney(val), 175, y);
         y += 7;
     });
 
