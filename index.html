@@ -60,7 +60,7 @@ body {
     margin: 0 auto 1rem;
     backdrop-filter: blur(8px);
 }
-.form-card { max-width: 560px; margin-bottom: 1.5rem; }
+.form-card { max-width: 600px; margin-bottom: 1.5rem; }
 .auth-card input, .form-card input, .form-card select {
     width: 100%;
     padding: 0.75rem;
@@ -152,17 +152,55 @@ body {
     padding: 0.3rem 0;
 }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
 #status, #auth-status, #proj-status, #devis-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
 #app, #register-section, #project-form, #devis-form { display: none; }
 .ligne-block {
     border: 1px solid var(--border-glass);
-    border-radius: 0.5rem;
-    padding: 0.85rem;
-    margin-bottom: 0.75rem;
+    border-radius: 0.65rem;
+    padding: 1rem;
+    margin-bottom: 0.85rem;
     background: rgba(255,255,255,0.02);
 }
-.ligne-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem; }
-.ligne-row input { margin-bottom: 0; }
+.ligne-top-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem; }
+.ligne-top-row input { margin-bottom: 0; }
+.mode-toggle {
+    display: flex;
+    gap: 0.4rem;
+    margin: 0.6rem 0 0.75rem;
+}
+.mode-btn {
+    flex: 1;
+    padding: 0.4rem;
+    font-size: 0.78rem;
+    border-radius: 0.4rem;
+    border: 1px solid var(--border-glass);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+.mode-btn.active {
+    background: var(--gold-primary);
+    color: var(--bg-dark-main);
+    border-color: var(--gold-primary);
+    font-weight: bold;
+}
+.slider-row { margin: 0.6rem 0; }
+.slider-row label { display: flex; justify-content: space-between; }
+.slider-row .marge-val { color: var(--gold-primary); font-weight: bold; }
+.slider-row input[type=range] {
+    width: 100%;
+    accent-color: var(--gold-primary);
+    margin: 0.4rem 0 0;
+}
+.result-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
+    color: var(--text-muted);
+}
+.result-line.total { color: var(--gold-primary); font-weight: bold; font-size: 1rem; border-top: 1px solid var(--border-glass); margin-top: 0.4rem; padding-top: 0.5rem; }
 .project-select { margin-bottom: 1rem; }
 </style>
 </head>
@@ -252,7 +290,7 @@ body {
                     <input type="number" id="devis-acompte" value="30" />
                 </div>
                 <div>
-                    <label>Marge cible (%)</label>
+                    <label>Marge cible globale (%)</label>
                     <input type="number" id="devis-marge" value="30" />
                 </div>
             </div>
@@ -311,25 +349,81 @@ function addLigne() {
     block.className = 'ligne-block';
     block.id = 'ligne-' + id;
     block.innerHTML = `
-        <div class="ligne-row">
+        <div class="ligne-top-row">
             <input type="text" placeholder="Désignation" data-field="designation" />
             <input type="text" placeholder="Unité" value="u" data-field="unite" />
-            <input type="number" placeholder="Qté" value="1" data-field="quantite" />
-            <input type="number" placeholder="TVA %" value="20" data-field="taux_tva" />
+            <input type="number" placeholder="Qté" value="1" data-field="quantite" oninput="recalc(${id})" />
         </div>
-        <div class="row2">
-            <div>
-                <label>Prix unitaire HT (€) — ce que le client paie</label>
-                <input type="number" value="0" data-field="prix_unitaire_ht" />
-            </div>
-            <div>
-                <label>Déboursé sec unitaire (€) — ce que ça te coûte réellement</label>
-                <input type="number" value="0" data-field="debourse_sec_unitaire" />
+
+        <div class="mode-toggle">
+            <button type="button" class="mode-btn active" data-mode="inverse" onclick="setMode(${id}, 'inverse')">Chiffrage inversé</button>
+            <button type="button" class="mode-btn" data-mode="direct" onclick="setMode(${id}, 'direct')">Prix direct</button>
+        </div>
+
+        <div data-panel="inverse">
+            <label>Déboursé sec unitaire (€) — ce que ça te coûte réellement</label>
+            <input type="number" value="0" data-field="debourse_sec_unitaire" oninput="recalc(${id})" />
+            <div class="slider-row">
+                <label>Marge cible <span class="marge-val" data-out="marge-label">30%</span></label>
+                <input type="range" min="0" max="80" value="30" data-field="marge_slider" oninput="recalc(${id})" />
             </div>
         </div>
+
+        <div data-panel="direct" style="display:none">
+            <label>Prix unitaire HT (€) — ce que le client paie</label>
+            <input type="number" value="0" data-field="prix_manuel" oninput="recalc(${id})" />
+            <label>Déboursé sec unitaire (€)</label>
+            <input type="number" value="0" data-field="debourse_sec_unitaire_direct" oninput="recalc(${id})" />
+        </div>
+
+        <label style="margin-top:0.5rem">TVA (%)</label>
+        <input type="number" value="20" data-field="taux_tva" oninput="recalc(${id})" />
+
+        <div class="result-line"><span>Prix unitaire HT calculé</span><span data-out="prix-unitaire">0,00 €</span></div>
+        <div class="result-line"><span>Marge unitaire</span><span data-out="marge-unitaire">0,00 €</span></div>
+        <div class="result-line total"><span>Total ligne HT</span><span data-out="total-ligne">0,00 €</span></div>
+
         <button type="button" class="btn-remove" onclick="removeLigne(${id})">✕ Retirer cette intervention</button>
     `;
     container.appendChild(block);
+    recalc(id);
+}
+
+function setMode(id, mode) {
+    const block = document.getElementById('ligne-' + id);
+    block.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    block.querySelector('[data-panel="inverse"]').style.display = mode === 'inverse' ? 'block' : 'none';
+    block.querySelector('[data-panel="direct"]').style.display = mode === 'direct' ? 'block' : 'none';
+    block.dataset.mode = mode;
+    recalc(id);
+}
+
+function recalc(id) {
+    const block = document.getElementById('ligne-' + id);
+    if (!block) return;
+    const mode = block.dataset.mode || 'inverse';
+    const get = (field) => parseFloat(block.querySelector(`[data-field="${field}"]`)?.value) || 0;
+    const quantite = get('quantite') || 1;
+
+    let prixUnitaire = 0;
+    let debourseUnitaire = 0;
+
+    if (mode === 'inverse') {
+        debourseUnitaire = get('debourse_sec_unitaire');
+        const margePct = get('marge_slider');
+        block.querySelector('[data-out="marge-label"]').textContent = margePct + '%';
+        prixUnitaire = margePct < 100 ? debourseUnitaire / (1 - margePct / 100) : debourseUnitaire;
+    } else {
+        prixUnitaire = get('prix_manuel');
+        debourseUnitaire = get('debourse_sec_unitaire_direct');
+    }
+
+    const margeUnitaire = prixUnitaire - debourseUnitaire;
+    const totalLigne = prixUnitaire * quantite;
+
+    block.querySelector('[data-out="prix-unitaire"]').textContent = prixUnitaire.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+    block.querySelector('[data-out="marge-unitaire"]').textContent = margeUnitaire.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+    block.querySelector('[data-out="total-ligne"]').textContent = totalLigne.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
 }
 
 function removeLigne(id) {
@@ -341,14 +435,28 @@ function collectLignes() {
     const blocks = document.querySelectorAll('.ligne-block');
     const lignes = [];
     blocks.forEach(block => {
-        const get = (field) => block.querySelector(`[data-field="${field}"]`).value;
+        const mode = block.dataset.mode || 'inverse';
+        const get = (field) => block.querySelector(`[data-field="${field}"]`)?.value;
+        const quantite = parseFloat(get('quantite')) || 1;
+        const taux_tva = parseFloat(get('taux_tva')) || 20;
+        let prix_unitaire_ht, debourse_sec_unitaire;
+
+        if (mode === 'inverse') {
+            debourse_sec_unitaire = parseFloat(get('debourse_sec_unitaire')) || 0;
+            const margePct = parseFloat(get('marge_slider')) || 0;
+            prix_unitaire_ht = margePct < 100 ? debourse_sec_unitaire / (1 - margePct / 100) : debourse_sec_unitaire;
+        } else {
+            prix_unitaire_ht = parseFloat(get('prix_manuel')) || 0;
+            debourse_sec_unitaire = parseFloat(get('debourse_sec_unitaire_direct')) || 0;
+        }
+
         lignes.push({
             designation: get('designation'),
             unite: get('unite'),
-            quantite: parseFloat(get('quantite')) || 1,
-            prix_unitaire_ht: parseFloat(get('prix_unitaire_ht')) || 0,
-            debourse_sec_unitaire: parseFloat(get('debourse_sec_unitaire')) || 0,
-            taux_tva: parseFloat(get('taux_tva')) || 20
+            quantite,
+            prix_unitaire_ht: Math.round(prix_unitaire_ht * 100) / 100,
+            debourse_sec_unitaire,
+            taux_tva
         });
     });
     return lignes;
