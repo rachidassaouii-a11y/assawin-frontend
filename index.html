@@ -62,30 +62,13 @@ body {
     color: var(--text-primary);
     font-size: 1rem;
 }
-.form-card label {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    display: block;
-    margin-bottom: 0.3rem;
-}
-.switch-link {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    max-width: 400px;
-    margin: 0 auto 2rem;
-}
+.form-card label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
+.switch-link { text-align: center; color: var(--text-muted); font-size: 0.9rem; max-width: 400px; margin: 0 auto 2rem; }
 .switch-link a { color: var(--gold-primary); cursor: pointer; text-decoration: underline; }
-.kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
 .glass-card {
     background: var(--bg-card-glass);
     backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-glass);
     border-radius: 1rem;
     padding: 1.25rem;
@@ -94,79 +77,26 @@ body {
 }
 .glass-card:active { transform: scale(0.98); border-color: var(--gold-primary); }
 .kpi-card { text-align: center; }
-.kpi-card h3 {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
+.kpi-card h3 { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
 .kpi-card .value { color: var(--gold-primary); font-size: 1.75rem; font-weight: bold; }
 .section-title { color: var(--gold-primary); font-size: 1.2rem; margin-bottom: 1rem; margin-top: 2rem; max-width: 600px; width: 100%; }
 .btn-gold {
     background: linear-gradient(135deg, var(--gold-secondary) 0%, var(--gold-primary) 50%, var(--gold-light) 100%);
-    color: var(--bg-dark-main);
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.85rem;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
+    color: var(--bg-dark-main); border: none; border-radius: 0.5rem; padding: 0.85rem; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%;
 }
 .btn-gold:active { transform: scale(0.98); }
-.btn-secondary {
-    background: transparent;
-    color: var(--gold-primary);
-    border: 1px solid var(--gold-primary);
-    border-radius: 0.5rem;
-    padding: 0.75rem;
-    font-size: 0.95rem;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 0.5rem;
-}
-.btn-small {
-    background: rgba(245,158,11,0.1);
-    color: var(--gold-primary);
-    border: 1px dashed var(--gold-primary);
-    border-radius: 0.5rem;
-    padding: 0.6rem;
-    font-size: 0.85rem;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 0.5rem;
-}
+.btn-secondary { background: transparent; color: var(--gold-primary); border: 1px solid var(--gold-primary); border-radius: 0.5rem; padding: 0.75rem; font-size: 0.95rem; cursor: pointer; width: 100%; margin-top: 0.5rem; }
+.btn-small { background: rgba(245,158,11,0.1); color: var(--gold-primary); border: 1px dashed var(--gold-primary); border-radius: 0.5rem; padding: 0.6rem; font-size: 0.85rem; cursor: pointer; width: 100%; margin-top: 0.5rem; }
 .btn-remove { background: transparent; color: var(--accent-red); border: none; cursor: pointer; font-size: 0.85rem; padding: 0.4rem 0; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 #status, #auth-status, #proj-status, #devis-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
-#app, #register-section, #project-form, #devis-form { display: none; }
-.ligne-block {
-    border: 1px solid var(--border-glass);
-    border-radius: 0.65rem;
-    padding: 1rem;
-    margin-bottom: 0.85rem;
-    background: rgba(255,255,255,0.02);
-}
+#app, #register-section, #project-form, #devis-form, #vehicule-form { display: none; }
+.ligne-block { border: 1px solid var(--border-glass); border-radius: 0.65rem; padding: 1rem; margin-bottom: 0.85rem; background: rgba(255,255,255,0.02); }
 .ligne-top-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem; }
 .ligne-top-row input { margin-bottom: 0; }
 .mode-toggle { display: flex; gap: 0.4rem; margin: 0.6rem 0 0.75rem; }
-.mode-btn {
-    flex: 1;
-    padding: 0.5rem;
-    font-size: 0.8rem;
-    border-radius: 0.4rem;
-    border: 1px solid var(--border-glass);
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-}
-.mode-btn.active {
-    background: var(--gold-primary);
-    color: var(--bg-dark-main);
-    border-color: var(--gold-primary);
-    font-weight: bold;
-}
+.mode-btn { flex: 1; padding: 0.5rem; font-size: 0.8rem; border-radius: 0.4rem; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; }
+.mode-btn.active { background: var(--gold-primary); color: var(--bg-dark-main); border-color: var(--gold-primary); font-weight: bold; }
 .slider-row { margin: 0.6rem 0; }
 .slider-row label { display: flex; justify-content: space-between; }
 .slider-row .marge-val { color: var(--gold-primary); font-weight: bold; }
@@ -175,40 +105,17 @@ body {
 .result-line.total { color: var(--gold-primary); font-weight: bold; font-size: 1rem; border-top: 1px solid var(--border-glass); margin-top: 0.4rem; padding-top: 0.5rem; }
 .project-select { margin-bottom: 1rem; }
 
-/* Liste des devis & Projets */
-.devis-list, .projet-list { max-width: 600px; width: 100%; margin: 0 auto; }
-.devis-card, .projet-card {
-    background: var(--bg-card-glass);
-    border: 1px solid var(--border-glass);
-    border-radius: 0.75rem;
-    padding: 1rem 1.2rem;
-    margin-bottom: 0.75rem;
-}
-.devis-header, .projet-header { display: flex; justify-content: space-between; align-items: baseline; }
-.devis-titre, .projet-titre { font-weight: bold; color: var(--text-primary); }
+/* Listes */
+.devis-list, .projet-list, .vehicule-list { max-width: 600px; width: 100%; margin: 0 auto; }
+.devis-card, .projet-card, .vehicule-card { background: var(--bg-card-glass); border: 1px solid var(--border-glass); border-radius: 0.75rem; padding: 1rem 1.2rem; margin-bottom: 0.75rem; transition: border-color 0.3s; }
+.devis-header, .projet-header, .vehicule-header { display: flex; justify-content: space-between; align-items: baseline; }
+.devis-titre, .projet-titre, .vehicule-titre { font-weight: bold; color: var(--text-primary); }
 .devis-montant { color: var(--gold-primary); font-weight: bold; }
-.devis-sous-titre, .projet-sous-titre { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
-.badge-vert, .badge-orange {
-    display: inline-block;
-    padding: 0.25rem 0.7rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    margin-top: 0.5rem;
-}
+.devis-sous-titre, .projet-sous-titre, .vehicule-sous-titre { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
+.badge-vert, .badge-orange, .badge-red { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold; margin-top: 0.5rem; }
 .badge-vert { background: rgba(16,185,129,0.15); color: var(--accent-emerald); border: 1px solid var(--accent-emerald); }
 .badge-orange { background: rgba(249,115,22,0.15); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
-.actions-row { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
-.actions-row button {
-    flex: 1;
-    padding: 0.6rem;
-    font-size: 0.8rem;
-    border-radius: 0.4rem;
-    border: 1px solid var(--border-glass);
-    background: transparent;
-    color: var(--text-primary);
-    cursor: pointer;
-}
+.badge-red { background: rgba(239,68,68,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
 </style>
 </head>
 <body>
@@ -247,7 +154,7 @@ body {
     </div>
 
     <div id="app">
-        <!-- KPIs cliquables pour actualiser ou filtrer -->
+        <!-- KPIs cliquables -->
         <div class="kpi-grid">
             <div class="glass-card kpi-card" onclick="loadDashboard()"><h3>CA total</h3><div class="value" id="ca">—</div></div>
             <div class="glass-card kpi-card" onclick="loadDashboard()"><h3>Marge brute</h3><div class="value" id="marge">—</div></div>
@@ -258,6 +165,37 @@ body {
         <div class="section-title">Actions rapides</div>
         <button class="btn-gold" onclick="toggleProjectForm()">+ Nouveau projet & client</button>
         <button class="btn-secondary" onclick="toggleDevisForm()">+ Nouveau devis</button>
+        <!-- NOUVEAU BOUTON : Frais & Véhicule -->
+        <button class="btn-secondary" style="border-color: var(--text-muted); color: var(--text-muted);" onclick="toggleVehiculeForm()">+ Frais & Passeport Véhicule</button>
+
+        <!-- Formulaire Véhicule & Frais journaliers -->
+        <div class="form-card" id="vehicule-form">
+            <label>Passeport Véhicule (Modèle / Immatriculation)</label>
+            <input type="text" id="veh-nom" placeholder="Ex: Utilitaire - AB-123-CD" />
+            
+            <div class="row2">
+                <div>
+                    <label>Déplacement / Carburant (€/j)</label>
+                    <input type="number" id="veh-carburant" value="15" />
+                </div>
+                <div>
+                    <label>Frais de repas (€/j)</label>
+                    <input type="number" id="veh-repas" value="12" />
+                </div>
+            </div>
+            <div class="row2">
+                <div>
+                    <label>Santé Véhicule (Provision €/j)</label>
+                    <input type="number" id="veh-sante" value="5" placeholder="Usure, assurance..." />
+                </div>
+                <div>
+                    <label style="color:var(--accent-red)">Seuil d'alerte max (€/j)</label>
+                    <input type="number" id="veh-seuil" value="30" />
+                </div>
+            </div>
+            
+            <button class="btn-gold" onclick="saveVehicule()">Enregistrer le suivi</button>
+        </div>
 
         <!-- Formulaire Projet / Client -->
         <div class="form-card" id="project-form">
@@ -304,17 +242,24 @@ body {
 
             <button class="btn-gold" id="btn-submit-devis" onclick="createDevis()" style="margin-top:1rem">Créer le devis</button>
             <button class="btn-secondary" id="btn-cancel-edit" onclick="cancelEdit()" style="display:none">Annuler la modification</button>
-            <button class="btn-secondary" id="btn-pdf" onclick="generatePDF()" style="display:none; border-color:var(--accent-emerald); color:var(--accent-emerald);">Télécharger le PDF</button>
             <div id="devis-status"></div>
         </div>
+        
+        <!-- Dépenses Flotte & Véhicules -->
+        <div class="section-title">Suivi Dépenses & Flotte</div>
+        <div class="vehicule-list" id="vehicule-list">
+            <p style='color:var(--text-muted);text-align:center;font-size:0.9rem;'>Aucun véhicule suivi. Ajoutez-en un via les actions rapides.</p>
+        </div>
 
+        <!-- Projets -->
         <div class="section-title">Mes Projets & Chantiers</div>
-        <button class="btn-secondary" onclick="loadProjetsList()" style="max-width:600px">Actualiser les projets</button>
+        <button class="btn-secondary" onclick="loadProjetsList()" style="max-width:600px; margin-bottom:1rem;">Actualiser les projets</button>
         <div id="projet-list-status"></div>
         <div class="projet-list" id="projet-list"></div>
 
+        <!-- Devis -->
         <div class="section-title">Mes Devis</div>
-        <button class="btn-secondary" onclick="loadDevisList()" style="max-width:600px">Actualiser les devis</button>
+        <button class="btn-secondary" onclick="loadDevisList()" style="max-width:600px; margin-bottom:1rem;">Actualiser les devis</button>
         <div id="devis-list-status"></div>
         <div class="devis-list" id="devis-list"></div>
     </div>
@@ -326,8 +271,10 @@ const API_URL = "https://assawin-backend.onrender.com";
 let token = null;
 let cachedProjects = [];
 let ligneCounter = 0;
-let lastDevis = null;
 let editingDevisId = null;
+
+// Données locales pour les véhicules (en attendant le backend)
+let flotteVehicules = [];
 
 function showRegister() {
     document.getElementById('login-section').style.display = "none";
@@ -348,6 +295,11 @@ function toggleProjectForm() {
     el.style.display = el.style.display === "block" ? "none" : "block";
 }
 
+function toggleVehiculeForm() {
+    const el = document.getElementById('vehicule-form');
+    el.style.display = el.style.display === "block" ? "none" : "block";
+}
+
 async function toggleDevisForm() {
     const el = document.getElementById('devis-form');
     const willShow = el.style.display !== "block";
@@ -358,6 +310,62 @@ async function toggleDevisForm() {
     }
 }
 
+// Logique Véhicules & Dépenses
+function saveVehicule() {
+    const nom = document.getElementById('veh-nom').value || "Véhicule non nommé";
+    const carburant = parseFloat(document.getElementById('veh-carburant').value) || 0;
+    const repas = parseFloat(document.getElementById('veh-repas').value) || 0;
+    const sante = parseFloat(document.getElementById('veh-sante').value) || 0;
+    const seuil = parseFloat(document.getElementById('veh-seuil').value) || 0;
+
+    const totalJour = carburant + repas + sante;
+    const enAlerte = totalJour > seuil;
+
+    flotteVehicules.push({ nom, carburant, repas, sante, seuil, totalJour, enAlerte });
+    renderVehicules();
+    
+    // Réinitialiser le formulaire et le cacher
+    document.getElementById('veh-nom').value = "";
+    toggleVehiculeForm();
+}
+
+function renderVehicules() {
+    const container = document.getElementById('vehicule-list');
+    if(flotteVehicules.length === 0) {
+        container.innerHTML = "<p style='color:var(--text-muted);text-align:center;font-size:0.9rem;'>Aucun véhicule suivi.</p>";
+        return;
+    }
+    
+    container.innerHTML = flotteVehicules.map((v, index) => {
+        // Appliquer une bordure rouge si on dépasse le seuil
+        const borderStyle = v.enAlerte ? "border-color: var(--accent-red);" : "";
+        const montantColor = v.enAlerte ? "var(--accent-red)" : "var(--gold-primary)";
+        
+        return `
+        <div class="vehicule-card" style="${borderStyle}">
+            <div class="vehicule-header">
+                <span class="vehicule-titre">${v.nom}</span>
+                <span style="font-weight:bold; color: ${montantColor};">${formatMoney(v.totalJour)} / j</span>
+            </div>
+            <div class="vehicule-sous-titre" style="margin-bottom: 0.5rem;">
+                Carburant: ${formatMoney(v.carburant)} | Repas: ${formatMoney(v.repas)} | Santé: ${formatMoney(v.sante)}
+            </div>
+            ${v.enAlerte 
+                ? `<span class="badge-red">Zone Sensible : Dépasse le budget de ${formatMoney(v.seuil)}</span>`
+                : `<span class="badge-vert">Budget respecté (Max: ${formatMoney(v.seuil)})</span>`
+            }
+            <button class="btn-remove" style="display:block; margin-top:0.5rem;" onclick="removeVehicule(${index})">Retirer le véhicule</button>
+        </div>
+        `;
+    }).join("");
+}
+
+function removeVehicule(index) {
+    flotteVehicules.splice(index, 1);
+    renderVehicules();
+}
+
+// Logique Lignes Devis
 function addLigne() {
     ligneCounter++;
     const id = ligneCounter;
@@ -377,7 +385,7 @@ function addLigne() {
             <button type="button" class="mode-btn" data-mode="direct" onclick="setMode(${id}, 'direct')">Prix direct</button>
         </div>
         <div data-panel="inverse">
-            <label>Déboursé sec unitaire (€)</label>
+            <label>Déboursé sec unitaire (€) — incluant ouvriers</label>
             <input type="number" value="0" data-field="debourse_sec_unitaire" oninput="recalc(${id})" />
             <div class="slider-row">
                 <label>Marge cible <span class="marge-val" data-out="marge-label">30%</span></label>
@@ -472,6 +480,7 @@ function collectLignes() {
     return lignes;
 }
 
+// Logique Globale API
 async function refreshProjectSelect() {
     try {
         const res = await fetch(API_URL + "/api/v1/projets/", {
@@ -492,10 +501,7 @@ async function register() {
     const entreprise = document.getElementById('reg-entreprise').value;
     const statusDiv = document.getElementById('auth-status');
 
-    if (!nom || !email || !password) {
-        statusDiv.textContent = "Champs obligatoires manquants.";
-        return;
-    }
+    if (!nom || !email || !password) { statusDiv.textContent = "Champs obligatoires manquants."; return; }
     statusDiv.textContent = "Création en cours...";
     try {
         const res = await fetch(API_URL + "/api/v1/auth/register", {
@@ -529,6 +535,7 @@ async function login() {
         loadDashboard();
         loadProjetsList();
         loadDevisList();
+        renderVehicules(); // Afficher les véhicules locaux au chargement
     } catch (err) { statusDiv.textContent = "Erreur réseau"; }
 }
 
@@ -554,10 +561,7 @@ async function createProject() {
     const description = document.getElementById('proj-description').value;
     const statusDiv = document.getElementById('proj-status');
 
-    if (!nom_projet) {
-        statusDiv.textContent = "Nom du projet requis.";
-        return;
-    }
+    if (!nom_projet) { statusDiv.textContent = "Nom du projet requis."; return; }
     statusDiv.textContent = "Enregistrement...";
     try {
         const res = await fetch(API_URL + "/api/v1/projets/", {
@@ -584,9 +588,7 @@ async function loadProjetsList() {
     const container = document.getElementById('projet-list');
     statusDiv.textContent = "Chargement...";
     try {
-        const res = await fetch(API_URL + "/api/v1/projets/", {
-            headers: { "Authorization": "Bearer " + token }
-        });
+        const res = await fetch(API_URL + "/api/v1/projets/", { headers: { "Authorization": "Bearer " + token }});
         const data = await res.json();
         if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
         statusDiv.textContent = "";
@@ -608,9 +610,7 @@ async function loadDevisList() {
     const container = document.getElementById('devis-list');
     statusDiv.textContent = "Chargement...";
     try {
-        const res = await fetch(API_URL + "/api/v1/devis/", {
-            headers: { "Authorization": "Bearer " + token }
-        });
+        const res = await fetch(API_URL + "/api/v1/devis/", { headers: { "Authorization": "Bearer " + token }});
         const data = await res.json();
         if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
         statusDiv.textContent = "";
@@ -628,14 +628,10 @@ async function loadDevisList() {
     } catch (err) { statusDiv.textContent = "Erreur réseau"; }
 }
 
-function resetDevisFormState() {
+function cancelEdit() {
     editingDevisId = null;
     document.getElementById('btn-submit-devis').textContent = "Créer le devis";
     document.getElementById('btn-cancel-edit').style.display = "none";
-}
-
-function cancelEdit() {
-    resetDevisFormState();
     document.getElementById('devis-titre').value = "";
     document.getElementById('lignes-container').innerHTML = "";
     addLigne();
