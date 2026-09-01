@@ -3,17 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASSAWIN — Pilotage GROUPE ARTS</title>
+<title>ASSAWIN — Groupe Arts</title>
 <style>
 :root {
     --bg-main: #0c0d0f;
     --surface: #16181d;
     --surface-card: #1e2128;
-    --border-color: rgba(245, 158, 11, 0.15);
+    --border-color: rgba(59, 130, 246, 0.2);
+    --border-gold: rgba(245, 158, 11, 0.2);
     --gold: #f59e0b;
+    --blue-primary: #3b82f6;
+    --blue-gradient: linear-gradient(135deg, #1d4ed8, #3b82f6, #60a5fa);
     --text-main: #f1f3f5;
     --text-muted: #94a3b8;
-    --red: #f87171;
 }
 * { box-sizing: border-box; }
 body {
@@ -21,53 +23,107 @@ body {
     color: var(--text-main);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     margin: 0; padding: 0;
-    padding-bottom: 70px;
+    padding-bottom: 75px;
 }
 header {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 16px 20px; background: var(--surface);
+    padding: 14px 18px; background: var(--surface);
     border-bottom: 1px solid var(--border-color);
 }
-.logo-title { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.1em; color: var(--gold); margin: 0; }
-.logo-sub { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
-.avatar { width: 32px; height: 32px; background: var(--gold); color: #000; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+.logo-box {
+    display: flex; align-items: center; gap: 10px;
+}
+.logo-badge {
+    width: 36px; height: 36px;
+    background: var(--blue-gradient);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.85rem; color: #fff;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+.logo-title { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.12em; color: var(--text-main); margin: 0; }
+.logo-sub { font-size: 0.6rem; color: var(--blue-primary); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; }
+.user-tag { font-size: 0.75rem; font-weight: 700; color: var(--gold); background: var(--surface-card); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-gold); }
 
-.container { max-width: 600px; margin: 0 auto; padding: 16px; }
+.container { max-width: 600px; margin: 0 auto; padding: 12px; }
+
+/* Barre de recherche */
+.search-bar-container {
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 8px 16px;
+    margin-bottom: 12px;
+}
+.search-input {
+    width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 0.85rem; outline: none;
+}
+
+/* Pilules de navigation */
+.pills-container {
+    display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 14px;
+    scrollbar-width: none;
+}
+.pills-container::-webkit-scrollbar { display: none; }
+.pill-btn {
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.pill-btn.active {
+    background: var(--blue-gradient);
+    color: #fff;
+    border-color: transparent;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
 
 .card {
     background: var(--surface); border: 1px solid var(--border-color);
-    border-radius: 12px; padding: 16px; margin-bottom: 14px;
+    border-radius: 10px; padding: 14px; margin-bottom: 12px;
 }
-.card-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 12px; font-weight: 700; }
+.card-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blue-primary); margin-bottom: 10px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
 
-.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
 
-label { font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 4px; text-transform: uppercase; }
+label { font-size: 0.65rem; color: var(--text-muted); display: block; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
 input, textarea, select {
-    width: 100%; padding: 10px; background: var(--surface-card);
-    border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 0.9rem;
+    width: 100%; padding: 9px 10px; background: var(--surface-card);
+    border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 0.85rem;
 }
-input:focus, textarea:focus { outline: none; border-color: var(--gold); }
+input:focus, textarea:focus { outline: none; border-color: var(--blue-primary); }
 
 .btn {
-    width: 100%; padding: 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700;
-    cursor: pointer; border: none; text-align: center; background: var(--gold); color: #000;
-    text-transform: uppercase; letter-spacing: 0.05em;
+    width: 100%; padding: 11px; border-radius: 6px; font-size: 0.75rem; font-weight: 800;
+    cursor: pointer; border: none; text-align: center; background: var(--blue-gradient); color: #fff;
+    text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
 }
-.btn-secondary { background: var(--surface-card); color: var(--text-main); border: 1px solid var(--border-color); margin-top: 6px; }
+.btn-secondary { background: var(--surface-card); color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none; }
 
-.item-list { background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-.item-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
-.item-text { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+.item-list { background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 6px; }
+.item-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 0.8rem; margin-bottom: 4px; }
+.item-text { font-size: 0.8rem; color: var(--text-muted); line-height: 1.3; margin-bottom: 2px; }
+.link-action { background: none; border: none; color: #f87171; font-size: 0.7rem; text-transform: uppercase; cursor: pointer; padding: 0; font-weight: 700; }
 
+.ligne-block { background: rgba(0,0,0,0.25); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; margin-bottom: 6px; }
+
+/* Navigation du bas */
 .nav-bottom {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: var(--surface); border-top: 1px solid var(--border-color);
-    display: flex; justify-content: space-around; padding: 10px 0;
+    display: flex; justify-content: space-around; padding: 8px 0; z-index: 100;
 }
-.nav-btn { background: none; border: none; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; }
-.nav-btn.active { color: var(--gold); font-weight: 700; }
+.nav-btn { background: none; border: none; color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; font-weight: 600; }
+.nav-btn.active { color: var(--blue-primary); font-weight: 800; }
 
 .section { display: none; }
 .section.active { display: block; }
@@ -76,34 +132,45 @@ input:focus, textarea:focus { outline: none; border-color: var(--gold); }
 <body>
 
 <header>
-    <div>
-        <h1 class="logo-title">ASSAWIN</h1>
-        <div class="logo-sub">Groupe Arts — Pilotage</div>
+    <div class="logo-box">
+        <div class="logo-badge">AS</div>
+        <div>
+            <h1 class="logo-title">ASSAWIN</h1>
+            <div class="logo-sub">Groupe Arts</div>
+        </div>
     </div>
-    <div class="avatar">RA</div>
+    <div class="user-tag">RA</div>
 </header>
 
 <div class="container">
 
-    <!-- SECTION 0 : POINT QUOTIDIEN & OBJECTIFS -->
+    <div class="search-bar-container">
+        <input type="text" class="search-input" id="global-search" placeholder="Rechercher contact, chantier, devis..." oninput="filtrerGlobal()" />
+    </div>
+
+    <div class="pills-container">
+        <button class="pill-btn active" onclick="switchTab(0, this)">Pilotage</button>
+        <button class="pill-btn" onclick="switchTab(1, this)">Contacts</button>
+        <button class="pill-btn" onclick="switchTab(2, this)">Chantiers</button>
+        <button class="pill-btn" onclick="switchTab(3, this)">Devis & DPGF</button>
+    </div>
+
+    <!-- SECTION 0 : PILOTAGE & POINT QUOTIDIEN -->
     <div class="section active" id="sec-0">
         <div class="card">
-            <div class="card-title">Point Quotidien et Trajectoire</div>
-            
+            <div class="card-title">Point Quotidien</div>
             <label>Date</label>
             <input type="date" id="pt-date" />
-
-            <div class="grid-2" style="margin-top:10px;">
+            <div class="grid-2" style="margin-top:8px;">
                 <div>
                     <label>Bilan J-1</label>
-                    <textarea id="pt-j1" rows="2" placeholder="Réalisations, faits marquants..."></textarea>
+                    <textarea id="pt-j1" rows="2" placeholder="Réalisations..."></textarea>
                 </div>
                 <div>
                     <label>Prévision J+1</label>
-                    <textarea id="pt-jplus1" rows="2" placeholder="Priorités du lendemain..."></textarea>
+                    <textarea id="pt-jplus1" rows="2" placeholder="Priorités..."></textarea>
                 </div>
             </div>
-
             <div class="grid-3">
                 <div>
                     <label>Objectif M-1</label>
@@ -118,21 +185,20 @@ input:focus, textarea:focus { outline: none; border-color: var(--gold); }
                     <input type="number" id="pt-an" placeholder="0" />
                 </div>
             </div>
-
             <button class="btn" onclick="savePoint()">Enregistrer le point</button>
         </div>
 
-        <div class="card-title" style="margin-top:16px;">Historique des points</div>
+        <div class="card-title" style="margin-top:14px;">Historique des points</div>
         <div id="points-container"></div>
     </div>
 
-    <!-- SECTION 1 : CLIENTS / PROSPECTS -->
+    <!-- SECTION 1 : CONTACTS / CRM -->
     <div class="section" id="sec-1">
         <div class="card">
             <div class="card-title">Nouveau Contact</div>
             <label>Nom ou Raison Sociale</label>
-            <input type="text" id="cli-nom" placeholder="Nom du client ou prospect" />
-            <div class="grid-2" style="margin-top:10px;">
+            <input type="text" id="cli-nom" placeholder="Nom..." />
+            <div class="grid-2" style="margin-top:8px;">
                 <div>
                     <label>Statut</label>
                     <select id="cli-type"><option value="Prospect">Prospect</option><option value="Client">Client</option></select>
@@ -151,9 +217,12 @@ input:focus, textarea:focus { outline: none; border-color: var(--gold); }
     <div class="section" id="sec-2">
         <div class="card">
             <div class="card-title">Nouveau Chantier</div>
-            <label>Intitule</label>
-            <input type="text" id="proj-nom" placeholder="Nom du chantier" />
-            <div class="grid-2" style="margin-top:10px;">
+            <label>Client rattaché</label>
+            <select id="proj-client" style="margin-bottom:8px;"></select>
+
+            <label>Intitulé du chantier</label>
+            <input type="text" id="proj-nom" placeholder="Nom..." />
+            <div class="grid-2" style="margin-top:8px;">
                 <div>
                     <label>Budget HT</label>
                     <input type="number" id="proj-budget" value="0" />
@@ -168,26 +237,69 @@ input:focus, textarea:focus { outline: none; border-color: var(--gold); }
         <div id="projets-container"></div>
     </div>
 
+    <!-- SECTION 3 : DEVIS & DPGF -->
+    <div class="section" id="sec-3">
+        <div class="card">
+            <div class="card-title">Rédaction Devis / DPGF</div>
+
+            <label>Rattacher au chantier</label>
+            <select id="devis-projet-select" style="margin-bottom:8px;"></select>
+
+            <label>Intitulé du devis</label>
+            <input type="text" id="devis-titre" placeholder="Ex : Lot 01 - Cloisons & Isolation" />
+
+            <div class="grid-2" style="margin-top:8px;">
+                <div>
+                    <label>Acompte %</label>
+                    <input type="number" id="devis-acompte" value="30" />
+                </div>
+                <div>
+                    <label>Marge Globale %</label>
+                    <input type="number" id="devis-marge" value="30" oninput="recalculerLignes()" />
+                </div>
+            </div>
+
+            <div class="card-title" style="margin:10px 0 6px 0;">
+                <span>Lignes (Déboursé Sec)</span>
+                <span id="devis-total-preview" style="color:var(--blue-primary);">0,00 EUR HT</span>
+            </div>
+
+            <div id="lignes-container"></div>
+            <button class="btn btn-secondary" onclick="ajouterLigneDevis()" style="margin-bottom:6px;">Ajouter une ligne</button>
+            <button class="btn" onclick="enregistrerDevis()">Enregistrer le devis</button>
+        </div>
+
+        <div class="card-title" style="margin-top:14px;">Devis Rédigés</div>
+        <div id="devis-container"></div>
+    </div>
+
 </div>
 
 <nav class="nav-bottom">
-    <button class="nav-btn active" onclick="switchTab(0, this)">Pilotage</button>
-    <button class="nav-btn" onclick="switchTab(1, this)">Contacts</button>
-    <button class="nav-btn" onclick="switchTab(2, this)">Chantiers</button>
+    <button class="nav-btn active" onclick="switchTab(0, document.querySelectorAll('.pill-btn')[0])">Pilotage</button>
+    <button class="nav-btn" onclick="switchTab(1, document.querySelectorAll('.pill-btn')[1])">Contacts</button>
+    <button class="nav-btn" onclick="switchTab(2, document.querySelectorAll('.pill-btn')[2])">Chantiers</button>
+    <button class="nav-btn" onclick="switchTab(3, document.querySelectorAll('.pill-btn')[3])">Devis</button>
 </nav>
 
 <script>
 let db = {
     points: JSON.parse(localStorage.getItem('as_points') || '[]'),
     clients: JSON.parse(localStorage.getItem('as_clients') || '[]'),
-    projets: JSON.parse(localStorage.getItem('as_projets') || '[]')
+    projets: JSON.parse(localStorage.getItem('as_projets') || '[]'),
+    devis: JSON.parse(localStorage.getItem('as_devis') || '[]')
 };
 
+let ligneIndex = 0;
 document.getElementById('pt-date').value = new Date().toISOString().slice(0,10);
 
-function switchTab(idx, btn) {
+function switchTab(idx, btnElement) {
     document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i === idx));
+    document.querySelectorAll('.pill-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
     document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+    
+    if(idx === 2) initialiserSelectClientsPourChantier();
+    if(idx === 3) initialiserSelectProjetsPourDevis();
     window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -195,6 +307,7 @@ function saveData() {
     localStorage.setItem('as_points', JSON.stringify(db.points));
     localStorage.setItem('as_clients', JSON.stringify(db.clients));
     localStorage.setItem('as_projets', JSON.stringify(db.projets));
+    localStorage.setItem('as_devis', JSON.stringify(db.devis));
     render();
 }
 
@@ -205,30 +318,141 @@ function savePoint() {
     const m1 = document.getElementById('pt-m1').value;
     const mois = document.getElementById('pt-mois').value;
     const an = document.getElementById('pt-an').value;
-    
     db.points.unshift({date, j1, jplus1, m1, mois, an});
     saveData();
 }
 
 function saveClient() {
-    const nom = document.getElementById('cli-nom').value;
+    const nom = document.getElementById('cli-nom').value.trim();
     const type = document.getElementById('cli-type').value;
-    const tel = document.getElementById('cli-tel').value;
+    const tel = document.getElementById('cli-tel').value.trim();
     if(!nom) return;
-    db.clients.unshift({nom, type, tel});
+    db.clients.unshift({id: 'cli_' + Date.now(), nom, type, tel});
     saveData();
     document.getElementById('cli-nom').value = '';
     document.getElementById('cli-tel').value = '';
 }
 
+function initialiserSelectClientsPourChantier() {
+    const sel = document.getElementById('proj-client');
+    if(!sel) return;
+    if(db.clients.length === 0) {
+        sel.innerHTML = '<option value="">Aucun client dans le CRM</option>';
+        return;
+    }
+    sel.innerHTML = db.clients.map(c => `<option value="${c.nom}">${c.nom} (${c.type})</option>`).join('');
+}
+
 function saveProject() {
-    const nom = document.getElementById('proj-nom').value;
-    const budget = document.getElementById('proj-budget').value;
-    const marge = document.getElementById('proj-marge').value;
+    const clientNom = document.getElementById('proj-client').value;
+    const nom = document.getElementById('proj-nom').value.trim();
+    const budget = parseFloat(document.getElementById('proj-budget').value) || 0;
+    const marge = parseFloat(document.getElementById('proj-marge').value) || 30;
     if(!nom) return;
-    db.projets.unshift({nom, budget, marge});
+
+    db.projets.unshift({
+        id: 'proj_' + Date.now(),
+        clientNom: clientNom || 'Sans client',
+        nom,
+        budget,
+        marge
+    });
     saveData();
     document.getElementById('proj-nom').value = '';
+}
+
+function initialiserSelectProjetsPourDevis() {
+    const sel = document.getElementById('devis-projet-select');
+    if(!sel) return;
+    if(db.projets.length === 0) {
+        sel.innerHTML = '<option value="">Aucun chantier disponible</option>';
+        return;
+    }
+    sel.innerHTML = db.projets.map(p => `<option value="${p.id}">${p.nom} (${p.clientNom})</option>`).join('');
+    if(document.querySelectorAll('.ligne-block').length === 0) {
+        ajouterLigneDevis();
+    }
+}
+
+function ajouterLigneDevis() {
+    ligneIndex++;
+    const id = ligneIndex;
+    const container = document.getElementById('lignes-container');
+    const block = document.createElement('div');
+    block.className = 'ligne-block';
+    block.id = 'ligne-' + id;
+    block.innerHTML = `
+        <input type="text" placeholder="Designation de l'ouvrage" data-field="designation" style="margin-bottom:4px;" />
+        <div class="grid-2">
+            <div><label>Quantite</label><input type="number" value="1" data-field="qte" oninput="recalculerLignes()" /></div>
+            <div><label>Deboursé Unit. HT</label><input type="number" value="0" data-field="debourse" oninput="recalculerLignes()" /></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px; font-size:0.75rem;">
+            <span>Total : <strong style="color:var(--blue-primary)" data-out="tot">0,00 EUR</strong></span>
+            <button class="link-action" onclick="document.getElementById('ligne-${id}').remove(); recalculerLignes();">Supprimer</button>
+        </div>
+    `;
+    container.appendChild(block);
+    recalculerLignes();
+}
+
+function recalculerLignes() {
+    let totalHT = 0;
+    const marge = parseFloat(document.getElementById('devis-marge').value) || 0;
+    const coef = 1 + (marge / 100);
+    document.querySelectorAll('.ligne-block').forEach(b => {
+        const qte = parseFloat(b.querySelector('[data-field="qte"]').value) || 0;
+        const debourse = parseFloat(b.querySelector('[data-field="debourse"]').value) || 0;
+        const totalLigne = (debourse * coef) * qte;
+        b.querySelector('[data-out="tot"]').textContent = totalLigne.toFixed(2) + ' EUR';
+        totalHT += totalLigne;
+    });
+    document.getElementById('devis-total-preview').textContent = totalHT.toFixed(2) + ' EUR HT';
+}
+
+function enregistrerDevis() {
+    const projetId = document.getElementById('devis-projet-select').value;
+    const titre = document.getElementById('devis-titre').value.trim();
+    if(!titre || !projetId) return;
+    const proj = db.projets.find(p => p.id === projetId);
+    let lignes = [], totalHT = 0;
+    const marge = parseFloat(document.getElementById('devis-marge').value) || 30;
+    const coef = 1 + (marge / 100);
+
+    document.querySelectorAll('.ligne-block').forEach(b => {
+        const designation = b.querySelector('[data-field="designation"]').value || "Prestation";
+        const qte = parseFloat(b.querySelector('[data-field="qte"]').value) || 1;
+        const debourse = parseFloat(b.querySelector('[data-field="debourse"]').value) || 0;
+        const puHT = debourse * coef;
+        const totHT = puHT * qte;
+        totalHT += totHT;
+        lignes.push({designation, qte, debourse, puHT, totHT});
+    });
+
+    db.devis.unshift({
+        id: 'devis_' + Date.now(),
+        chantierNom: proj ? proj.nom : 'Chantier',
+        titre,
+        marge,
+        totalHT,
+        totalTTC: totalHT * 1.2
+    });
+    saveData();
+    document.getElementById('devis-titre').value = '';
+    document.getElementById('lignes-container').innerHTML = '';
+    ligneIndex = 0;
+    ajouterLigneDevis();
+}
+
+function filtrerGlobal() {
+    const query = document.getElementById('global-search').value.toLowerCase();
+    if(!query) {
+        render();
+        return;
+    }
+    document.getElementById('clients-container').innerHTML = db.clients.filter(c => c.nom.toLowerCase().includes(query)).map(c => `
+        <div class="item-list"><div class="item-header"><span>${c.nom}</span><span>${c.type}</span></div><div class="item-text">${c.tel || ''}</div></div>
+    `).join('') || '<div class="item-text">Aucun resultat.</div>';
 }
 
 function render() {
@@ -237,7 +461,7 @@ function render() {
             <div class="item-header"><span>Date : ${p.date}</span></div>
             <div class="item-text">J-1 : ${p.j1 || '-'}</div>
             <div class="item-text">J+1 : ${p.jplus1 || '-'}</div>
-            <div class="item-text" style="margin-top:4px; color:var(--gold);">M-1: ${p.m1} | Mois: ${p.mois} | Année: ${p.an}</div>
+            <div class="item-text" style="color:var(--blue-primary);">M-1: ${p.m1} | Mois: ${p.mois} | An: ${p.an}</div>
         </div>
     `).join('') || '<div class="item-text">Aucun point enregistré.</div>';
 
@@ -251,9 +475,17 @@ function render() {
     document.getElementById('projets-container').innerHTML = db.projets.map(pr => `
         <div class="item-list">
             <div class="item-header"><span>${pr.nom}</span><span>${pr.budget} EUR HT</span></div>
-            <div class="item-text">Marge cible : ${pr.marge}%</div>
+            <div class="item-text">Client : ${pr.clientNom} | Marge : ${pr.marge}%</div>
         </div>
     `).join('') || '<div class="item-text">Aucun chantier.</div>';
+
+    document.getElementById('devis-container').innerHTML = db.devis.map(d => `
+        <div class="item-list">
+            <div class="item-header"><span>${d.titre}</span><span>${d.totalTTC.toFixed(2)} EUR TTC</span></div>
+            <div class="item-text">Chantier : ${d.chantierNom} | Marge : ${d.marge}%</div>
+            <div class="item-text" style="color:var(--blue-primary);">Total HT : ${d.totalHT.toFixed(2)} EUR</div>
+        </div>
+    `).join('') || '<div class="item-text">Aucun devis rédigé.</div>';
 }
 
 render();
