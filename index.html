@@ -101,6 +101,14 @@ body {
     padding: 1.5rem;
 }
 .kpi-card { text-align: center; }
+.kpi-card.clickable {
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.kpi-card.clickable:hover {
+    border-color: var(--gold-primary);
+    transform: translateY(-2px);
+}
 .kpi-card h3 {
     color: var(--text-muted);
     font-size: 0.9rem;
@@ -166,7 +174,7 @@ body {
     display: none;
 }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-#status, #auth-status, #proj-status, #devis-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
+#status, #auth-status, #proj-status, #devis-status, #modal-proj-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
 #app, #register-section, #project-form, #devis-form { display: none; }
 .ligne-block {
     border: 1px solid var(--border-glass);
@@ -201,6 +209,57 @@ body {
 .result-line { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.25rem 0; color: var(--text-muted); }
 .result-line.total { color: var(--gold-primary); font-weight: bold; font-size: 1rem; border-top: 1px solid var(--border-glass); margin-top: 0.4rem; padding-top: 0.5rem; }
 .project-select { margin-bottom: 1rem; }
+
+/* Modal Projets */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(3, 7, 18, 0.8);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    padding: 1rem;
+}
+.modal-content {
+    background: #0f172a;
+    border: 1px solid var(--border-glass);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.modal-header h2 { color: var(--gold-primary); font-size: 1.2rem; margin: 0; }
+.close-modal { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+.project-item-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-glass);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+.project-item-card input, .project-item-card select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.5rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-glass);
+    border-radius: 0.4rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+.project-item-card label { font-size: 0.75rem; color: var(--text-muted); display: block; }
+.project-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
 </style>
 </head>
 <body>
@@ -222,6 +281,7 @@ body {
         <p>Vue consolidée de votre activité</p>
     </div>
 
+    <!-- Auth -->
     <div class="auth-card" id="login-section">
         <input type="email" id="login-email" placeholder="Email" />
         <input type="password" id="login-password" placeholder="Mot de passe" />
@@ -232,7 +292,7 @@ body {
         Pas encore de compte ? <a onclick="showRegister()">Créer un compte</a>
     </div>
 
-    <div class="auth-card" id="register-section">
+    <div class="auth-card" id="register-section" style="display:none">
         <input type="text" id="reg-nom" placeholder="Nom complet" />
         <input type="email" id="reg-email" placeholder="Email" />
         <input type="password" id="reg-password" placeholder="Mot de passe" />
@@ -244,13 +304,20 @@ body {
         Déjà un compte ? <a onclick="showLogin()">Se connecter</a>
     </div>
 
+    <!-- App Dashboard -->
     <div id="app">
         <div class="kpi-grid">
             <div class="glass-card kpi-card"><h3>CA total</h3><div class="value" id="ca">—</div></div>
             <div class="glass-card kpi-card"><h3>Marge brute</h3><div class="value" id="marge">—</div></div>
             <div class="glass-card kpi-card"><h3>Taux de marque</h3><div class="value" id="taux">—</div></div>
-            <div class="glass-card kpi-card"><h3>Projets</h3><div class="value" id="projets">—</div></div>
+            <!-- CARTE PROJET CLIQUABLE -->
+            <div class="glass-card kpi-card clickable" onclick="openProjectsModal()" title="Cliquer pour voir et modifier les projets">
+                <h3>Projets</h3>
+                <div class="value" id="projets">—</div>
+                <div style="font-size:0.75rem; color:var(--gold-primary); margin-top:0.25rem;">Modifier ↗</div>
+            </div>
         </div>
+
         <div class="section-title">Détail</div>
         <div class="glass-card" id="details"><p style="color:var(--text-muted)">Chargement...</p></div>
         <button class="btn-gold" onclick="loadDashboard()" style="margin-top:1.5rem">Actualiser</button>
@@ -259,6 +326,7 @@ body {
         <button class="btn-gold" onclick="toggleProjectForm()">+ Nouveau projet</button>
         <button class="btn-secondary" onclick="toggleDevisForm()">+ Nouveau devis</button>
 
+        <!-- Formulaire Nouveau Projet -->
         <div class="form-card" id="project-form">
             <label>Nom du projet</label>
             <input type="text" id="proj-nom" placeholder="Ex: Rénovation Saint-Ouen" />
@@ -278,6 +346,7 @@ body {
             <div id="proj-status"></div>
         </div>
 
+        <!-- Formulaire Nouveau Devis -->
         <div class="form-card" id="devis-form">
             <label>Projet (client)</label>
             <select id="devis-projet" class="project-select"></select>
@@ -304,6 +373,20 @@ body {
         </div>
     </div>
 </div>
+</div>
+
+<!-- MODAL GESTION / MODIFICATION DES PROJETS -->
+<div class="modal-overlay" id="projects-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Gestion de vos Projets</h2>
+            <button class="close-modal" onclick="closeProjectsModal()">&times;</button>
+        </div>
+        <div id="projects-list-container">
+            <p style="color:var(--text-muted)">Chargement des projets...</p>
+        </div>
+        <div id="modal-proj-status"></div>
+    </div>
 </div>
 
 <script>
@@ -342,6 +425,120 @@ async function toggleDevisForm() {
     }
 }
 
+async function openProjectsModal() {
+    document.getElementById('projects-modal').style.display = "flex";
+    await fetchAndRenderProjectsModal();
+}
+
+function closeProjectsModal() {
+    document.getElementById('projects-modal').style.display = "none";
+    loadDashboard();
+}
+
+async function fetchAndRenderProjectsModal() {
+    const container = document.getElementById('projects-list-container');
+    container.innerHTML = "<p style='color:var(--text-muted)'>Chargement...</p>";
+    try {
+        const res = await fetch(API_URL + "/api/v1/projets/", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            container.innerHTML = "<p style='color:var(--accent-red)'>Erreur de chargement des projets.</p>";
+            return;
+        }
+        cachedProjects = data;
+        if (data.length === 0) {
+            container.innerHTML = "<p style='color:var(--text-muted)'>Aucun projet enregistré pour l'instant.</p>";
+            return;
+        }
+
+        container.innerHTML = data.map(p => `
+            <div class="project-item-card" id="proj-card-${p.id_projet}">
+                <label>Nom du projet</label>
+                <input type="text" id="edit-nom-${p.id_projet}" value="${p.nom_projet || ''}" />
+                <div class="row2">
+                    <div>
+                        <label>Budget initial HT (€)</label>
+                        <input type="number" id="edit-budget-${p.id_projet}" value="${p.budget_initial_ht || 0}" />
+                    </div>
+                    <div>
+                        <label>Marge cible (%)</label>
+                        <input type="number" id="edit-marge-${p.id_projet}" value="${p.marge_cible_pct || 30}" />
+                    </div>
+                </div>
+                <label>Statut</label>
+                <select id="edit-statut-${p.id_projet}">
+                    <option value="EN_COURS" ${p.statut === 'EN_COURS' ? 'selected' : ''}>En cours</option>
+                    <option value="TERMINE" ${p.statut === 'TERMINE' ? 'selected' : ''}>Terminé</option>
+                    <option value="ANNULE" ${p.statut === 'ANNULE' ? 'selected' : ''}>Annulé</option>
+                </select>
+                <label>Description</label>
+                <input type="text" id="edit-desc-${p.id_projet}" value="${p.description || ''}" />
+                
+                <div class="project-actions">
+                    <button class="btn-gold" style="padding:0.5rem; font-size:0.9rem;" onclick="saveProjectUpdate('${p.id_projet}')">Enregistrer</button>
+                    <button class="btn-remove" onclick="deleteProject('${p.id_projet}')">Supprimer</button>
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        container.innerHTML = "<p style='color:var(--accent-red)'>Erreur réseau : " + err.message + "</p>";
+    }
+}
+
+async function saveProjectUpdate(id_projet) {
+    const statusDiv = document.getElementById('modal-proj-status');
+    const nom_projet = document.getElementById(`edit-nom-${id_projet}`).value;
+    const budget_initial_ht = parseFloat(document.getElementById(`edit-budget-${id_projet}`).value) || 0;
+    const marge_cible_pct = parseFloat(document.getElementById(`edit-marge-${id_projet}`).value) || 30;
+    const statut = document.getElementById(`edit-statut-${id_projet}`).value;
+    const description = document.getElementById(`edit-desc-${id_projet}`).value;
+
+    statusDiv.textContent = "Enregistrement...";
+
+    try {
+        const res = await fetch(API_URL + `/api/v1/projets/${id_projet}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({ nom_projet, budget_initial_ht, marge_cible_pct, statut, description: description || null })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            statusDiv.textContent = "Erreur : " + (data.detail || "Mise à jour échouée");
+            return;
+        }
+        statusDiv.textContent = "Projet mis à jour avec succès !";
+        setTimeout(() => statusDiv.textContent = "", 2500);
+        await refreshProjectSelect();
+    } catch (err) {
+        statusDiv.textContent = "Erreur réseau : " + err.message;
+    }
+}
+
+async function deleteProject(id_projet) {
+    if (!confirm("Voulez-vous vraiment supprimer ce projet ?")) return;
+    const statusDiv = document.getElementById('modal-proj-status');
+    statusDiv.textContent = "Suppression...";
+    try {
+        const res = await fetch(API_URL + `/api/v1/projets/${id_projet}`, {
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + token }
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            statusDiv.textContent = "Erreur : " + (data.detail || "Suppression refusée");
+            return;
+        }
+        statusDiv.textContent = "Projet supprimé.";
+        await fetchAndRenderProjectsModal();
+        await refreshProjectSelect();
+        loadDashboard();
+    } catch (err) {
+        statusDiv.textContent = "Erreur réseau : " + err.message;
+    }
+}
+
 function addLigne() {
     ligneCounter++;
     const id = ligneCounter;
@@ -363,7 +560,7 @@ function addLigne() {
         </div>
 
         <div data-panel="inverse">
-            <label>Déboursé sec unitaire (€) — ce que ça te coûte réellement</label>
+            <label>Déboursé sec unitaire (€)</label>
             <input type="number" value="0" data-field="debourse_sec_unitaire" oninput="recalc(${id})" />
             <div class="slider-row">
                 <label>Marge cible <span class="marge-val" data-out="marge-label">30%</span></label>
@@ -372,7 +569,7 @@ function addLigne() {
         </div>
 
         <div data-panel="direct" style="display:none">
-            <label>Prix unitaire HT (€) — ce que le client paie</label>
+            <label>Prix unitaire HT (€)</label>
             <input type="number" value="0" data-field="prix_manuel" oninput="recalc(${id})" />
             <label>Déboursé sec unitaire (€)</label>
             <input type="number" value="0" data-field="debourse_sec_unitaire_direct" oninput="recalc(${id})" />
@@ -385,7 +582,7 @@ function addLigne() {
         <div class="result-line"><span>Marge unitaire</span><span data-out="marge-unitaire">0,00 €</span></div>
         <div class="result-line total"><span>Total ligne HT</span><span data-out="total-ligne">0,00 €</span></div>
 
-        <button type="button" class="btn-remove" onclick="removeLigne(${id})">✕ Retirer cette intervention</button>
+        <button type="button" class="btn-remove" onclick="removeLigne(${id})">✕ Retirer</button>
     `;
     container.appendChild(block);
     recalc(id);
@@ -494,7 +691,7 @@ async function register() {
         return;
     }
 
-    statusDiv.textContent = "Création du compte... (le serveur peut mettre 30-50s à démarrer)";
+    statusDiv.textContent = "Création du compte...";
 
     try {
         const res = await fetch(API_URL + "/api/v1/auth/register", {
@@ -509,7 +706,7 @@ async function register() {
             return;
         }
 
-        statusDiv.textContent = "Compte créé ! Connexion en cours...";
+        statusDiv.textContent = "Compte créé ! Connexion...";
         document.getElementById('login-email').value = email;
         document.getElementById('login-password').value = password;
         showLogin();
@@ -523,7 +720,7 @@ async function login() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const statusDiv = document.getElementById('status');
-    statusDiv.textContent = "Connexion... (le serveur peut mettre 30-50s à démarrer)";
+    statusDiv.textContent = "Connexion...";
 
     try {
         const res = await fetch(API_URL + "/api/v1/auth/login", {
