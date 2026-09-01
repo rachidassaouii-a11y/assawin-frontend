@@ -39,9 +39,38 @@ body {
     padding: 20px;
 }
 .container { max-width: 800px; margin: 0 auto; width: 100%; }
-.header { text-align: center; margin-bottom: 2rem; display: flex; flex-direction: column; align-items: center; }
-.logo-mark { width: 64px; height: 64px; margin-bottom: 0.75rem; }
-.header p { color: var(--text-muted); font-size: 1rem; margin: 0; }
+.header { text-align: center; margin-bottom: 1.5rem; display: flex; flex-direction: column; align-items: center; }
+.logo-mark { width: 56px; height: 56px; margin-bottom: 0.5rem; }
+.header p { color: var(--text-muted); font-size: 0.95rem; margin: 0; }
+
+/* Barre d'onglets / Indicateur de Swipe */
+.swipe-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+    width: 100%;
+}
+.swipe-tab {
+    flex: 1;
+    padding: 0.6rem;
+    font-size: 0.8rem;
+    text-align: center;
+    background: var(--bg-card-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 0.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.swipe-tab.active {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--gold-primary);
+    border-color: var(--gold-primary);
+    font-weight: bold;
+}
+
 .auth-card, .form-card {
     background: var(--bg-card-glass);
     border: 1px solid var(--border-glass);
@@ -107,7 +136,8 @@ body {
 
 /* Listes */
 .devis-list, .projet-list, .vehicule-list, .mensuel-list { max-width: 600px; width: 100%; margin: 0 auto; }
-.devis-card, .projet-card, .vehicule-card, .mensuel-card { background: var(--bg-card-glass); border: 1px solid var(--border-glass); border-radius: 0.75rem; padding: 1rem 1.2rem; margin-bottom: 0.75rem; transition: border-color 0.3s; }
+.devis-card, .projet-card, .vehicule-card, .mensuel-card { background: var(--bg-card-glass); border: 1px solid var(--border-glass); border-radius: 0.75rem; padding: 1rem 1.2rem; margin-bottom: 0.75rem; transition: border-color 0.3s; cursor: pointer; }
+.devis-card:active, .projet-card:active, .vehicule-card:active { border-color: var(--gold-primary); transform: scale(0.99); }
 .devis-header, .projet-header, .vehicule-header, .mensuel-header { display: flex; justify-content: space-between; align-items: baseline; }
 .devis-titre, .projet-titre, .vehicule-titre, .mensuel-titre { font-weight: bold; color: var(--text-primary); }
 .devis-montant, .mensuel-montant { color: var(--gold-primary); font-weight: bold; }
@@ -116,11 +146,15 @@ body {
 .badge-vert { background: rgba(16,185,129,0.15); color: var(--accent-emerald); border: 1px solid var(--accent-emerald); }
 .badge-orange { background: rgba(249,115,22,0.15); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
 .badge-red { background: rgba(239,68,68,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+
+/* Vues Swipe */
+.swipe-view { display: none; width: 100%; flex-direction: column; align-items: center; }
+.swipe-view.active { display: flex; }
 </style>
 </head>
 <body>
 
-<div class="page-content">
+<div class="page-content" id="main-swipe-container">
 <div class="container">
     <div class="header">
         <svg class="logo-mark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -153,152 +187,155 @@ body {
         Déjà un compte ? <a onclick="showLogin()">Se connecter</a>
     </div>
 
-    <div id="app">
-        <!-- KPIs cliquables -->
-        <div class="kpi-grid">
-            <div class="glass-card kpi-card" onclick="loadDashboard()"><h3>CA total</h3><div class="value" id="ca">—</div></div>
-            <div class="glass-card kpi-card" onclick="loadDashboard()"><h3>Revenu mois</h3><div class="value" id="ca-mois">—</div></div>
-            <div class="glass-card kpi-card" onclick="loadDevisList()"><h3>Devis</h3><div class="value" id="nb-devis-kpi">—</div></div>
-            <div class="glass-card kpi-card" onclick="loadProjetsList()"><h3>Projets</h3><div class="value" id="projets">—</div></div>
+    <div id="app" style="display:none;">
+        <!-- Barre d'onglets / Indicateur Swipe -->
+        <div class="swipe-nav">
+            <div class="swipe-tab active" onclick="switchView(0)">1. Pilotage & Actions</div>
+            <div class="swipe-tab" onclick="switchView(1)">2. Chantiers & Devis</div>
+            <div class="swipe-tab" onclick="switchView(2)">3. Flotte & Finances</div>
         </div>
 
-        <div class="section-title">Actions rapides</div>
-        <button class="btn-gold" onclick="toggleProjectForm()">+ Nouveau projet & client</button>
-        <button class="btn-secondary" onclick="toggleDevisForm()">+ Nouveau devis</button>
-        <button class="btn-secondary" style="border-color: var(--text-muted); color: var(--text-muted);" onclick="toggleVehiculeForm()">+ Passeport Véhicule & Dépenses</button>
-        <button class="btn-secondary" style="border-color: var(--gold-light); color: var(--gold-light);" onclick="toggleMensuelForm()">+ Saisir / Suivre Revenu Mensuel</button>
-
-        <!-- Formulaire Saisie Revenu Mensuel -->
-        <div class="form-card" id="mensuel-form">
-            <label>Mois & Année</label>
-            <input type="month" id="mensuel-periode" />
-            
-            <div class="row2">
-                <div>
-                    <label>Chiffre d'Affaires encaissé (€)</label>
-                    <input type="number" id="mensuel-ca" placeholder="Ex: 12500" />
-                </div>
-                <div>
-                    <label>Charges & Frais du mois (€)</label>
-                    <input type="number" id="mensuel-charges" placeholder="Ex: 3200" />
-                </div>
-            </div>
-            
-            <button class="btn-gold" onclick="saveRevenuMensuel()">Enregistrer le bilan du mois</button>
-        </div>
-
-        <!-- Formulaire Véhicule & Suivi Technique -->
-        <div class="form-card" id="vehicule-form">
-            <label>Passeport Véhicule (Modèle / Immatriculation)</label>
-            <input type="text" id="veh-nom" placeholder="Ex: Ford Fiesta - AB-123-CD" />
-            
-            <div class="row2">
-                <div>
-                    <label>Km Actuel</label>
-                    <input type="number" id="veh-km" placeholder="Ex: 145000" />
-                </div>
-                <div>
-                    <label>Entrée Km / jour (Moyen)</label>
-                    <input type="number" id="veh-km-jour" value="50" placeholder="Ex: 50" />
-                </div>
+        <!-- VUE 1 : PILOTAGE & ACTIONS -->
+        <div class="swipe-view active" id="view-0">
+            <div class="kpi-grid" style="width:100%;">
+                <div class="glass-card kpi-card" onclick="switchView(1)"><h3>CA total</h3><div class="value" id="ca">—</div></div>
+                <div class="glass-card kpi-card" onclick="switchView(2)"><h3>Revenu mois</h3><div class="value" id="ca-mois">—</div></div>
+                <div class="glass-card kpi-card" onclick="switchView(1)"><h3>Devis</h3><div class="value" id="nb-devis-kpi">—</div></div>
+                <div class="glass-card kpi-card" onclick="switchView(1)"><h3>Projets</h3><div class="value" id="projets">—</div></div>
             </div>
 
-            <div class="row2">
-                <div>
-                    <label>Date dernier CT</label>
-                    <input type="date" id="veh-ct" />
+            <div class="section-title">Actions rapides</div>
+            <button class="btn-gold" onclick="toggleProjectForm()">+ Nouveau projet & client</button>
+            <button class="btn-secondary" onclick="toggleDevisForm()">+ Nouveau devis</button>
+            <button class="btn-secondary" style="border-color: var(--text-muted); color: var(--text-muted);" onclick="toggleVehiculeForm()">+ Passeport Véhicule & Dépenses</button>
+            <button class="btn-secondary" style="border-color: var(--gold-light); color: var(--gold-light);" onclick="toggleMensuelForm()">+ Saisir / Suivre Revenu Mensuel</button>
+
+            <!-- Formulaire Saisie Revenu Mensuel -->
+            <div class="form-card" id="mensuel-form">
+                <label>Mois & Année</label>
+                <input type="month" id="mensuel-periode" />
+                <div class="row2">
+                    <div>
+                        <label>Chiffre d'Affaires encaissé (€)</label>
+                        <input type="number" id="mensuel-ca" placeholder="Ex: 12500" />
+                    </div>
+                    <div>
+                        <label>Charges & Frais du mois (€)</label>
+                        <input type="number" id="mensuel-charges" placeholder="Ex: 3200" />
+                    </div>
                 </div>
-                <div>
-                    <label>Date dernière Vidange</label>
-                    <input type="date" id="veh-vidange" />
-                </div>
+                <button class="btn-gold" onclick="saveRevenuMensuel()">Enregistrer le bilan du mois</button>
             </div>
 
-            <div class="row2">
-                <div>
-                    <label>Déplacement & Repas (€/j)</label>
-                    <input type="number" id="veh-frais" value="27" />
+            <!-- Formulaire Véhicule & Suivi Technique -->
+            <div class="form-card" id="vehicule-form">
+                <label>Passeport Véhicule (Modèle / Immatriculation)</label>
+                <input type="text" id="veh-nom" placeholder="Ex: Ford Fiesta - AB-123-CD" />
+                <div class="row2">
+                    <div>
+                        <label>Km Actuel</label>
+                        <input type="number" id="veh-km" placeholder="Ex: 145000" />
+                    </div>
+                    <div>
+                        <label>Entrée Km / jour (Moyen)</label>
+                        <input type="number" id="veh-km-jour" value="50" />
+                    </div>
                 </div>
-                <div>
-                    <label style="color:var(--accent-red)">Seuil alerte budget (€/j)</label>
-                    <input type="number" id="veh-seuil" value="30" />
+                <div class="row2">
+                    <div>
+                        <label>Date dernier CT</label>
+                        <input type="date" id="veh-ct" />
+                    </div>
+                    <div>
+                        <label>Date dernière Vidange</label>
+                        <input type="date" id="veh-vidange" />
+                    </div>
                 </div>
-            </div>
-            
-            <button class="btn-gold" onclick="saveVehicule()">Enregistrer le véhicule</button>
-        </div>
-
-        <!-- Formulaire Projet / Client -->
-        <div class="form-card" id="project-form">
-            <label>Nom du projet / Chantier</label>
-            <input type="text" id="proj-nom" placeholder="Ex: Rénovation Appartement Saint-Ouen" />
-            <label>Client (Nom / Entreprise)</label>
-            <input type="text" id="proj-client" placeholder="Ex: M. Dupont ou SCI Immobilière" />
-            <div class="row2">
-                <div>
-                    <label>Budget initial HT (€)</label>
-                    <input type="number" id="proj-budget" value="0" />
+                <div class="row2">
+                    <div>
+                        <label>Déplacement & Repas (€/j)</label>
+                        <input type="number" id="veh-frais" value="27" />
+                    </div>
+                    <div>
+                        <label style="color:var(--accent-red)">Seuil alerte budget (€/j)</label>
+                        <input type="number" id="veh-seuil" value="30" />
+                    </div>
                 </div>
-                <div>
-                    <label>Marge cible (%)</label>
-                    <input type="number" id="proj-marge" value="30" />
-                </div>
-            </div>
-            <label>Description / Notes</label>
-            <input type="text" id="proj-description" placeholder="Optionnel" />
-            <button class="btn-gold" onclick="createProject()">Enregistrer le projet</button>
-            <div id="proj-status"></div>
-        </div>
-
-        <!-- Formulaire Devis -->
-        <div class="form-card" id="devis-form">
-            <label>Projet / Client associé</label>
-            <select id="devis-projet" class="project-select"></select>
-            <label>Titre du devis</label>
-            <input type="text" id="devis-titre" placeholder="Ex: Lot Gros Œuvre & Finitions" />
-            <div class="row2">
-                <div>
-                    <label>Acompte (%)</label>
-                    <input type="number" id="devis-acompte" value="30" />
-                </div>
-                <div>
-                    <label>Marge cible globale (%)</label>
-                    <input type="number" id="devis-marge" value="30" />
-                </div>
+                <button class="btn-gold" onclick="saveVehicule()">Enregistrer le véhicule</button>
             </div>
 
-            <label style="margin-top:0.5rem">Lignes d'intervention</label>
-            <div id="lignes-container"></div>
-            <button class="btn-small" type="button" onclick="addLigne()">+ Ajouter une ligne</button>
+            <!-- Formulaire Projet / Client -->
+            <div class="form-card" id="project-form">
+                <input type="hidden" id="proj-id-edit" />
+                <label>Nom du projet / Chantier</label>
+                <input type="text" id="proj-nom" placeholder="Ex: Rénovation Appartement Saint-Ouen" />
+                <label>Client (Nom / Entreprise)</label>
+                <input type="text" id="proj-client" placeholder="Ex: M. Dupont ou SCI Immobilière" />
+                <div class="row2">
+                    <div>
+                        <label>Budget initial HT (€)</label>
+                        <input type="number" id="proj-budget" value="0" />
+                    </div>
+                    <div>
+                        <label>Marge cible (%)</label>
+                        <input type="number" id="proj-marge" value="30" />
+                    </div>
+                </div>
+                <label>Description / Notes</label>
+                <input type="text" id="proj-description" placeholder="Optionnel" />
+                <button class="btn-gold" id="btn-submit-proj" onclick="saveProject()">Enregistrer le projet</button>
+                <button class="btn-secondary" id="btn-cancel-proj" onclick="cancelProjectEdit()" style="display:none;">Annuler</button>
+                <div id="proj-status"></div>
+            </div>
 
-            <button class="btn-gold" id="btn-submit-devis" onclick="createDevis()" style="margin-top:1rem">Créer le devis</button>
-            <button class="btn-secondary" id="btn-cancel-edit" onclick="cancelEdit()" style="display:none">Annuler la modification</button>
-            <div id="devis-status"></div>
+            <!-- Formulaire Devis -->
+            <div class="form-card" id="devis-form">
+                <label>Projet / Client associé</label>
+                <select id="devis-projet" class="project-select"></select>
+                <label>Titre du devis</label>
+                <input type="text" id="devis-titre" placeholder="Ex: Lot Gros Œuvre & Finitions" />
+                <div class="row2">
+                    <div>
+                        <label>Acompte (%)</label>
+                        <input type="number" id="devis-acompte" value="30" />
+                    </div>
+                    <div>
+                        <label>Marge cible globale (%)</label>
+                        <input type="number" id="devis-marge" value="30" />
+                    </div>
+                </div>
+                <label style="margin-top:0.5rem">Lignes d'intervention</label>
+                <div id="lignes-container"></div>
+                <button class="btn-small" type="button" onclick="addLigne()">+ Ajouter une ligne</button>
+                <button class="btn-gold" id="btn-submit-devis" onclick="createDevis()" style="margin-top:1rem">Créer le devis</button>
+                <button class="btn-secondary" id="btn-cancel-edit" onclick="cancelEdit()" style="display:none">Annuler la modification</button>
+                <div id="devis-status"></div>
+            </div>
         </div>
-        
-        <!-- Suivi des Revenus Mensuels -->
-        <div class="section-title">Suivi des Revenus Mensuels</div>
-        <div class="mensuel-list" id="mensuel-list">
-            <p style='color:var(--text-muted);text-align:center;font-size:0.9rem;'>Aucun historique mensuel enregistré.</p>
+
+        <!-- VUE 2 : CHANTIERS & DEVIS -->
+        <div class="swipe-view" id="view-1">
+            <div class="section-title" style="margin-top:0;">Mes Projets & Chantiers</div>
+            <div id="projet-list-status"></div>
+            <div class="projet-list" id="projet-list"></div>
+
+            <div class="section-title">Mes Devis</div>
+            <div id="devis-list-status"></div>
+            <div class="devis-list" id="devis-list"></div>
         </div>
 
-        <!-- Suivi Flotte & Véhicules -->
-        <div class="section-title">Suivi Flotte & Véhicules</div>
-        <div class="vehicule-list" id="vehicule-list">
-            <p style='color:var(--text-muted);text-align:center;font-size:0.9rem;'>Aucun véhicule suivi.</p>
+        <!-- VUE 3 : FLOTTE & FINANCES -->
+        <div class="swipe-view" id="view-2">
+            <div class="section-title" style="margin-top:0;">Suivi des Revenus Mensuels</div>
+            <div class="mensuel-list" id="mensuel-list">
+                <p style='color:var(--text-muted);text-align:center;font-size:0.9rem;'>Aucun historique mensuel enregistré.</p>
+            </div>
+
+            <div class="section-title">Suivi Flotte & Véhicules</div>
+            <div class="vehicule-list" id="vehicule-list">
+                <p style='color:var(--text-muted);text-align:center;font-size:0.9rem;'>Aucun véhicule suivi.</p>
+            </div>
         </div>
-
-        <!-- Projets -->
-        <div class="section-title">Mes Projets & Chantiers</div>
-        <button class="btn-secondary" onclick="loadProjetsList()" style="max-width:600px; margin-bottom:1rem;">Actualiser les projets</button>
-        <div id="projet-list-status"></div>
-        <div class="projet-list" id="projet-list"></div>
-
-        <!-- Devis -->
-        <div class="section-title">Mes Devis</div>
-        <button class="btn-secondary" onclick="loadDevisList()" style="max-width:600px; margin-bottom:1rem;">Actualiser les devis</button>
-        <div id="devis-list-status"></div>
-        <div class="devis-list" id="devis-list"></div>
     </div>
 </div>
 </div>
@@ -307,11 +344,51 @@ body {
 const API_URL = "https://assawin-backend.onrender.com";
 let token = null;
 let cachedProjects = [];
+let cachedDevis = [];
 let ligneCounter = 0;
 let editingDevisId = null;
+let editingProjectId = null;
+let currentViewIndex = 0;
 
 let flotteVehicules = JSON.parse(localStorage.getItem('assawin_vehicules') || '[]');
 let revenusMensuels = JSON.parse(localStorage.getItem('assawin_revenus_mensuels') || '[]');
+
+// Gestion du Swipe Tactile
+let touchStartX = 0;
+let touchEndX = 0;
+
+const mainContainer = document.getElementById('main-swipe-container');
+mainContainer.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+}, {passive: true});
+
+mainContainer.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}, {passive: true});
+
+function handleSwipe() {
+    const threshold = 50;
+    if (touchEndX < touchStartX - threshold) {
+        // Swipe Gauche -> Vue suivante
+        if (currentViewIndex < 2) switchView(currentViewIndex + 1);
+    }
+    if (touchEndX > touchStartX + threshold) {
+        // Swipe Droite -> Vue précédente
+        if (currentViewIndex > 0) switchView(currentViewIndex - 1);
+    }
+}
+
+function switchView(index) {
+    currentViewIndex = index;
+    document.querySelectorAll('.swipe-view').forEach((v, idx) => {
+        v.classList.toggle('active', idx === index);
+    });
+    document.querySelectorAll('.swipe-tab').forEach((t, idx) => {
+        t.classList.toggle('active', idx === index);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 function showRegister() {
     document.getElementById('login-section').style.display = "none";
@@ -329,7 +406,15 @@ function showLogin() {
 
 function toggleProjectForm() {
     const el = document.getElementById('project-form');
-    el.style.display = el.style.display === "block" ? "none" : "block";
+    const willShow = el.style.display !== "block";
+    el.style.display = willShow ? "block" : "none";
+    if (willShow && !editingProjectId) {
+        document.getElementById('proj-nom').value = "";
+        document.getElementById('proj-client').value = "";
+        document.getElementById('proj-budget').value = "0";
+        document.getElementById('proj-marge').value = "30";
+        document.getElementById('proj-description').value = "";
+    }
 }
 
 function toggleVehiculeForm() {
@@ -348,7 +433,7 @@ async function toggleDevisForm() {
     el.style.display = willShow ? "block" : "none";
     if (willShow) {
         await refreshProjectSelect();
-        if (document.getElementById('lignes-container').children.length === 0) addLigne();
+        if (document.getElementById('lignes-container').children.length === 0 && !editingDevisId) addLigne();
     }
 }
 
@@ -358,12 +443,8 @@ function saveRevenuMensuel() {
     const ca = parseFloat(document.getElementById('mensuel-ca').value) || 0;
     const charges = parseFloat(document.getElementById('mensuel-charges').value) || 0;
 
-    if (!periode) {
-        alert("Veuillez sélectionner un mois.");
-        return;
-    }
+    if (!periode) { alert("Veuillez sélectionner un mois."); return; }
 
-    // Vérifier si la période existe déjà pour la mettre à jour, sinon l'ajouter
     const index = revenusMensuels.findIndex(r => r.periode === periode);
     if (index >= 0) {
         revenusMensuels[index] = { periode, ca, charges };
@@ -371,9 +452,7 @@ function saveRevenuMensuel() {
         revenusMensuels.push({ periode, ca, charges });
     }
 
-    // Trier par date décroissante
     revenusMensuels.sort((a, b) => b.periode.localeCompare(a.periode));
-
     localStorage.setItem('assawin_revenus_mensuels', JSON.stringify(revenusMensuels));
     renderRevenusMensuels();
     updateDashboardMois(ca);
@@ -393,12 +472,10 @@ function renderRevenusMensuels() {
     container.innerHTML = revenusMensuels.map((r, index) => {
         const net = r.ca - r.charges;
         const [annee, mois] = r.periode.split('-');
-        const dateFormatted = `${mois}/${annee}`;
-
         return `
         <div class="mensuel-card">
             <div class="mensuel-header">
-                <span class="mensuel-titre">Mois : ${dateFormatted}</span>
+                <span class="mensuel-titre">Mois : ${mois}/${annee}</span>
                 <span class="mensuel-montant">${formatMoney(r.ca)} CA</span>
             </div>
             <div class="mensuel-sous-titre" style="margin-top: 0.4rem;">
@@ -418,7 +495,6 @@ function removeRevenuMensuel(index) {
 }
 
 function updateDashboardMois(defaultCa = 0) {
-    // Cherche si le mois en cours (YYYY-MM) existe
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
@@ -474,10 +550,10 @@ function renderVehicules() {
                 Dernier CT : ${v.dateCt} | Vidange : ${v.dateVidange}
             </div>
             <div class="vehicule-sous-titre" style="margin-bottom: 0.5rem;">
-                Frais jour : ${formatMoney(v.fraisJour)} / j (Estimation auto : ${v.kmJour} km/j)
+                Frais jour : ${formatMoney(v.fraisJour)} / j
             </div>
             ${enAlerteBudget 
-                ? `<span class="badge-red">Zone Sensible : Budget journalier dépassé (Seuil : ${formatMoney(v.seuil)})</span>`
+                ? `<span class="badge-red">Zone Sensible : Budget journalier dépassé</span>`
                 : `<span class="badge-vert">Budget journalier OK</span>`
             }
             <button class="btn-remove" style="display:block; margin-top:0.5rem;" onclick="removeVehicule(${index})">Retirer le véhicule</button>
@@ -493,40 +569,42 @@ function removeVehicule(index) {
 }
 
 // Lignes Devis
-function addLigne() {
+function addLigne(data = null) {
     ligneCounter++;
     const id = ligneCounter;
     const container = document.getElementById('lignes-container');
     const block = document.createElement('div');
     block.className = 'ligne-block';
     block.id = 'ligne-' + id;
-    block.dataset.mode = 'inverse';
+    const mode = data && data.prix_unitaire_ht && !data.debourse_sec_unitaire ? 'direct' : 'inverse';
+    block.dataset.mode = mode;
+
     block.innerHTML = `
         <div class="ligne-top-row">
-            <input type="text" placeholder="Désignation" data-field="designation" />
-            <input type="text" placeholder="Unité" value="u" data-field="unite" />
-            <input type="number" placeholder="Qté" value="1" data-field="quantite" oninput="recalc(${id})" />
+            <input type="text" placeholder="Désignation" data-field="designation" value="${data ? data.designation || '' : ''}" />
+            <input type="text" placeholder="Unité" value="${data ? data.unite || 'u' : 'u'}" data-field="unite" />
+            <input type="number" placeholder="Qté" value="${data ? data.quantite || 1 : 1}" data-field="quantite" oninput="recalc(${id})" />
         </div>
         <div class="mode-toggle">
-            <button type="button" class="mode-btn active" data-mode="inverse" onclick="setMode(${id}, 'inverse')">Chiffrage inversé</button>
-            <button type="button" class="mode-btn" data-mode="direct" onclick="setMode(${id}, 'direct')">Prix direct</button>
+            <button type="button" class="mode-btn ${mode==='inverse'?'active':''}" data-mode="inverse" onclick="setMode(${id}, 'inverse')">Chiffrage inversé</button>
+            <button type="button" class="mode-btn ${mode==='direct'?'active':''}" data-mode="direct" onclick="setMode(${id}, 'direct')">Prix direct</button>
         </div>
-        <div data-panel="inverse">
+        <div data-panel="inverse" style="display:${mode==='inverse'?'block':'none'}">
             <label>Déboursé sec unitaire (€)</label>
-            <input type="number" value="0" data-field="debourse_sec_unitaire" oninput="recalc(${id})" />
+            <input type="number" value="${data ? data.debourse_sec_unitaire || 0 : 0}" data-field="debourse_sec_unitaire" oninput="recalc(${id})" />
             <div class="slider-row">
                 <label>Marge cible <span class="marge-val" data-out="marge-label">30%</span></label>
                 <input type="range" min="0" max="80" value="30" data-field="marge_slider" oninput="recalc(${id})" />
             </div>
         </div>
-        <div data-panel="direct" style="display:none">
+        <div data-panel="direct" style="display:${mode==='direct'?'block':'none'}">
             <label>Prix unitaire HT (€)</label>
-            <input type="number" value="0" data-field="prix_manuel" oninput="recalc(${id})" />
+            <input type="number" value="${data ? data.prix_unitaire_ht || 0 : 0}" data-field="prix_manuel" oninput="recalc(${id})" />
             <label>Déboursé sec unitaire (€)</label>
-            <input type="number" value="0" data-field="debourse_sec_unitaire_direct" oninput="recalc(${id})" />
+            <input type="number" value="${data ? data.debourse_sec_unitaire || 0 : 0}" data-field="debourse_sec_unitaire_direct" oninput="recalc(${id})" />
         </div>
         <label style="margin-top:0.5rem">TVA (%)</label>
-        <input type="number" value="20" data-field="taux_tva" oninput="recalc(${id})" />
+        <input type="number" value="${data ? data.taux_tva || 20 : 20}" data-field="taux_tva" oninput="recalc(${id})" />
         <div class="result-line"><span>Prix HT calculé</span><span data-out="prix-unitaire">0,00 €</span></div>
         <div class="result-line"><span>Marge unitaire</span><span data-out="marge-unitaire">0,00 €</span></div>
         <div class="result-line total"><span>Total ligne HT</span><span data-out="total-ligne">0,00 €</span></div>
@@ -607,7 +685,7 @@ function collectLignes() {
     return lignes;
 }
 
-// API Connexion & Gestion
+// Connexion & API
 async function refreshProjectSelect() {
     try {
         const res = await fetch(API_URL + "/api/v1/projets/", { headers: { "Authorization": "Bearer " + token }});
@@ -615,7 +693,7 @@ async function refreshProjectSelect() {
         if (!res.ok) return;
         cachedProjects = data;
         const select = document.getElementById('devis-projet');
-        select.innerHTML = data.map(p => "<option value='" + p.id_projet + "'>" + p.nom_projet + (p.description ? " (" + p.description + ")" : "") + "</option>").join("");
+        select.innerHTML = data.map(p => "<option value='" + p.id_projet + "'>" + p.nom_projet + "</option>").join("");
     } catch (err) {}
 }
 
@@ -657,13 +735,17 @@ async function login() {
         document.getElementById('login-section').style.display = "none";
         document.getElementById('to-register').style.display = "none";
         document.getElementById('app').style.display = "block";
-        loadDashboard();
-        loadProjetsList();
-        loadDevisList();
+        loadAllData();
         renderVehicules();
         renderRevenusMensuels();
         updateDashboardMois();
     } catch (err) { statusDiv.textContent = "Erreur réseau"; }
+}
+
+async function loadAllData() {
+    await loadDashboard();
+    await loadProjetsList();
+    await loadDevisList();
 }
 
 async function loadDashboard() {
@@ -678,36 +760,7 @@ async function loadDashboard() {
     } catch (err) {}
 }
 
-async function createProject() {
-    const nom_projet = document.getElementById('proj-nom').value;
-    const client = document.getElementById('proj-client').value;
-    const budget_initial_ht = parseFloat(document.getElementById('proj-budget').value) || 0;
-    const marge_cible_pct = parseFloat(document.getElementById('proj-marge').value) || 30;
-    const description = document.getElementById('proj-description').value;
-    const statusDiv = document.getElementById('proj-status');
-
-    if (!nom_projet) { statusDiv.textContent = "Nom du projet requis."; return; }
-    statusDiv.textContent = "Enregistrement...";
-    try {
-        const res = await fetch(API_URL + "/api/v1/projets/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-            body: JSON.stringify({
-                nom_projet, budget_initial_ht, marge_cible_pct,
-                statut: "EN_COURS", description: client ? `Client: ${client} - ${description}` : description
-            })
-        });
-        const data = await res.json();
-        if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
-        statusDiv.textContent = "Projet créé avec succès !";
-        document.getElementById('proj-nom').value = "";
-        document.getElementById('proj-client').value = "";
-        document.getElementById('proj-description').value = "";
-        loadDashboard();
-        loadProjetsList();
-    } catch (err) { statusDiv.textContent = "Erreur réseau"; }
-}
-
+// Clic & Édition directe des Projets
 async function loadProjetsList() {
     const statusDiv = document.getElementById('projet-list-status');
     const container = document.getElementById('projet-list');
@@ -716,10 +769,11 @@ async function loadProjetsList() {
         const res = await fetch(API_URL + "/api/v1/projets/", { headers: { "Authorization": "Bearer " + token }});
         const data = await res.json();
         if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
+        cachedProjects = data;
         statusDiv.textContent = "";
         container.innerHTML = data.length === 0 ? "<p style='color:var(--text-muted);text-align:center;'>Aucun projet.</p>" :
             data.map(p => `
-                <div class="projet-card">
+                <div class="projet-card" onclick="selectProjectToEdit('${p.id_projet}')">
                     <div class="projet-header">
                         <span class="projet-titre">${p.nom_projet}</span>
                         <span style="color:var(--gold-primary);">${formatMoney(p.budget_initial_ht)} HT</span>
@@ -730,6 +784,81 @@ async function loadProjetsList() {
     } catch (err) { statusDiv.textContent = "Erreur réseau"; }
 }
 
+function selectProjectToEdit(id) {
+    const p = cachedProjects.find(item => item.id_projet === id);
+    if (!p) return;
+    editingProjectId = p.id_projet;
+    document.getElementById('proj-id-edit').value = p.id_projet;
+    document.getElementById('proj-nom').value = p.nom_projet || "";
+    
+    // Extraction client si format "Client: X - Desc"
+    let desc = p.description || "";
+    let client = "";
+    if (desc.startsWith("Client: ")) {
+        const parts = desc.split(" - ");
+        client = parts[0].replace("Client: ", "");
+        parts.shift();
+        desc = parts.join(" - ");
+    }
+    document.getElementById('proj-client').value = client;
+    document.getElementById('proj-budget').value = p.budget_initial_ht || 0;
+    document.getElementById('proj-marge').value = p.marge_cible_pct || 30;
+    document.getElementById('proj-description').value = desc;
+
+    document.getElementById('btn-submit-proj').textContent = "Modifier le projet";
+    document.getElementById('btn-cancel-proj').style.display = "block";
+    
+    // Basculer vers la vue 1 (Pilotage) pour afficher le formulaire
+    switchView(0);
+    document.getElementById('project-form').style.display = "block";
+}
+
+function cancelProjectEdit() {
+    editingProjectId = null;
+    document.getElementById('proj-id-edit').value = "";
+    document.getElementById('proj-nom').value = "";
+    document.getElementById('proj-client').value = "";
+    document.getElementById('proj-budget').value = "0";
+    document.getElementById('proj-marge').value = "30";
+    document.getElementById('proj-description').value = "";
+    document.getElementById('btn-submit-proj').textContent = "Enregistrer le projet";
+    document.getElementById('btn-cancel-proj').style.display = "none";
+    document.getElementById('project-form').style.display = "none";
+}
+
+async function saveProject() {
+    const nom_projet = document.getElementById('proj-nom').value;
+    const client = document.getElementById('proj-client').value;
+    const budget_initial_ht = parseFloat(document.getElementById('proj-budget').value) || 0;
+    const marge_cible_pct = parseFloat(document.getElementById('proj-marge').value) || 30;
+    const description = document.getElementById('proj-description').value;
+    const statusDiv = document.getElementById('proj-status');
+
+    if (!nom_projet) { statusDiv.textContent = "Nom du projet requis."; return; }
+    statusDiv.textContent = "Enregistrement...";
+
+    const payload = {
+        nom_projet, budget_initial_ht, marge_cible_pct,
+        statut: "EN_COURS", description: client ? `Client: ${client} - ${description}` : description
+    };
+
+    try {
+        const url = editingProjectId ? API_URL + "/api/v1/projets/" + editingProjectId : API_URL + "/api/v1/projets/";
+        const method = editingProjectId ? "PUT" : "POST";
+        const res = await fetch(url, {
+            method,
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
+        statusDiv.textContent = editingProjectId ? "Projet modifié avec succès !" : "Projet créé avec succès !";
+        cancelProjectEdit();
+        loadAllData();
+    } catch (err) { statusDiv.textContent = "Erreur réseau"; }
+}
+
+// Clic & Édition directe des Devis
 async function loadDevisList() {
     const statusDiv = document.getElementById('devis-list-status');
     const container = document.getElementById('devis-list');
@@ -738,12 +867,13 @@ async function loadDevisList() {
         const res = await fetch(API_URL + "/api/v1/devis/", { headers: { "Authorization": "Bearer " + token }});
         const data = await res.json();
         if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
+        cachedDevis = data;
         statusDiv.textContent = "";
         container.innerHTML = data.length === 0 ? "<p style='color:var(--text-muted);text-align:center;'>Aucun devis.</p>" :
             data.map(d => `
-                <div class="devis-card">
+                <div class="devis-card" onclick="selectDevisToEdit('${d.id_devis}')">
                     <div class="devis-header">
-                        <span class="devis-titre">${d.reference || 'Sans titre'}</span>
+                        <span class="devis-titre">${d.reference || d.titre || 'Sans titre'}</span>
                         <span class="devis-montant">${formatMoney(d.total_ttc)} TTC</span>
                     </div>
                     <div class="devis-sous-titre">Marge : ${formatMoney(d.marge_brute_eur)} (${d.taux_marque_pct}%)</div>
@@ -753,12 +883,42 @@ async function loadDevisList() {
     } catch (err) { statusDiv.textContent = "Erreur réseau"; }
 }
 
+async function selectDevisToEdit(id) {
+    const d = cachedDevis.find(item => item.id_devis === id);
+    if (!d) return;
+    editingDevisId = d.id_devis;
+    await refreshProjectSelect();
+    
+    document.getElementById('devis-projet').value = d.id_projet || "";
+    document.getElementById('devis-titre').value = d.titre || "";
+    document.getElementById('devis-acompte').value = d.acompte_pct || 30;
+    document.getElementById('devis-marge').value = d.marge_cible_pct || 30;
+    
+    const container = document.getElementById('lignes-container');
+    container.innerHTML = "";
+    ligneCounter = 0;
+
+    // Charger les lignes existantes si présentes
+    if (d.lots && d.lots.length > 0 && d.lots[0].lignes) {
+        d.lots[0].lignes.forEach(l => addLigne(l));
+    } else {
+        addLigne();
+    }
+
+    document.getElementById('btn-submit-devis').textContent = "Modifier le devis";
+    document.getElementById('btn-cancel-edit').style.display = "block";
+
+    switchView(0);
+    document.getElementById('devis-form').style.display = "block";
+}
+
 function cancelEdit() {
     editingDevisId = null;
     document.getElementById('btn-submit-devis').textContent = "Créer le devis";
     document.getElementById('btn-cancel-edit').style.display = "none";
     document.getElementById('devis-titre').value = "";
     document.getElementById('lignes-container').innerHTML = "";
+    document.getElementById('devis-form').style.display = "none";
     addLigne();
 }
 
@@ -790,9 +950,9 @@ async function createDevis() {
         });
         const data = await res.json();
         if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
-        statusDiv.textContent = "Devis enregistré !";
-        loadDashboard();
-        loadDevisList();
+        statusDiv.textContent = editingDevisId ? "Devis modifié avec succès !" : "Devis créé avec succès !";
+        cancelEdit();
+        loadAllData();
     } catch (err) { statusDiv.textContent = "Erreur réseau"; }
 }
 
