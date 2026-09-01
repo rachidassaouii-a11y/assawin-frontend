@@ -1,56 +1,131 @@
-<div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden">
-  <!-- En-tête de la carte -->
-  <div class="px-8 pt-8 pb-6 border-b border-slate-100 bg-gradient-to-r from-slate-900 to-slate-800 text-white">
-    <div class="flex items-center justify-between">
-      <div>
-        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-400/10 text-amber-400 border border-amber-400/20 mb-3">
-          Comptabilité Analytique
-        </span>
-        <h2 class="text-xl font-bold tracking-tight">Nouvelle Dépense / Affectation</h2>
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-slate-950">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-full font-sans antialiased text-slate-100 flex">
+
+  <!-- SIDEBAR DE NAVIGATION -->
+  <aside class="w-64 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl flex flex-col justify-between hidden md:flex">
+    <div class="p-6">
+      <!-- Logo / Nom de l'app -->
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center font-bold text-slate-950">A</div>
+        <span class="font-bold tracking-wider text-lg bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">ASSAWIN</span>
+      </div>
+
+      <!-- Menu -->
+      <nav class="space-y-1 text-sm font-medium">
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">Tableau de bord</a>
+        
+        <div class="pt-4 pb-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Commercial</div>
+        <a href="/prospects" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">Prospects</a>
+        <a href="/clients" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">Clients</a>
+
+        <div class="pt-4 pb-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Production</div>
+        <a href="/projets" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white bg-slate-800/80 shadow-inner border border-slate-700/50">Projets & Chantiers</a>
+
+        <div class="pt-4 pb-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Finances</div>
+        <a href="/depenses" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">Dépenses & Catégories</a>
+      </nav>
+    </div>
+
+    <!-- Profil Bas de Sidebar -->
+    <div class="p-4 border-t border-slate-800/80">
+      <div class="flex items-center gap-3 px-3 py-2">
+        <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-amber-400">RA</div>
+        <div class="text-xs">
+          <p class="font-semibold text-slate-200">Rachid Assaoui</p>
+          <p class="text-slate-500">Direction</p>
+        </div>
       </div>
     </div>
-  </div>
+  </aside>
 
-  <!-- Corps du formulaire -->
-  <div class="p-8 space-y-6">
+  <!-- CONTENU PRINCIPAL -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-y-auto bg-slate-950">
     
-    <!-- Étape 1: Choix de la Destination -->
-    <div>
-      <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">1. Destination de la dépense</label>
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Option Entreprise -->
-        <label class="relative flex flex-col p-4 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-amber-500/50 hover:bg-amber-50/30 transition-all group">
-          <input type="radio" name="expense_type" value="enterprise" class="peer sr-only">
-          <span class="text-sm font-bold text-slate-800">Entreprise / Frais</span>
-          <span class="text-xs text-slate-500 mt-0.5">Véhicules, assurances, outillage global</span>
-        </label>
+    <!-- Topbar -->
+    <header class="h-16 border-b border-slate-800/80 bg-slate-900/20 backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-10">
+      <h1 class="text-sm font-semibold tracking-wide text-slate-300">Gestion des Catégories & Flux</h1>
+      <button class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs transition-all shadow-lg shadow-amber-500/10">
+        + Nouvelle entrée
+      </button>
+    </header>
 
-        <!-- Option Projet -->
-        <label class="relative flex flex-col p-4 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-amber-500/50 hover:bg-amber-50/30 transition-all group">
-          <input type="radio" name="expense_type" value="project" class="peer sr-only" checked>
-          <span class="text-sm font-bold text-slate-800">Chantier / Projet</span>
-          <span class="text-xs text-slate-500 mt-0.5">Matériaux, sous-traitance spécifique</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- Étape 2: Sélection du projet -->
-    <div class="space-y-4">
+    <!-- Zone de travail / Grille des catégories -->
+    <div class="p-8 max-w-7xl mx-auto w-full space-y-8">
+      
+      <!-- Section 1 : Structure Entreprise & Véhicules -->
       <div>
-        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">2. Projet concerné (`/projets`)</label>
-        <select class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
-          <option>Sélectionner un chantier actif...</option>
-          <option>Rénovation Appartement - Saint-Ouen</option>
-          <option>Aménagement Bureaux - Paris 11</option>
-        </select>
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">Structure & Frais Généraux</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all">
+            <div class="flex justify-between items-start mb-4">
+              <span class="text-xs font-medium px-2.5 py-1 rounded-md bg-slate-800 text-slate-300">Entreprise</span>
+              <span class="text-xs text-slate-500">4 postes</span>
+            </div>
+            <h3 class="font-bold text-base text-slate-100 mb-1">Frais Généraux</h3>
+            <p class="text-xs text-slate-400">Administratif, assurances, abonnements logiciels, téléphonie.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all">
+            <div class="flex justify-between items-start mb-4">
+              <span class="text-xs font-medium px-2.5 py-1 rounded-md bg-slate-800 text-amber-400">Véhicules</span>
+              <span class="text-xs text-slate-500">Flotte</span>
+            </div>
+            <h3 class="font-bold text-base text-slate-100 mb-1">Véhicules & Déplacements</h3>
+            <p class="text-xs text-slate-400">Carburant, entretien, réparations, péages, contrôles techniques.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all">
+            <div class="flex justify-between items-start mb-4">
+              <span class="text-xs font-medium px-2.5 py-1 rounded-md bg-slate-800 text-slate-300">Matériel</span>
+              <span class="text-xs text-slate-500">Général</span>
+            </div>
+            <h3 class="font-bold text-base text-slate-100 mb-1">Outillage & Atelier</h3>
+            <p class="text-xs text-slate-400">Petit outillage non affecté et maintenance du dépôt.</p>
+          </div>
+
+        </div>
       </div>
-    </div>
 
-    <!-- Bouton d'action -->
-    <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
-      <button type="button" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">Annuler</button>
-      <button type="button" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20 transition-all">Enregistrer</button>
-    </div>
+      <!-- Section 2 : Modules Commercial & Projets -->
+      <div>
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">Modules Opérationnels</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all">
+            <div class="flex justify-between items-start mb-4">
+              <span class="text-xs font-medium px-2.5 py-1 rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/20">/prospects</span>
+            </div>
+            <h3 class="font-bold text-base text-slate-100 mb-1">Pipeline Prospect</h3>
+            <p class="text-xs text-slate-400">Qualification, historique des échanges, devis en attente.</p>
+          </div>
 
-  </div>
-</div>
+          <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all">
+            <div class="flex justify-between items-start mb-4">
+              <span class="text-xs font-medium px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20">/clients</span>
+            </div>
+            <h3 class="font-bold text-base text-slate-100 mb-1">Fichiers Clients</h3>
+            <p class="text-xs text-slate-400">B2B, particuliers, syndics, historiques et documents légaux.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all">
+            <div class="flex justify-between items-start mb-4">
+              <span class="text-xs font-medium px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">/projets</span>
+            </div>
+            <h3 class="font-bold text-base text-slate-100 mb-1">Chantiers & Dépenses</h3>
+            <p class="text-xs text-slate-400">Suivi d'exécution, DPGF, matériaux, sous-traitance et location.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
