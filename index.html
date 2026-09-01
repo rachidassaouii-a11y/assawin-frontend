@@ -1,680 +1,88 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASSAWIN</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-:root {
-    --bg-dark-main: #030712;
-    --bg-card-glass: rgba(255,255,255,0.05);
-    --border-glass: rgba(255,255,255,0.1);
-    --gold-primary: #f59e0b;
-    --gold-secondary: #d97706;
-    --gold-light: #fbbf24;
-    --text-primary: #f9fafb;
-    --text-muted: #9ca3af;
-    --accent-emerald: #10b981;
-    --accent-red: #ef4444;
-    --accent-orange: #f97316;
-}
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { margin: 0; padding: 0; }
-body {
-    background: var(--bg-dark-main);
-    color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-}
-.page-content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-}
-.container { max-width: 800px; margin: 0 auto; width: 100%; }
-.header { text-align: center; margin-bottom: 2rem; display: flex; flex-direction: column; align-items: center; }
-.logo-mark { width: 64px; height: 64px; margin-bottom: 0.75rem; }
-.header p { color: var(--text-muted); font-size: 1rem; margin: 0; }
-.auth-card, .form-card {
-    background: var(--bg-card-glass);
-    border: 1px solid var(--border-glass);
-    border-radius: 1rem;
-    padding: 2rem;
-    max-width: 400px;
-    margin: 0 auto 1rem;
-    backdrop-filter: blur(8px);
-}
-.form-card { max-width: 600px; margin-bottom: 1.5rem; }
-.auth-card input, .form-card input, .form-card select {
-    width: 100%;
-    padding: 0.85rem;
-    margin-bottom: 1rem;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border-glass);
-    border-radius: 0.5rem;
-    color: var(--text-primary);
-    font-size: 1rem;
-}
-.form-card label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
-.switch-link { text-align: center; color: var(--text-muted); font-size: 0.9rem; max-width: 400px; margin: 0 auto 2rem; }
-.switch-link a { color: var(--gold-primary); cursor: pointer; text-decoration: underline; }
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-.glass-card {
-    background: var(--bg-card-glass);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--border-glass);
-    border-radius: 1rem;
-    padding: 1.25rem;
-    cursor: pointer;
-    transition: border-color 0.2s, transform 0.1s;
-}
-.glass-card:active { transform: scale(0.98); border-color: var(--gold-primary); }
-.kpi-card { text-align: center; }
-.kpi-card h3 { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
-.kpi-card .value { color: var(--gold-primary); font-size: 1.75rem; font-weight: bold; }
-.section-title { color: var(--gold-primary); font-size: 1.2rem; margin-bottom: 1rem; margin-top: 2rem; max-width: 600px; width: 100%; }
-.btn-gold {
-    background: linear-gradient(135deg, var(--gold-secondary) 0%, var(--gold-primary) 50%, var(--gold-light) 100%);
-    color: var(--bg-dark-main); border: none; border-radius: 0.5rem; padding: 0.85rem; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%;
-}
-.btn-gold:active { transform: scale(0.98); }
-.btn-secondary { background: transparent; color: var(--gold-primary); border: 1px solid var(--gold-primary); border-radius: 0.5rem; padding: 0.75rem; font-size: 0.95rem; cursor: pointer; width: 100%; margin-top: 0.5rem; }
-.btn-small { background: rgba(245,158,11,0.1); color: var(--gold-primary); border: 1px dashed var(--gold-primary); border-radius: 0.5rem; padding: 0.6rem; font-size: 0.85rem; cursor: pointer; width: 100%; margin-top: 0.5rem; }
-.btn-remove { background: transparent; color: var(--accent-red); border: none; cursor: pointer; font-size: 0.85rem; padding: 0.4rem 0; }
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-#status, #auth-status, #proj-status, #devis-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
-#app, #register-section, #project-form, #devis-form, #vehicule-form { display: none; }
-.ligne-block { border: 1px solid var(--border-glass); border-radius: 0.65rem; padding: 1rem; margin-bottom: 0.85rem; background: rgba(255,255,255,0.02); }
-.ligne-top-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem; }
-.ligne-top-row input { margin-bottom: 0; }
-.mode-toggle { display: flex; gap: 0.4rem; margin: 0.6rem 0 0.75rem; }
-.mode-btn { flex: 1; padding: 0.5rem; font-size: 0.8rem; border-radius: 0.4rem; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; }
-.mode-btn.active { background: var(--gold-primary); color: var(--bg-dark-main); border-color: var(--gold-primary); font-weight: bold; }
-.slider-row { margin: 0.6rem 0; }
-.slider-row label { display: flex; justify-content: space-between; }
-.slider-row .marge-val { color: var(--gold-primary); font-weight: bold; }
-.slider-row input[type=range] { width: 100%; accent-color: var(--gold-primary); margin: 0.4rem 0 0; }
-.result-line { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.3rem 0; color: var(--text-muted); }
-.result-line.total { color: var(--gold-primary); font-weight: bold; font-size: 1rem; border-top: 1px solid var(--border-glass); margin-top: 0.4rem; padding-top: 0.5rem; }
-.project-select { margin-bottom: 1rem; }
-
-/* Listes */
-.devis-list, .projet-list, .vehicule-list { max-width: 600px; width: 100%; margin: 0 auto; }
-.devis-card, .projet-card, .vehicule-card { background: var(--bg-card-glass); border: 1px solid var(--border-glass); border-radius: 0.75rem; padding: 1rem 1.2rem; margin-bottom: 0.75rem; transition: border-color 0.3s; }
-.devis-header, .projet-header, .vehicule-header { display: flex; justify-content: space-between; align-items: baseline; }
-.devis-titre, .projet-titre, .vehicule-titre { font-weight: bold; color: var(--text-primary); }
-.devis-montant { color: var(--gold-primary); font-weight: bold; }
-.devis-sous-titre, .projet-sous-titre, .vehicule-sous-titre { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
-.badge-vert, .badge-orange, .badge-red { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold; margin-top: 0.5rem; }
-.badge-vert { background: rgba(16,185,129,0.15); color: var(--accent-emerald); border: 1px solid var(--accent-emerald); }
-.badge-orange { background: rgba(249,115,22,0.15); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
-.badge-red { background: rgba(239,68,68,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
-</style>
-</head>
-<body>
-
-<div class="page-content">
-<div class="container">
-    <div class="header">
-        <svg class="logo-mark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="100" cy="100" r="94" fill="none" stroke="#f59e0b" stroke-width="6"/>
-          <path d="M100 40 L150 150 L128 150 L100 88 L72 150 L50 150 Z" fill="#f59e0b"/>
-          <rect x="78" y="118" width="44" height="10" fill="#030712"/>
+<div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden">
+  <!-- En-tête de la carte -->
+  <div class="px-8 pt-8 pb-6 border-b border-slate-100 bg-gradient-to-r from-slate-900 to-slate-800 text-white">
+    <div class="flex items-center justify-between">
+      <div>
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-400/10 text-amber-400 border border-amber-400/20 mb-3">
+          Comptabilité Analytique
+        </span>
+        <h2 class="text-xl font-bold tracking-tight">Nouvelle Dépense / Affectation</h2>
+      </div>
+      <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-md">
+        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <p>Pilotage BTP & Chantiers</p>
+      </div>
     </div>
+  </div>
 
-    <div class="auth-card" id="login-section">
-        <input type="email" id="login-email" placeholder="Email" />
-        <input type="password" id="login-password" placeholder="Mot de passe" />
-        <button class="btn-gold" onclick="login()">Se connecter</button>
-        <div id="status"></div>
-    </div>
-    <div class="switch-link" id="to-register">
-        Pas encore de compte ? <a onclick="showRegister()">Créer un compte</a>
-    </div>
-
-    <div class="auth-card" id="register-section">
-        <input type="text" id="reg-nom" placeholder="Nom complet" />
-        <input type="email" id="reg-email" placeholder="Email" />
-        <input type="password" id="reg-password" placeholder="Mot de passe" />
-        <input type="text" id="reg-entreprise" placeholder="Entreprise (optionnel)" />
-        <button class="btn-gold" onclick="register()">Créer mon compte</button>
-        <div id="auth-status"></div>
-    </div>
-    <div class="switch-link" id="to-login" style="display:none">
-        Déjà un compte ? <a onclick="showLogin()">Se connecter</a>
-    </div>
-
-    <div id="app">
-        <!-- KPIs cliquables -->
-        <div class="kpi-grid">
-            <div class="glass-card kpi-card" onclick="loadDashboard()"><h3>CA total</h3><div class="value" id="ca">—</div></div>
-            <div class="glass-card kpi-card" onclick="loadDashboard()"><h3>Marge brute</h3><div class="value" id="marge">—</div></div>
-            <div class="glass-card kpi-card" onclick="loadDevisList()"><h3>Devis</h3><div class="value" id="nb-devis-kpi">—</div></div>
-            <div class="glass-card kpi-card" onclick="loadProjetsList()"><h3>Projets</h3><div class="value" id="projets">—</div></div>
-        </div>
-
-        <div class="section-title">Actions rapides</div>
-        <button class="btn-gold" onclick="toggleProjectForm()">+ Nouveau projet & client</button>
-        <button class="btn-secondary" onclick="toggleDevisForm()">+ Nouveau devis</button>
-        <!-- NOUVEAU BOUTON : Frais & Véhicule -->
-        <button class="btn-secondary" style="border-color: var(--text-muted); color: var(--text-muted);" onclick="toggleVehiculeForm()">+ Frais & Passeport Véhicule</button>
-
-        <!-- Formulaire Véhicule & Frais journaliers -->
-        <div class="form-card" id="vehicule-form">
-            <label>Passeport Véhicule (Modèle / Immatriculation)</label>
-            <input type="text" id="veh-nom" placeholder="Ex: Utilitaire - AB-123-CD" />
-            
-            <div class="row2">
-                <div>
-                    <label>Déplacement / Carburant (€/j)</label>
-                    <input type="number" id="veh-carburant" value="15" />
-                </div>
-                <div>
-                    <label>Frais de repas (€/j)</label>
-                    <input type="number" id="veh-repas" value="12" />
-                </div>
-            </div>
-            <div class="row2">
-                <div>
-                    <label>Santé Véhicule (Provision €/j)</label>
-                    <input type="number" id="veh-sante" value="5" placeholder="Usure, assurance..." />
-                </div>
-                <div>
-                    <label style="color:var(--accent-red)">Seuil d'alerte max (€/j)</label>
-                    <input type="number" id="veh-seuil" value="30" />
-                </div>
-            </div>
-            
-            <button class="btn-gold" onclick="saveVehicule()">Enregistrer le suivi</button>
-        </div>
-
-        <!-- Formulaire Projet / Client -->
-        <div class="form-card" id="project-form">
-            <label>Nom du projet / Chantier</label>
-            <input type="text" id="proj-nom" placeholder="Ex: Rénovation Appartement Saint-Ouen" />
-            <label>Client (Nom / Entreprise)</label>
-            <input type="text" id="proj-client" placeholder="Ex: M. Dupont ou SCI Immobilière" />
-            <div class="row2">
-                <div>
-                    <label>Budget initial HT (€)</label>
-                    <input type="number" id="proj-budget" value="0" />
-                </div>
-                <div>
-                    <label>Marge cible (%)</label>
-                    <input type="number" id="proj-marge" value="30" />
-                </div>
-            </div>
-            <label>Description / Notes</label>
-            <input type="text" id="proj-description" placeholder="Optionnel" />
-            <button class="btn-gold" onclick="createProject()">Enregistrer le projet</button>
-            <div id="proj-status"></div>
-        </div>
-
-        <!-- Formulaire Devis -->
-        <div class="form-card" id="devis-form">
-            <label>Projet / Client associé</label>
-            <select id="devis-projet" class="project-select"></select>
-            <label>Titre du devis</label>
-            <input type="text" id="devis-titre" placeholder="Ex: Lot Gros Œuvre & Finitions" />
-            <div class="row2">
-                <div>
-                    <label>Acompte (%)</label>
-                    <input type="number" id="devis-acompte" value="30" />
-                </div>
-                <div>
-                    <label>Marge cible globale (%)</label>
-                    <input type="number" id="devis-marge" value="30" />
-                </div>
-            </div>
-
-            <label style="margin-top:0.5rem">Lignes d'intervention</label>
-            <div id="lignes-container"></div>
-            <button class="btn-small" type="button" onclick="addLigne()">+ Ajouter une ligne</button>
-
-            <button class="btn-gold" id="btn-submit-devis" onclick="createDevis()" style="margin-top:1rem">Créer le devis</button>
-            <button class="btn-secondary" id="btn-cancel-edit" onclick="cancelEdit()" style="display:none">Annuler la modification</button>
-            <div id="devis-status"></div>
-        </div>
-        
-        <!-- Dépenses Flotte & Véhicules -->
-        <div class="section-title">Suivi Dépenses & Flotte</div>
-        <div class="vehicule-list" id="vehicule-list">
-            <p style='color:var(--text-muted);text-align:center;font-size:0.9rem;'>Aucun véhicule suivi. Ajoutez-en un via les actions rapides.</p>
-        </div>
-
-        <!-- Projets -->
-        <div class="section-title">Mes Projets & Chantiers</div>
-        <button class="btn-secondary" onclick="loadProjetsList()" style="max-width:600px; margin-bottom:1rem;">Actualiser les projets</button>
-        <div id="projet-list-status"></div>
-        <div class="projet-list" id="projet-list"></div>
-
-        <!-- Devis -->
-        <div class="section-title">Mes Devis</div>
-        <button class="btn-secondary" onclick="loadDevisList()" style="max-width:600px; margin-bottom:1rem;">Actualiser les devis</button>
-        <div id="devis-list-status"></div>
-        <div class="devis-list" id="devis-list"></div>
-    </div>
-</div>
-</div>
-
-<script>
-const API_URL = "https://assawin-backend.onrender.com";
-let token = null;
-let cachedProjects = [];
-let ligneCounter = 0;
-let editingDevisId = null;
-
-// Données locales pour les véhicules (en attendant le backend)
-let flotteVehicules = [];
-
-function showRegister() {
-    document.getElementById('login-section').style.display = "none";
-    document.getElementById('to-register').style.display = "none";
-    document.getElementById('register-section').style.display = "block";
-    document.getElementById('to-login').style.display = "block";
-}
-
-function showLogin() {
-    document.getElementById('register-section').style.display = "none";
-    document.getElementById('to-login').style.display = "none";
-    document.getElementById('login-section').style.display = "block";
-    document.getElementById('to-register').style.display = "block";
-}
-
-function toggleProjectForm() {
-    const el = document.getElementById('project-form');
-    el.style.display = el.style.display === "block" ? "none" : "block";
-}
-
-function toggleVehiculeForm() {
-    const el = document.getElementById('vehicule-form');
-    el.style.display = el.style.display === "block" ? "none" : "block";
-}
-
-async function toggleDevisForm() {
-    const el = document.getElementById('devis-form');
-    const willShow = el.style.display !== "block";
-    el.style.display = willShow ? "block" : "none";
-    if (willShow) {
-        await refreshProjectSelect();
-        if (document.getElementById('lignes-container').children.length === 0) addLigne();
-    }
-}
-
-// Logique Véhicules & Dépenses
-function saveVehicule() {
-    const nom = document.getElementById('veh-nom').value || "Véhicule non nommé";
-    const carburant = parseFloat(document.getElementById('veh-carburant').value) || 0;
-    const repas = parseFloat(document.getElementById('veh-repas').value) || 0;
-    const sante = parseFloat(document.getElementById('veh-sante').value) || 0;
-    const seuil = parseFloat(document.getElementById('veh-seuil').value) || 0;
-
-    const totalJour = carburant + repas + sante;
-    const enAlerte = totalJour > seuil;
-
-    flotteVehicules.push({ nom, carburant, repas, sante, seuil, totalJour, enAlerte });
-    renderVehicules();
+  <!-- Corps du formulaire -->
+  <div class="p-8 space-y-6">
     
-    // Réinitialiser le formulaire et le cacher
-    document.getElementById('veh-nom').value = "";
-    toggleVehiculeForm();
-}
-
-function renderVehicules() {
-    const container = document.getElementById('vehicule-list');
-    if(flotteVehicules.length === 0) {
-        container.innerHTML = "<p style='color:var(--text-muted);text-align:center;font-size:0.9rem;'>Aucun véhicule suivi.</p>";
-        return;
-    }
-    
-    container.innerHTML = flotteVehicules.map((v, index) => {
-        // Appliquer une bordure rouge si on dépasse le seuil
-        const borderStyle = v.enAlerte ? "border-color: var(--accent-red);" : "";
-        const montantColor = v.enAlerte ? "var(--accent-red)" : "var(--gold-primary)";
-        
-        return `
-        <div class="vehicule-card" style="${borderStyle}">
-            <div class="vehicule-header">
-                <span class="vehicule-titre">${v.nom}</span>
-                <span style="font-weight:bold; color: ${montantColor};">${formatMoney(v.totalJour)} / j</span>
+    <!-- Étape 1: Choix de la Destination (Le sélecteur visuel type Toggle) -->
+    <div>
+      <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">1. Destination de la dépense</label>
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Option Entreprise -->
+        <label class="relative flex flex-col p-4 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-amber-500/50 hover:bg-amber-50/30 transition-all group">
+          <input type="radio" name="expense_type" value="enterprise" class="peer sr-only">
+          <div class="flex items-center justify-between mb-2">
+            <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center group-hover:bg-amber-500 group-hover:text-white transition-colors">
+              <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
             </div>
-            <div class="vehicule-sous-titre" style="margin-bottom: 0.5rem;">
-                Carburant: ${formatMoney(v.carburant)} | Repas: ${formatMoney(v.repas)} | Santé: ${formatMoney(v.sante)}
+            <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-amber-500 peer-checked:bg-amber-500 flex items-center justify-center">
+              <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
             </div>
-            ${v.enAlerte 
-                ? `<span class="badge-red">Zone Sensible : Dépasse le budget de ${formatMoney(v.seuil)}</span>`
-                : `<span class="badge-vert">Budget respecté (Max: ${formatMoney(v.seuil)})</span>`
-            }
-            <button class="btn-remove" style="display:block; margin-top:0.5rem;" onclick="removeVehicule(${index})">Retirer le véhicule</button>
-        </div>
-        `;
-    }).join("");
-}
+          </div>
+          <span class="text-sm font-bold text-slate-800">Entreprise / Frais</span>
+          <span class="text-xs text-slate-500 mt-0.5">Véhicules, assurances, outillage global</span>
+        </label>
 
-function removeVehicule(index) {
-    flotteVehicules.splice(index, 1);
-    renderVehicules();
-}
-
-// Logique Lignes Devis
-function addLigne() {
-    ligneCounter++;
-    const id = ligneCounter;
-    const container = document.getElementById('lignes-container');
-    const block = document.createElement('div');
-    block.className = 'ligne-block';
-    block.id = 'ligne-' + id;
-    block.dataset.mode = 'inverse';
-    block.innerHTML = `
-        <div class="ligne-top-row">
-            <input type="text" placeholder="Désignation" data-field="designation" />
-            <input type="text" placeholder="Unité" value="u" data-field="unite" />
-            <input type="number" placeholder="Qté" value="1" data-field="quantite" oninput="recalc(${id})" />
-        </div>
-        <div class="mode-toggle">
-            <button type="button" class="mode-btn active" data-mode="inverse" onclick="setMode(${id}, 'inverse')">Chiffrage inversé</button>
-            <button type="button" class="mode-btn" data-mode="direct" onclick="setMode(${id}, 'direct')">Prix direct</button>
-        </div>
-        <div data-panel="inverse">
-            <label>Déboursé sec unitaire (€) — incluant ouvriers</label>
-            <input type="number" value="0" data-field="debourse_sec_unitaire" oninput="recalc(${id})" />
-            <div class="slider-row">
-                <label>Marge cible <span class="marge-val" data-out="marge-label">30%</span></label>
-                <input type="range" min="0" max="80" value="30" data-field="marge_slider" oninput="recalc(${id})" />
+        <!-- Option Projet -->
+        <label class="relative flex flex-col p-4 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-amber-500/50 hover:bg-amber-50/30 transition-all group">
+          <input type="radio" name="expense_type" value="project" class="peer sr-only" checked>
+          <div class="flex items-center justify-between mb-2">
+            <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center group-hover:bg-amber-500 group-hover:text-white transition-colors">
+              <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
             </div>
+            <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-amber-500 peer-checked:bg-amber-500 flex items-center justify-center">
+              <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
+            </div>
+          </div>
+          <span class="text-sm font-bold text-slate-800">Chantier / Projet</span>
+          <span class="text-xs text-slate-500 mt-0.5">Matériaux, sous-traitance spécifique</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Étape 2: Sélection dynamique du projet (si Projet sélectionné) -->
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">2. Projet concerné (`/projets`)</label>
+        <select class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
+          <option>Sélectionner un chantier actif...</option>
+          <option>🏗️ Rénovation Appartement - Saint-Ouen</option>
+          <option>🏢 Aménagement Bureaux - Paris 11</option>
+        </select>
+      </div>
+
+      <!-- Sous-catégories de dépenses -->
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">3. Sous-catégorie</label>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-200 transition-all">Gros œuvre</button>
+          <button type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 text-white shadow-md shadow-amber-500/20">Second œuvre</button>
+          <button type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-200 transition-all">Finitions</button>
+          <button type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-200 transition-all">Location engins</button>
         </div>
-        <div data-panel="direct" style="display:none">
-            <label>Prix unitaire HT (€)</label>
-            <input type="number" value="0" data-field="prix_manuel" oninput="recalc(${id})" />
-            <label>Déboursé sec unitaire (€)</label>
-            <input type="number" value="0" data-field="debourse_sec_unitaire_direct" oninput="recalc(${id})" />
-        </div>
-        <label style="margin-top:0.5rem">TVA (%)</label>
-        <input type="number" value="20" data-field="taux_tva" oninput="recalc(${id})" />
-        <div class="result-line"><span>Prix HT calculé</span><span data-out="prix-unitaire">0,00 €</span></div>
-        <div class="result-line"><span>Marge unitaire</span><span data-out="marge-unitaire">0,00 €</span></div>
-        <div class="result-line total"><span>Total ligne HT</span><span data-out="total-ligne">0,00 €</span></div>
-        <button type="button" class="btn-remove" onclick="removeLigne(${id})">Retirer cette ligne</button>
-    `;
-    container.appendChild(block);
-    recalc(id);
-}
+      </div>
+    </div>
 
-function setMode(id, mode) {
-    const block = document.getElementById('ligne-' + id);
-    block.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-    block.querySelector('[data-panel="inverse"]').style.display = mode === 'inverse' ? 'block' : 'none';
-    block.querySelector('[data-panel="direct"]').style.display = mode === 'direct' ? 'block' : 'none';
-    block.dataset.mode = mode;
-    recalc(id);
-}
+    <!-- Bouton d'action -->
+    <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+      <button type="button" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">Annuler</button>
+      <button type="button" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20 transition-all">Enregistrer la dépense</button>
+    </div>
 
-function recalc(id) {
-    const block = document.getElementById('ligne-' + id);
-    if (!block) return;
-    const mode = block.dataset.mode || 'inverse';
-    const get = (field) => parseFloat(block.querySelector(`[data-field="${field}"]`)?.value) || 0;
-    const quantite = get('quantite') || 1;
-    let prixUnitaire = 0, debourseUnitaire = 0;
-
-    if (mode === 'inverse') {
-        debourseUnitaire = get('debourse_sec_unitaire');
-        const margePct = get('marge_slider');
-        block.querySelector('[data-out="marge-label"]').textContent = margePct + '%';
-        prixUnitaire = margePct < 100 ? debourseUnitaire / (1 - margePct / 100) : debourseUnitaire;
-    } else {
-        prixUnitaire = get('prix_manuel');
-        debourseUnitaire = get('debourse_sec_unitaire_direct');
-    }
-
-    const margeUnitaire = prixUnitaire - debourseUnitaire;
-    const totalLigne = prixUnitaire * quantite;
-
-    block.querySelector('[data-out="prix-unitaire"]').textContent = formatMoney(prixUnitaire);
-    block.querySelector('[data-out="marge-unitaire"]').textContent = formatMoney(margeUnitaire);
-    block.querySelector('[data-out="total-ligne"]').textContent = formatMoney(totalLigne);
-}
-
-function removeLigne(id) {
-    const el = document.getElementById('ligne-' + id);
-    if (el) el.remove();
-}
-
-function collectLignes() {
-    const blocks = document.querySelectorAll('.ligne-block');
-    const lignes = [];
-    blocks.forEach(block => {
-        const mode = block.dataset.mode || 'inverse';
-        const get = (field) => block.querySelector(`[data-field="${field}"]`)?.value;
-        const quantite = parseFloat(get('quantite')) || 1;
-        const taux_tva = parseFloat(get('taux_tva')) || 20;
-        let prix_unitaire_ht, debourse_sec_unitaire;
-
-        if (mode === 'inverse') {
-            debourse_sec_unitaire = parseFloat(get('debourse_sec_unitaire')) || 0;
-            const margePct = parseFloat(get('marge_slider')) || 0;
-            prix_unitaire_ht = margePct < 100 ? debourse_sec_unitaire / (1 - margePct / 100) : debourse_sec_unitaire;
-        } else {
-            prix_unitaire_ht = parseFloat(get('prix_manuel')) || 0;
-            debourse_sec_unitaire = parseFloat(get('debourse_sec_unitaire_direct')) || 0;
-        }
-
-        lignes.push({
-            designation: get('designation') || '(sans nom)',
-            unite: get('unite'),
-            quantite,
-            prix_unitaire_ht: Math.round(prix_unitaire_ht * 100) / 100,
-            debourse_sec_unitaire,
-            taux_tva
-        });
-    });
-    return lignes;
-}
-
-// Logique Globale API
-async function refreshProjectSelect() {
-    try {
-        const res = await fetch(API_URL + "/api/v1/projets/", {
-            headers: { "Authorization": "Bearer " + token }
-        });
-        const data = await res.json();
-        if (!res.ok) return;
-        cachedProjects = data;
-        const select = document.getElementById('devis-projet');
-        select.innerHTML = data.map(p => "<option value='" + p.id_projet + "'>" + p.nom_projet + (p.description ? " (" + p.description + ")" : "") + "</option>").join("");
-    } catch (err) {}
-}
-
-async function register() {
-    const nom = document.getElementById('reg-nom').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    const entreprise = document.getElementById('reg-entreprise').value;
-    const statusDiv = document.getElementById('auth-status');
-
-    if (!nom || !email || !password) { statusDiv.textContent = "Champs obligatoires manquants."; return; }
-    statusDiv.textContent = "Création en cours...";
-    try {
-        const res = await fetch(API_URL + "/api/v1/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nom, email, password, entreprise: entreprise || null })
-        });
-        const data = await res.json();
-        if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || "refusé"); return; }
-        showLogin();
-    } catch (err) { statusDiv.textContent = "Erreur réseau"; }
-}
-
-async function login() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const statusDiv = document.getElementById('status');
-    statusDiv.textContent = "Connexion...";
-    try {
-        const res = await fetch(API_URL + "/api/v1/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-        if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || "refusé"); return; }
-        token = data.access_token;
-        document.getElementById('login-section').style.display = "none";
-        document.getElementById('to-register').style.display = "none";
-        document.getElementById('app').style.display = "block";
-        loadDashboard();
-        loadProjetsList();
-        loadDevisList();
-        renderVehicules(); // Afficher les véhicules locaux au chargement
-    } catch (err) { statusDiv.textContent = "Erreur réseau"; }
-}
-
-async function loadDashboard() {
-    try {
-        const res = await fetch(API_URL + "/api/v1/dashboard/summary", {
-            headers: { "Authorization": "Bearer " + token }
-        });
-        const data = await res.json();
-        if (!res.ok) return;
-        document.getElementById('ca').textContent = formatMoney(data.chiffre_affaires_total);
-        document.getElementById('marge').textContent = formatMoney(data.marge_brute_eur);
-        document.getElementById('projets').textContent = data.nombre_projets;
-        document.getElementById('nb-devis-kpi').textContent = data.nombre_devis;
-    } catch (err) {}
-}
-
-async function createProject() {
-    const nom_projet = document.getElementById('proj-nom').value;
-    const client = document.getElementById('proj-client').value;
-    const budget_initial_ht = parseFloat(document.getElementById('proj-budget').value) || 0;
-    const marge_cible_pct = parseFloat(document.getElementById('proj-marge').value) || 30;
-    const description = document.getElementById('proj-description').value;
-    const statusDiv = document.getElementById('proj-status');
-
-    if (!nom_projet) { statusDiv.textContent = "Nom du projet requis."; return; }
-    statusDiv.textContent = "Enregistrement...";
-    try {
-        const res = await fetch(API_URL + "/api/v1/projets/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-            body: JSON.stringify({
-                nom_projet, budget_initial_ht, marge_cible_pct,
-                statut: "EN_COURS", description: client ? `Client: ${client} - ${description}` : description
-            })
-        });
-        const data = await res.json();
-        if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
-        statusDiv.textContent = "Projet créé avec succès !";
-        document.getElementById('proj-nom').value = "";
-        document.getElementById('proj-client').value = "";
-        document.getElementById('proj-description').value = "";
-        loadDashboard();
-        loadProjetsList();
-    } catch (err) { statusDiv.textContent = "Erreur réseau"; }
-}
-
-async function loadProjetsList() {
-    const statusDiv = document.getElementById('projet-list-status');
-    const container = document.getElementById('projet-list');
-    statusDiv.textContent = "Chargement...";
-    try {
-        const res = await fetch(API_URL + "/api/v1/projets/", { headers: { "Authorization": "Bearer " + token }});
-        const data = await res.json();
-        if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
-        statusDiv.textContent = "";
-        container.innerHTML = data.length === 0 ? "<p style='color:var(--text-muted);text-align:center;'>Aucun projet.</p>" :
-            data.map(p => `
-                <div class="projet-card">
-                    <div class="projet-header">
-                        <span class="projet-titre">${p.nom_projet}</span>
-                        <span style="color:var(--gold-primary);">${formatMoney(p.budget_initial_ht)} HT</span>
-                    </div>
-                    <div class="projet-sous-titre">${p.description || 'Aucune description'}</div>
-                </div>
-            `).join("");
-    } catch (err) { statusDiv.textContent = "Erreur réseau"; }
-}
-
-async function loadDevisList() {
-    const statusDiv = document.getElementById('devis-list-status');
-    const container = document.getElementById('devis-list');
-    statusDiv.textContent = "Chargement...";
-    try {
-        const res = await fetch(API_URL + "/api/v1/devis/", { headers: { "Authorization": "Bearer " + token }});
-        const data = await res.json();
-        if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
-        statusDiv.textContent = "";
-        container.innerHTML = data.length === 0 ? "<p style='color:var(--text-muted);text-align:center;'>Aucun devis.</p>" :
-            data.map(d => `
-                <div class="devis-card">
-                    <div class="devis-header">
-                        <span class="devis-titre">${d.reference || 'Sans titre'}</span>
-                        <span class="devis-montant">${formatMoney(d.total_ttc)} TTC</span>
-                    </div>
-                    <div class="devis-sous-titre">Marge : ${formatMoney(d.marge_brute_eur)} (${d.taux_marque_pct}%)</div>
-                    <div>${d.can_send ? '<span class="badge-vert">Vérifié - Prêt</span>' : '<span class="badge-orange">À vérifier</span>'}</div>
-                </div>
-            `).join("");
-    } catch (err) { statusDiv.textContent = "Erreur réseau"; }
-}
-
-function cancelEdit() {
-    editingDevisId = null;
-    document.getElementById('btn-submit-devis').textContent = "Créer le devis";
-    document.getElementById('btn-cancel-edit').style.display = "none";
-    document.getElementById('devis-titre').value = "";
-    document.getElementById('lignes-container').innerHTML = "";
-    addLigne();
-}
-
-async function createDevis() {
-    const projetSelect = document.getElementById('devis-projet');
-    const id_projet = projetSelect.value;
-    const titre = document.getElementById('devis-titre').value;
-    const acompte_pct = parseFloat(document.getElementById('devis-acompte').value) || 30;
-    const marge_cible_pct = parseFloat(document.getElementById('devis-marge').value) || 30;
-    const lignes = collectLignes();
-    const statusDiv = document.getElementById('devis-status');
-
-    if (!id_projet || !titre) { statusDiv.textContent = "Projet et titre obligatoires."; return; }
-    statusDiv.textContent = "Enregistrement...";
-
-    const payload = {
-        titre, acompte_pct, id_projet, marge_cible_pct,
-        fournisseur_non_verifie: false,
-        lots: [{ nom_lot: "Lot principal", lignes }]
-    };
-
-    try {
-        const url = editingDevisId ? API_URL + "/api/v1/devis/" + editingDevisId : API_URL + "/api/v1/devis/";
-        const method = editingDevisId ? "PUT" : "POST";
-        const res = await fetch(url, {
-            method,
-            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-            body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (!res.ok) { statusDiv.textContent = "Erreur"; return; }
-        statusDiv.textContent = "Devis enregistré !";
-        loadDashboard();
-        loadDevisList();
-    } catch (err) { statusDiv.textContent = "Erreur réseau"; }
-}
-
-function formatMoney(val) {
-    const num = parseFloat(val) || 0;
-    return num.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' €';
-}
-</script>
-</body>
-</html>
+  </div>
+</div>
