@@ -8,32 +8,19 @@
         </span>
         <h2 class="text-xl font-bold tracking-tight">Nouvelle Dépense / Affectation</h2>
       </div>
-      <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-md">
-        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-      </div>
     </div>
   </div>
 
   <!-- Corps du formulaire -->
   <div class="p-8 space-y-6">
     
-    <!-- Étape 1: Choix de la Destination (Le sélecteur visuel type Toggle) -->
+    <!-- Étape 1: Choix de la Destination -->
     <div>
       <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">1. Destination de la dépense</label>
       <div class="grid grid-cols-2 gap-4">
         <!-- Option Entreprise -->
         <label class="relative flex flex-col p-4 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-amber-500/50 hover:bg-amber-50/30 transition-all group">
           <input type="radio" name="expense_type" value="enterprise" class="peer sr-only">
-          <div class="flex items-center justify-between mb-2">
-            <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center group-hover:bg-amber-500 group-hover:text-white transition-colors">
-              <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-            </div>
-            <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-amber-500 peer-checked:bg-amber-500 flex items-center justify-center">
-              <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
-            </div>
-          </div>
           <span class="text-sm font-bold text-slate-800">Entreprise / Frais</span>
           <span class="text-xs text-slate-500 mt-0.5">Véhicules, assurances, outillage global</span>
         </label>
@@ -41,47 +28,28 @@
         <!-- Option Projet -->
         <label class="relative flex flex-col p-4 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-amber-500/50 hover:bg-amber-50/30 transition-all group">
           <input type="radio" name="expense_type" value="project" class="peer sr-only" checked>
-          <div class="flex items-center justify-between mb-2">
-            <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center group-hover:bg-amber-500 group-hover:text-white transition-colors">
-              <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            </div>
-            <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-amber-500 peer-checked:bg-amber-500 flex items-center justify-center">
-              <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
-            </div>
-          </div>
           <span class="text-sm font-bold text-slate-800">Chantier / Projet</span>
           <span class="text-xs text-slate-500 mt-0.5">Matériaux, sous-traitance spécifique</span>
         </label>
       </div>
     </div>
 
-    <!-- Étape 2: Sélection dynamique du projet (si Projet sélectionné) -->
+    <!-- Étape 2: Sélection du projet -->
     <div class="space-y-4">
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">2. Projet concerné (`/projets`)</label>
         <select class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
           <option>Sélectionner un chantier actif...</option>
-          <option>🏗️ Rénovation Appartement - Saint-Ouen</option>
-          <option>🏢 Aménagement Bureaux - Paris 11</option>
+          <option>Rénovation Appartement - Saint-Ouen</option>
+          <option>Aménagement Bureaux - Paris 11</option>
         </select>
-      </div>
-
-      <!-- Sous-catégories de dépenses -->
-      <div>
-        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">3. Sous-catégorie</label>
-        <div class="flex flex-wrap gap-2">
-          <button type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-200 transition-all">Gros œuvre</button>
-          <button type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 text-white shadow-md shadow-amber-500/20">Second œuvre</button>
-          <button type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-200 transition-all">Finitions</button>
-          <button type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-200 transition-all">Location engins</button>
-        </div>
       </div>
     </div>
 
     <!-- Bouton d'action -->
     <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
       <button type="button" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">Annuler</button>
-      <button type="button" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20 transition-all">Enregistrer la dépense</button>
+      <button type="button" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20 transition-all">Enregistrer</button>
     </div>
 
   </div>
