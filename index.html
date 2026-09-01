@@ -1,1042 +1,328 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASSAWIN</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-:root {
-    --bg-dark-main: #030712;
-    --bg-card-glass: rgba(255,255,255,0.05);
-    --border-glass: rgba(255,255,255,0.1);
-    --gold-primary: #f59e0b;
-    --gold-secondary: #d97706;
-    --gold-light: #fbbf24;
-    --text-primary: #f9fafb;
-    --text-muted: #9ca3af;
-    --accent-emerald: #10b981;
-    --accent-red: #ef4444;
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
-body {
-    background: var(--bg-dark-main);
-    color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-}
-.bg-watermark {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 140vw;
-    max-width: 900px;
-    opacity: 0.035;
-    z-index: 0;
-    pointer-events: none;
-}
-.page-content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-}
-.container { max-width: 800px; margin: 0 auto; width: 100%; }
-.header { text-align: center; margin-bottom: 2rem; display: flex; flex-direction: column; align-items: center; }
-.logo-mark { width: 64px; height: 64px; margin-bottom: 0.75rem; }
-.header p { color: var(--text-muted); font-size: 1rem; margin: 0; }
-.auth-card, .form-card {
-    background: var(--bg-card-glass);
-    border: 1px solid var(--border-glass);
-    border-radius: 1rem;
-    padding: 2rem;
-    max-width: 400px;
-    margin: 0 auto 1rem;
-    backdrop-filter: blur(8px);
-}
-.form-card { max-width: 600px; margin-bottom: 1.5rem; }
-.auth-card input, .form-card input, .form-card select {
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border-glass);
-    border-radius: 0.5rem;
-    color: var(--text-primary);
-    font-size: 1rem;
-}
-.form-card label {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    display: block;
-    margin-bottom: 0.3rem;
-}
-.switch-link {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    max-width: 400px;
-    margin: 0 auto 2rem;
-}
-.switch-link a { color: var(--gold-primary); cursor: pointer; text-decoration: underline; }
-.kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-.glass-card {
-    background: var(--bg-card-glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border-glass);
-    border-radius: 1rem;
-    padding: 1.5rem;
-}
-.kpi-card { text-align: center; }
-.kpi-card.clickable {
-    cursor: pointer;
-    transition: transform 0.2s, border-color 0.2s;
-}
-.kpi-card.clickable:hover {
-    border-color: var(--gold-primary);
-    transform: translateY(-2px);
-}
-.kpi-card h3 {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-.kpi-card .value { color: var(--gold-primary); font-size: 2rem; font-weight: bold; }
-.section-title { color: var(--gold-primary); font-size: 1.2rem; margin-bottom: 1rem; margin-top: 2rem; }
-.btn-gold {
-    background: linear-gradient(135deg, var(--gold-secondary) 0%, var(--gold-primary) 50%, var(--gold-light) 100%);
-    color: var(--bg-dark-main);
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.85rem;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-}
-.btn-gold:active { transform: scale(0.98); }
-.btn-secondary {
-    background: transparent;
-    color: var(--gold-primary);
-    border: 1px solid var(--gold-primary);
-    border-radius: 0.5rem;
-    padding: 0.6rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 0.5rem;
-}
-.btn-small {
-    background: rgba(245,158,11,0.1);
-    color: var(--gold-primary);
-    border: 1px dashed var(--gold-primary);
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    font-size: 0.85rem;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 0.5rem;
-}
-.btn-remove {
-    background: transparent;
-    color: var(--accent-red);
-    border: none;
-    cursor: pointer;
-    font-size: 0.8rem;
-    padding: 0.3rem 0;
-}
-.btn-pdf {
-    background: var(--accent-emerald);
-    color: #052e19;
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.75rem;
-    font-size: 0.95rem;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 0.75rem;
-    display: none;
-}
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-#status, #auth-status, #proj-status, #devis-status, #modal-proj-status, #modal-devis-status { text-align: center; color: var(--text-muted); min-height: 1.5rem; margin-top: 0.5rem; }
-#app, #register-section, #project-form, #devis-form { display: none; }
-.ligne-block {
-    border: 1px solid var(--border-glass);
-    border-radius: 0.65rem;
-    padding: 1rem;
-    margin-bottom: 0.85rem;
-    background: rgba(255,255,255,0.02);
-}
-.ligne-top-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem; }
-.ligne-top-row input { margin-bottom: 0; }
-.mode-toggle { display: flex; gap: 0.4rem; margin: 0.6rem 0 0.75rem; }
-.mode-btn {
-    flex: 1;
-    padding: 0.4rem;
-    font-size: 0.78rem;
-    border-radius: 0.4rem;
-    border: 1px solid var(--border-glass);
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-}
-.mode-btn.active {
-    background: var(--gold-primary);
-    color: var(--bg-dark-main);
-    border-color: var(--gold-primary);
-    font-weight: bold;
-}
-.slider-row { margin: 0.6rem 0; }
-.slider-row label { display: flex; justify-content: space-between; }
-.slider-row .marge-val { color: var(--gold-primary); font-weight: bold; }
-.slider-row input[type=range] { width: 100%; accent-color: var(--gold-primary); margin: 0.4rem 0 0; }
-.result-line { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.25rem 0; color: var(--text-muted); }
-.result-line.total { color: var(--gold-primary); font-weight: bold; font-size: 1rem; border-top: 1px solid var(--border-glass); margin-top: 0.4rem; padding-top: 0.5rem; }
-.project-select { margin-bottom: 1rem; }
+import uuid
+from datetime import datetime, timezone
+from typing import List, Optional
 
-/* Modals */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(3, 7, 18, 0.8);
-    backdrop-filter: blur(5px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    padding: 1rem;
-}
-.modal-content {
-    background: #0f172a;
-    border: 1px solid var(--border-glass);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    width: 100%;
-    max-width: 600px;
-    max-height: 85vh;
-    overflow-y: auto;
-}
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-.modal-header h2 { color: var(--gold-primary); font-size: 1.2rem; margin: 0; }
-.close-modal { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
-.project-item-card, .devis-item-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border-glass);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-}
-.project-item-card input, .project-item-card select {
-    width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.4rem;
-    margin-bottom: 0.5rem;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border-glass);
-    border-radius: 0.4rem;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-}
-.project-item-card label { font-size: 0.75rem; color: var(--text-muted); display: block; }
-.project-actions, .devis-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
-</style>
-</head>
-<body>
+from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
 
-<svg class="bg-watermark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="100" cy="100" r="94" fill="none" stroke="#f59e0b" stroke-width="2"/>
-  <path d="M100 40 L150 150 L128 150 L100 88 L72 150 L50 150 Z" fill="#f59e0b"/>
-  <rect x="78" y="118" width="44" height="10" fill="#030712"/>
-</svg>
+from app.core.database import get_db
+from app.core.security import get_current_user
+from app.models.all_models import Devis, Projet, User
 
-<div class="page-content">
-<div class="container">
-    <div class="header">
-        <svg class="logo-mark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="100" cy="100" r="94" fill="none" stroke="#f59e0b" stroke-width="6"/>
-          <path d="M100 40 L150 150 L128 150 L100 88 L72 150 L50 150 Z" fill="#f59e0b"/>
-          <rect x="78" y="118" width="44" height="10" fill="#030712"/>
-        </svg>
-        <p>Vue consolidée de votre activité</p>
-    </div>
+router = APIRouter(prefix="/api/v1/devis", tags=["Devis & Calculs"])
 
-    <!-- Auth -->
-    <div class="auth-card" id="login-section">
-        <input type="email" id="login-email" placeholder="Email" />
-        <input type="password" id="login-password" placeholder="Mot de passe" />
-        <button class="btn-gold" onclick="login()">Se connecter</button>
-        <div id="status"></div>
-    </div>
-    <div class="switch-link" id="to-register">
-        Pas encore de compte ? <a onclick="showRegister()">Créer un compte</a>
-    </div>
+TRUTH_GATE_MIN_TAUX_MARQUE = 20.0
 
-    <div class="auth-card" id="register-section" style="display:none">
-        <input type="text" id="reg-nom" placeholder="Nom complet" />
-        <input type="email" id="reg-email" placeholder="Email" />
-        <input type="password" id="reg-password" placeholder="Mot de passe" />
-        <input type="text" id="reg-entreprise" placeholder="Entreprise (optionnel)" />
-        <button class="btn-gold" onclick="register()">Créer mon compte</button>
-        <div id="auth-status"></div>
-    </div>
-    <div class="switch-link" id="to-login" style="display:none">
-        Déjà un compte ? <a onclick="showLogin()">Se connecter</a>
-    </div>
 
-    <!-- App Dashboard -->
-    <div id="app">
-        <div class="kpi-grid">
-            <div class="glass-card kpi-card"><h3>CA total</h3><div class="value" id="ca">—</div></div>
-            <div class="glass-card kpi-card"><h3>Marge brute</h3><div class="value" id="marge">—</div></div>
-            <div class="glass-card kpi-card"><h3>Taux de marque</h3><div class="value" id="taux">—</div></div>
-            <div class="glass-card kpi-card clickable" onclick="openProjectsModal()" title="Cliquer pour voir et modifier les projets">
-                <h3>Projets</h3>
-                <div class="value" id="projets">—</div>
-                <div style="font-size:0.75rem; color:var(--gold-primary); margin-top:0.25rem;">Gérer ↗</div>
-            </div>
-        </div>
+class LigneDevisCreate(BaseModel):
+    designation: str = Field(..., min_length=1)
+    unite: str = Field(..., min_length=1)
+    quantite: float = Field(..., gt=0)
+    prix_unitaire_ht: float = Field(..., ge=0)
+    debourse_sec_unitaire: float = Field(..., ge=0)
+    taux_tva: float = Field(20.0, ge=0)
 
-        <div class="section-title">Détail</div>
-        <div class="glass-card" id="details"><p style="color:var(--text-muted)">Chargement...</p></div>
-        <button class="btn-gold" onclick="loadDashboard()" style="margin-top:1.5rem">Actualiser</button>
 
-        <div class="section-title">Actions</div>
-        <button class="btn-gold" onclick="toggleProjectForm()">+ Nouveau projet</button>
-        <button class="btn-secondary" onclick="toggleDevisForm()">+ Nouveau devis</button>
-        <button class="btn-secondary" onclick="openDevisModal()">Gérer mes devis</button>
+class LotDevisCreate(BaseModel):
+    nom_lot: str = Field(..., min_length=1)
+    lignes: List[LigneDevisCreate]
 
-        <!-- Formulaire Nouveau Projet -->
-        <div class="form-card" id="project-form">
-            <label>Nom du projet</label>
-            <input type="text" id="proj-nom" placeholder="Ex: Rénovation Saint-Ouen" />
-            <div class="row2">
-                <div>
-                    <label>Budget initial HT (€)</label>
-                    <input type="number" id="proj-budget" value="0" />
-                </div>
-                <div>
-                    <label>Marge cible (%)</label>
-                    <input type="number" id="proj-marge" value="30" />
-                </div>
-            </div>
-            <label>Description</label>
-            <input type="text" id="proj-description" placeholder="Optionnel" />
-            <button class="btn-gold" onclick="createProject()">Créer le projet</button>
-            <div id="proj-status"></div>
-        </div>
 
-        <!-- Formulaire Nouveau Devis -->
-        <div class="form-card" id="devis-form">
-            <label>Projet (client)</label>
-            <select id="devis-projet" class="project-select"></select>
-            <label>Titre du devis</label>
-            <input type="text" id="devis-titre" placeholder="Ex: Rénovation complète" />
-            <div class="row2">
-                <div>
-                    <label>Acompte (%)</label>
-                    <input type="number" id="devis-acompte" value="30" />
-                </div>
-                <div>
-                    <label>Marge cible globale (%)</label>
-                    <input type="number" id="devis-marge" value="30" />
-                </div>
-            </div>
+class DevisCalculateRequest(BaseModel):
+    titre: str = Field(..., min_length=1)
+    acompte_pct: float = Field(30.0, ge=0, le=100)
+    lots: List[LotDevisCreate] = Field(..., min_length=1)
+    id_projet: Optional[str] = None
+    marge_cible_pct: float = Field(30.0, ge=0, le=100)
+    fournisseur_non_verifie: bool = False
 
-            <label style="margin-top:0.5rem">Interventions / lignes du devis</label>
-            <div id="lignes-container"></div>
-            <button class="btn-small" type="button" onclick="addLigne()">+ Ajouter une intervention</button>
 
-            <button class="btn-gold" onclick="createDevis()" style="margin-top:1rem">Créer le devis</button>
-            <button class="btn-pdf" id="btn-pdf" onclick="generatePDF(lastDevis)">📄 Télécharger le PDF du devis</button>
-            <div id="devis-status"></div>
-        </div>
-    </div>
-</div>
-</div>
+class DevisResponse(BaseModel):
+    total_ht: float
+    cout_total: float
+    total_tva: float
+    total_ttc: float
+    marge_brute_eur: float
+    taux_rendement_cout_pct: float
+    taux_marque_pct: float
+    acompte_montant: float
+    warnings: List[str]
+    can_send: bool
 
-<!-- MODAL GESTION DES PROJETS -->
-<div class="modal-overlay" id="projects-modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Gestion de vos Projets</h2>
-            <button class="close-modal" onclick="closeProjectsModal()">&times;</button>
-        </div>
-        <div id="projects-list-container">
-            <p style="color:var(--text-muted)">Chargement...</p>
-        </div>
-        <div id="modal-proj-status"></div>
-    </div>
-</div>
 
-<!-- MODAL GESTION DES DEVIS -->
-<div class="modal-overlay" id="devis-modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Gestion de vos Devis</h2>
-            <button class="close-modal" onclick="closeDevisModal()">&times;</button>
-        </div>
-        <div id="devis-list-container">
-            <p style="color:var(--text-muted)">Chargement...</p>
-        </div>
-        <div id="modal-devis-status"></div>
-    </div>
-</div>
+class DevisPersistedResponse(DevisResponse):
+    id_devis: str
+    id_projet: str
+    statut: str
+    reference: str
 
-<script>
-const API_URL = "https://assawin-backend.onrender.com";
-let token = null;
-let cachedProjects = [];
-let cachedDevis = [];
-let ligneCounter = 0;
-let lastDevis = null;
 
-function showRegister() {
-    document.getElementById('login-section').style.display = "none";
-    document.getElementById('to-register').style.display = "none";
-    document.getElementById('register-section').style.display = "block";
-    document.getElementById('to-login').style.display = "block";
-}
+def _calculer_totaux_devis(lots: List[LotDevisCreate], acompte_pct: float) -> dict:
+    total_ht = 0.0
+    cout_total = 0.0
+    total_tva = 0.0
 
-function showLogin() {
-    document.getElementById('register-section').style.display = "none";
-    document.getElementById('to-login').style.display = "none";
-    document.getElementById('login-section').style.display = "block";
-    document.getElementById('to-register').style.display = "block";
-}
+    for lot in lots:
+        for ligne in lot.lignes:
+            ligne_ht = ligne.quantite * ligne.prix_unitaire_ht
+            ligne_cout = ligne.quantite * ligne.debourse_sec_unitaire
+            ligne_tva = ligne_ht * (ligne.taux_tva / 100.0)
+            total_ht += ligne_ht
+            cout_total += ligne_cout
+            total_tva += ligne_tva
 
-function toggleProjectForm() {
-    const el = document.getElementById('project-form');
-    el.style.display = el.style.display === "block" ? "none" : "block";
-}
+    total_ht = round(total_ht, 2)
+    cout_total = round(cout_total, 2)
+    total_tva = round(total_tva, 2)
+    total_ttc = round(total_ht + total_tva, 2)
+    marge_brute_eur = round(total_ht - cout_total, 2)
 
-async function toggleDevisForm() {
-    const el = document.getElementById('devis-form');
-    const willShow = el.style.display !== "block";
-    el.style.display = willShow ? "block" : "none";
-    if (willShow) {
-        await refreshProjectSelect();
-        if (document.getElementById('lignes-container').children.length === 0) addLigne();
+    taux_rendement_cout_pct = round(
+        (marge_brute_eur / cout_total) * 100, 2
+    ) if cout_total > 0 else 0.0
+
+    taux_marque_pct = round(
+        (marge_brute_eur / total_ht) * 100, 2
+    ) if total_ht > 0 else 0.0
+
+    acompte_montant = round(total_ttc * (acompte_pct / 100.0), 2)
+
+    return {
+        "total_ht": total_ht,
+        "cout_total": cout_total,
+        "total_tva": total_tva,
+        "total_ttc": total_ttc,
+        "marge_brute_eur": marge_brute_eur,
+        "taux_rendement_cout_pct": taux_rendement_cout_pct,
+        "taux_marque_pct": taux_marque_pct,
+        "acompte_montant": acompte_montant,
     }
-}
 
-// Gestion Modale Projets
-async function openProjectsModal() {
-    document.getElementById('projects-modal').style.display = "flex";
-    await fetchAndRenderProjectsModal();
-}
-function closeProjectsModal() {
-    document.getElementById('projects-modal').style.display = "none";
-    loadDashboard();
-}
 
-async function fetchAndRenderProjectsModal() {
-    const container = document.getElementById('projects-list-container');
-    container.innerHTML = "<p style='color:var(--text-muted)'>Chargement...</p>";
-    try {
-        const res = await fetch(API_URL + "/api/v1/projets/", {
-            headers: { "Authorization": "Bearer " + token }
-        });
-        const data = await res.json();
-        if (!res.ok) {
-            container.innerHTML = `<p style='color:var(--accent-red)'>Erreur : ${data.detail || 'Chargement impossible'}</p>`;
-            return;
+def _evaluer_truth_gate(calculs: dict, fournisseur_non_verifie: bool) -> dict:
+    warnings = []
+
+    if fournisseur_non_verifie:
+        warnings.append("Fournisseur non vérifié")
+
+    if calculs["total_ht"] <= 0:
+        warnings.append("Le total HT doit être supérieur à zéro")
+
+    if calculs["taux_marque_pct"] < TRUTH_GATE_MIN_TAUX_MARQUE:
+        warnings.append(
+            f"Taux de marque faible : {calculs['taux_marque_pct']}% "
+            f"(seuil minimum : {TRUTH_GATE_MIN_TAUX_MARQUE}%)"
+        )
+
+    can_send = (
+        calculs["total_ht"] > 0
+        and calculs["taux_marque_pct"] >= TRUTH_GATE_MIN_TAUX_MARQUE
+    )
+
+    return {"warnings": warnings, "can_send": can_send}
+
+
+@router.get("/", response_model=List[DevisPersistedResponse])
+def lister_devis(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    devis_list = (
+        db.query(Devis)
+        .join(Projet, Devis.projet_id == Projet.id)
+        .filter(Projet.user_id == str(current_user.id))
+        .all()
+    )
+
+    result = []
+    for d in devis_list:
+        total_ht = float(d.total_ht or 0.0)
+        cout_total = float(d.cout_total or 0.0)
+        total_tva = round(total_ht * 0.2, 2)
+        total_ttc = round(total_ht + total_tva, 2)
+        marge_brute_eur = round(total_ht - cout_total, 2)
+        taux_rendement_cout_pct = round((marge_brute_eur / cout_total) * 100, 2) if cout_total > 0 else 0.0
+        taux_marque_pct = round((marge_brute_eur / total_ht) * 100, 2) if total_ht > 0 else 0.0
+        acompte_montant = round(total_ttc * 0.3, 2)
+
+        calculs = {
+            "total_ht": total_ht,
+            "cout_total": cout_total,
+            "total_tva": total_tva,
+            "total_ttc": total_ttc,
+            "marge_brute_eur": marge_brute_eur,
+            "taux_rendement_cout_pct": taux_rendement_cout_pct,
+            "taux_marque_pct": taux_marque_pct,
+            "acompte_montant": acompte_montant,
         }
-        cachedProjects = data;
-        if (data.length === 0) {
-            container.innerHTML = "<p style='color:var(--text-muted)'>Aucun projet enregistré.</p>";
-            return;
-        }
+        
+        fournisseur_non_verifie = getattr(d, "fournisseur_non_verifie", False)
+        truth_gate = _evaluer_truth_gate(calculs, fournisseur_non_verifie)
 
-        container.innerHTML = data.map(p => `
-            <div class="project-item-card" id="proj-card-${p.id_projet}">
-                <label>Nom du projet</label>
-                <input type="text" id="edit-nom-${p.id_projet}" value="${p.nom_projet || ''}" />
-                <div class="row2">
-                    <div>
-                        <label>Budget initial HT (€)</label>
-                        <input type="number" id="edit-budget-${p.id_projet}" value="${p.budget_initial_ht || 0}" />
-                    </div>
-                    <div>
-                        <label>Marge cible (%)</label>
-                        <input type="number" id="edit-marge-${p.id_projet}" value="${p.marge_cible_pct || 30}" />
-                    </div>
-                </div>
-                <label>Statut</label>
-                <select id="edit-statut-${p.id_projet}">
-                    <option value="EN_COURS" ${p.statut === 'EN_COURS' ? 'selected' : ''}>En cours</option>
-                    <option value="TERMINE" ${p.statut === 'TERMINE' ? 'selected' : ''}>Terminé</option>
-                    <option value="ANNULE" ${p.statut === 'ANNULE' ? 'selected' : ''}>Annulé</option>
-                </select>
-                <label>Description</label>
-                <input type="text" id="edit-desc-${p.id_projet}" value="${p.description || ''}" />
-                
-                <div class="project-actions">
-                    <button class="btn-gold" style="padding:0.5rem; font-size:0.9rem;" onclick="saveProjectUpdate('${p.id_projet}')">Enregistrer</button>
-                    <button class="btn-remove" onclick="deleteProject('${p.id_projet}')">Supprimer</button>
-                </div>
-            </div>
-        `).join('');
-    } catch (err) {
-        container.innerHTML = "<p style='color:var(--accent-red)'>Erreur réseau : " + err.message + "</p>";
-    }
-}
+        result.append({
+            "id_devis": str(d.id),
+            "id_projet": str(d.projet_id),
+            "statut": getattr(d, "statut", "BROUILLON"),
+            "reference": getattr(d, "reference", getattr(d, "titre", "Devis")),
+            **calculs,
+            **truth_gate,
+        })
+    return result
 
-async function saveProjectUpdate(id_projet) {
-    const statusDiv = document.getElementById('modal-proj-status');
-    const nom_projet = document.getElementById(`edit-nom-${id_projet}`).value;
-    const budget_initial_ht = parseFloat(document.getElementById(`edit-budget-${id_projet}`).value) || 0;
-    const marge_cible_pct = parseFloat(document.getElementById(`edit-marge-${id_projet}`).value) || 30;
-    const statut = document.getElementById(`edit-statut-${id_projet}`).value;
-    const description = document.getElementById(`edit-desc-${id_projet}`).value;
 
-    statusDiv.textContent = "Enregistrement...";
-    try {
-        const res = await fetch(API_URL + `/api/v1/projets/${id_projet}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-            body: JSON.stringify({ nom_projet, budget_initial_ht, marge_cible_pct, statut, description: description || null })
-        });
-        const data = await res.json();
-        if (!res.ok) {
-            statusDiv.textContent = "Erreur : " + (data.detail || "Échec");
-            return;
-        }
-        statusDiv.textContent = "Projet mis à jour !";
-        setTimeout(() => statusDiv.textContent = "", 2500);
-        await refreshProjectSelect();
-    } catch (err) {
-        statusDiv.textContent = "Erreur réseau : " + err.message;
-    }
-}
+@router.post("/calculate", response_model=DevisResponse)
+def calculate_devis(
+    data: DevisCalculateRequest,
+    current_user: User = Depends(get_current_user)
+):
+    calculs = _calculer_totaux_devis(data.lots, data.acompte_pct)
+    truth_gate = _evaluer_truth_gate(calculs, data.fournisseur_non_verifie)
+    return {**calculs, **truth_gate}
 
-async function deleteProject(id_projet) {
-    if (!confirm("Voulez-vous vraiment supprimer ce projet ?")) return;
-    const statusDiv = document.getElementById('modal-proj-status');
-    statusDiv.textContent = "Suppression...";
-    try {
-        const res = await fetch(API_URL + `/api/v1/projets/${id_projet}`, {
-            method: "DELETE",
-            headers: { "Authorization": "Bearer " + token }
-        });
-        if (!res.ok) {
-            const data = await res.json();
-            statusDiv.textContent = "Erreur : " + (data.detail || "Refusée");
-            return;
-        }
-        statusDiv.textContent = "Projet supprimé.";
-        await fetchAndRenderProjectsModal();
-        await refreshProjectSelect();
-        loadDashboard();
-    } catch (err) {
-        statusDiv.textContent = "Erreur réseau : " + err.message;
-    }
-}
 
-// Gestion Modale Devis
-async function openDevisModal() {
-    document.getElementById('devis-modal').style.display = "flex";
-    await fetchAndRenderDevisModal();
-}
-function closeDevisModal() {
-    document.getElementById('devis-modal').style.display = "none";
-    loadDashboard();
-}
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=DevisPersistedResponse)
+def create_and_persist_devis(
+    data: DevisCalculateRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if not data.id_projet:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="id_projet obligatoire pour persister un devis"
+        )
 
-async function fetchAndRenderDevisModal() {
-    const container = document.getElementById('devis-list-container');
-    container.innerHTML = "<p style='color:var(--text-muted)'>Chargement...</p>";
-    try {
-        const res = await fetch(API_URL + "/api/v1/devis/", {
-            headers: { "Authorization": "Bearer " + token }
-        });
-        const data = await res.json();
-        if (!res.ok) {
-            // Affichage de l'erreur exacte renvoyée par le serveur backend
-            const errDetail = typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail || 'Erreur inconnue');
-            container.innerHTML = `<p style='color:var(--accent-red)'>Erreur serveur : ${errDetail}</p>`;
-            return;
-        }
-        cachedDevis = data;
-        if (data.length === 0) {
-            container.innerHTML = "<p style='color:var(--text-muted)'>Aucun devis enregistré pour l'instant.</p>";
-            return;
-        }
+    try:
+        uuid.UUID(data.id_projet)
+    except (ValueError, TypeError):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Format id_projet UUID invalide"
+        )
 
-        container.innerHTML = data.map(d => `
-            <div class="devis-item-card" id="devis-card-${d.id_devis || d.id}">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
-                    <strong style="color:var(--gold-primary)">${d.reference || 'Devis'}</strong>
-                    <span style="font-size:0.85rem; color:var(--text-muted)">${formatMoney(d.total_ttc)} TTC</span>
-                </div>
-                <div style="font-size:0.9rem; margin-bottom:0.5rem;">${d.titre || 'Sans titre'}</div>
-                <div class="devis-actions">
-                    <button class="btn-gold" style="padding:0.5rem; font-size:0.85rem;" onclick="downloadDevisPDF('${d.id_devis || d.id}')">📄 Télécharger PDF</button>
-                    <button class="btn-remove" onclick="deleteDevis('${d.id_devis || d.id}')">Supprimer</button>
-                </div>
-            </div>
-        `).join('');
-    } catch (err) {
-        container.innerHTML = "<p style='color:var(--accent-red)'>Erreur réseau : " + err.message + "</p>";
-    }
-}
+    projet = (
+        db.query(Projet)
+        .filter(
+            Projet.id == data.id_projet,
+            Projet.user_id == str(current_user.id)
+        )
+        .first()
+    )
 
-async function downloadDevisPDF(id_devis) {
-    const devis = cachedDevis.find(d => (d.id_devis === id_devis || d.id === id_devis));
-    if (devis) {
-        generatePDF(devis);
-    }
-}
+    if not projet:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Projet introuvable ou non autorisé"
+        )
 
-async function deleteDevis(id_devis) {
-    if (!confirm("Voulez-vous vraiment supprimer ce devis ?")) return;
-    const statusDiv = document.getElementById('modal-devis-status');
-    statusDiv.textContent = "Suppression...";
-    try {
-        const res = await fetch(API_URL + `/api/v1/devis/${id_devis}`, {
-            method: "DELETE",
-            headers: { "Authorization": "Bearer " + token }
-        });
-        if (!res.ok) {
-            const data = await res.json();
-            statusDiv.textContent = "Erreur : " + (data.detail || "Suppression refusée");
-            return;
-        }
-        statusDiv.textContent = "Devis supprimé.";
-        await fetchAndRenderDevisModal();
-        loadDashboard();
-    } catch (err) {
-        statusDiv.textContent = "Erreur réseau : " + err.message;
-    }
-}
+    calculs = _calculer_totaux_devis(data.lots, data.acompte_pct)
+    truth_gate = _evaluer_truth_gate(calculs, data.fournisseur_non_verifie)
 
-function addLigne() {
-    ligneCounter++;
-    const id = ligneCounter;
-    const container = document.getElementById('lignes-container');
-    const block = document.createElement('div');
-    block.className = 'ligne-block';
-    block.id = 'ligne-' + id;
-    block.dataset.mode = 'inverse';
-    block.innerHTML = `
-        <div class="ligne-top-row">
-            <input type="text" placeholder="Désignation" data-field="designation" />
-            <input type="text" placeholder="Unité" value="u" data-field="unite" />
-            <input type="number" placeholder="Qté" value="1" data-field="quantite" oninput="recalc(${id})" />
-        </div>
+    nouveau_devis = Devis(
+        id=str(uuid.uuid4()),
+        projet_id=str(projet.id),
+        total_ht=calculs["total_ht"],
+        cout_total=calculs["cout_total"],
+        created_at=datetime.now(timezone.utc),
+    )
 
-        <div class="mode-toggle">
-            <button type="button" class="mode-btn active" data-mode="inverse" onclick="setMode(${id}, 'inverse')">Chiffrage inversé</button>
-            <button type="button" class="mode-btn" data-mode="direct" onclick="setMode(${id}, 'direct')">Prix direct</button>
-        </div>
+    db.add(nouveau_devis)
+    db.commit()
+    db.refresh(nouveau_devis)
 
-        <div data-panel="inverse">
-            <label>Déboursé sec unitaire (€)</label>
-            <input type="number" value="0" data-field="debourse_sec_unitaire" oninput="recalc(${id})" />
-            <div class="slider-row">
-                <label>Marge cible <span class="marge-val" data-out="marge-label">30%</span></label>
-                <input type="range" min="0" max="80" value="30" data-field="marge_slider" oninput="recalc(${id})" />
-            </div>
-        </div>
-
-        <div data-panel="direct" style="display:none">
-            <label>Prix unitaire HT (€)</label>
-            <input type="number" value="0" data-field="prix_manuel" oninput="recalc(${id})" />
-            <label>Déboursé sec unitaire (€)</label>
-            <input type="number" value="0" data-field="debourse_sec_unitaire_direct" oninput="recalc(${id})" />
-        </div>
-
-        <label style="margin-top:0.5rem">TVA (%)</label>
-        <input type="number" value="20" data-field="taux_tva" oninput="recalc(${id})" />
-
-        <div class="result-line"><span>Prix unitaire HT calculé</span><span data-out="prix-unitaire">0,00 €</span></div>
-        <div class="result-line"><span>Marge unitaire</span><span data-out="marge-unitaire">0,00 €</span></div>
-        <div class="result-line total"><span>Total ligne HT</span><span data-out="total-ligne">0,00 €</span></div>
-
-        <button type="button" class="btn-remove" onclick="removeLigne(${id})">✕ Retirer</button>
-    `;
-    container.appendChild(block);
-    recalc(id);
-}
-
-function setMode(id, mode) {
-    const block = document.getElementById('ligne-' + id);
-    block.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-    block.querySelector('[data-panel="inverse"]').style.display = mode === 'inverse' ? 'block' : 'none';
-    block.querySelector('[data-panel="direct"]').style.display = mode === 'direct' ? 'block' : 'none';
-    block.dataset.mode = mode;
-    recalc(id);
-}
-
-function recalc(id) {
-    const block = document.getElementById('ligne-' + id);
-    if (!block) return;
-    const mode = block.dataset.mode || 'inverse';
-    const get = (field) => parseFloat(block.querySelector(`[data-field="${field}"]`)?.value) || 0;
-    const quantite = get('quantite') || 1;
-
-    let prixUnitaire = 0;
-    let debourseUnitaire = 0;
-
-    if (mode === 'inverse') {
-        debourseUnitaire = get('debourse_sec_unitaire');
-        const margePct = get('marge_slider');
-        block.querySelector('[data-out="marge-label"]').textContent = margePct + '%';
-        prixUnitaire = margePct < 100 ? debourseUnitaire / (1 - margePct / 100) : debourseUnitaire;
-    } else {
-        prixUnitaire = get('prix_manuel');
-        debourseUnitaire = get('debourse_sec_unitaire_direct');
+    return {
+        "id_devis": str(nouveau_devis.id),
+        "id_projet": str(nouveau_devis.projet_id),
+        "statut": "BROUILLON",
+        "reference": data.titre.strip(),
+        **calculs,
+        **truth_gate,
     }
 
-    const margeUnitaire = prixUnitaire - debourseUnitaire;
-    const totalLigne = prixUnitaire * quantite;
 
-    block.querySelector('[data-out="prix-unitaire"]').textContent = formatMoney(prixUnitaire);
-    block.querySelector('[data-out="marge-unitaire"]').textContent = formatMoney(margeUnitaire);
-    block.querySelector('[data-out="total-ligne"]').textContent = formatMoney(totalLigne);
-}
+@router.put("/{id_devis}", response_model=DevisPersistedResponse)
+def update_devis(
+    id_devis: str,
+    data: DevisCalculateRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    try:
+        uuid.UUID(id_devis)
+    except (ValueError, TypeError):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Format id_devis UUID invalide"
+        )
 
-function removeLigne(id) {
-    const el = document.getElementById('ligne-' + id);
-    if (el) el.remove();
-}
+    devis = (
+        db.query(Devis)
+        .join(Projet, Devis.projet_id == Projet.id)
+        .filter(
+            Devis.id == id_devis,
+            Projet.user_id == str(current_user.id)
+        )
+        .first()
+    )
 
-function formatMoney(val) {
-    const num = parseFloat(val) || 0;
-    return num.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' €';
-}
+    if not devis:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Devis introuvable ou non autorisé"
+        )
 
-function collectLignes() {
-    const blocks = document.querySelectorAll('.ligne-block');
-    const lignes = [];
-    blocks.forEach(block => {
-        const mode = block.dataset.mode || 'inverse';
-        const get = (field) => block.querySelector(`[data-field="${field}"]`)?.value;
-        const quantite = parseFloat(get('quantite')) || 1;
-        const taux_tva = parseFloat(get('taux_tva')) || 20;
-        let prix_unitaire_ht, debourse_sec_unitaire;
+    calculs = _calculer_totaux_devis(data.lots, data.acompte_pct)
+    truth_gate = _evaluer_truth_gate(calculs, data.fournisseur_non_verifie)
 
-        if (mode === 'inverse') {
-            debourse_sec_unitaire = parseFloat(get('debourse_sec_unitaire')) || 0;
-            const margePct = parseFloat(get('marge_slider')) || 0;
-            prix_unitaire_ht = margePct < 100 ? debourse_sec_unitaire / (1 - margePct / 100) : debourse_sec_unitaire;
-        } else {
-            prix_unitaire_ht = parseFloat(get('prix_manuel')) || 0;
-            debourse_sec_unitaire = parseFloat(get('debourse_sec_unitaire_direct')) || 0;
-        }
+    devis.total_ht = calculs["total_ht"]
+    devis.cout_total = calculs["cout_total"]
+    if hasattr(devis, "reference"):
+        devis.reference = data.titre.strip()
 
-        lignes.push({
-            designation: get('designation') || '(sans nom)',
-            unite: get('unite'),
-            quantite,
-            prix_unitaire_ht: Math.round(prix_unitaire_ht * 100) / 100,
-            debourse_sec_unitaire,
-            taux_tva
-        });
-    });
-    return lignes;
-}
+    db.commit()
+    db.refresh(devis)
 
-async function refreshProjectSelect() {
-    try {
-        const res = await fetch(API_URL + "/api/v1/projets/", {
-            headers: { "Authorization": "Bearer " + token }
-        });
-        const data = await res.json();
-        if (!res.ok) return;
-        cachedProjects = data;
-        const select = document.getElementById('devis-projet');
-        select.innerHTML = data.map(p => "<option value='" + p.id_projet + "'>" + p.nom_projet + "</option>").join("");
-    } catch (err) {}
-}
-
-async function register() {
-    const nom = document.getElementById('reg-nom').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    const entreprise = document.getElementById('reg-entreprise').value;
-    const statusDiv = document.getElementById('auth-status');
-
-    if (!nom || !email || !password) {
-        statusDiv.textContent = "Nom, email et mot de passe obligatoires.";
-        return;
+    return {
+        "id_devis": str(devis.id),
+        "id_projet": str(devis.projet_id),
+        "statut": getattr(devis, "statut", "BROUILLON"),
+        "reference": data.titre.strip(),
+        **calculs,
+        **truth_gate,
     }
 
-    statusDiv.textContent = "Création du compte...";
 
-    try {
-        const res = await fetch(API_URL + "/api/v1/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nom, email, password, entreprise: entreprise || null })
-        });
-        const data = await res.json();
+@router.delete("/{id_devis}")
+def delete_devis(
+    id_devis: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    try:
+        uuid.UUID(id_devis)
+    except (ValueError, TypeError):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Format id_devis UUID invalide"
+        )
 
-        if (!res.ok) {
-            statusDiv.textContent = "Erreur : " + (data.detail || "inscription refusée");
-            return;
-        }
+    devis = (
+        db.query(Devis)
+        .join(Projet, Devis.projet_id == Projet.id)
+        .filter(
+            Devis.id == id_devis,
+            Projet.user_id == str(current_user.id)
+        )
+        .first()
+    )
 
-        statusDiv.textContent = "Compte créé ! Connexion...";
-        document.getElementById('login-email').value = email;
-        document.getElementById('login-password').value = password;
-        showLogin();
-        await login();
-    } catch (err) {
-        statusDiv.textContent = "Erreur réseau : " + err.message;
-    }
-}
+    if not devis:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Devis introuvable ou non autorisé"
+        )
 
-async function login() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const statusDiv = document.getElementById('status');
-    statusDiv.textContent = "Connexion...";
-
-    try {
-        const res = await fetch(API_URL + "/api/v1/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-            statusDiv.textContent = "Erreur : " + (data.detail || "connexion refusée");
-            return;
-        }
-
-        token = data.access_token;
-        document.getElementById('login-section').style.display = "none";
-        document.getElementById('to-register').style.display = "none";
-        document.getElementById('app').style.display = "block";
-        loadDashboard();
-    } catch (err) {
-        statusDiv.textContent = "Erreur réseau : " + err.message;
-    }
-}
-
-async function loadDashboard() {
-    try {
-        const res = await fetch(API_URL + "/api/v1/dashboard/summary", {
-            headers: { "Authorization": "Bearer " + token }
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-            document.getElementById('details').innerHTML = "<p>Erreur : " + (data.detail || res.status) + "</p>";
-            return;
-        }
-
-        document.getElementById('ca').textContent = formatMoney(data.chiffre_affaires_total);
-        document.getElementById('marge').textContent = formatMoney(data.marge_brute_eur);
-        document.getElementById('taux').textContent = data.taux_marque_pct + " %";
-        document.getElementById('projets').textContent = data.nombre_projets;
-
-        document.getElementById('details').innerHTML =
-            "<div style='display:flex;justify-content:space-between;padding:8px 0'><span>Chantiers en cours</span><span>" + data.chantiers_en_cours + "</span></div>" +
-            "<div style='display:flex;justify-content:space-between;padding:8px 0'><span>Nombre de devis</span><span>" + data.nombre_devis + "</span></div>" +
-            "<div style='display:flex;justify-content:space-between;padding:8px 0'><span>Coût total</span><span>" + formatMoney(data.cout_total) + "</span></div>";
-    } catch (err) {
-        document.getElementById('details').innerHTML = "<p>Erreur réseau : " + err.message + "</p>";
-    }
-}
-
-async function createProject() {
-    const nom_projet = document.getElementById('proj-nom').value;
-    const budget_initial_ht = parseFloat(document.getElementById('proj-budget').value) || 0;
-    const marge_cible_pct = parseFloat(document.getElementById('proj-marge').value) || 30;
-    const description = document.getElementById('proj-description').value;
-    const statusDiv = document.getElementById('proj-status');
-
-    if (!nom_projet) {
-        statusDiv.textContent = "Le nom du projet est obligatoire.";
-        return;
-    }
-
-    statusDiv.textContent = "Création en cours...";
-
-    try {
-        const res = await fetch(API_URL + "/api/v1/projets/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-            body: JSON.stringify({
-                nom_projet, budget_initial_ht, marge_cible_pct,
-                statut: "EN_COURS", description: description || null
-            })
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-            statusDiv.textContent = "Erreur : " + (data.detail || res.status);
-            return;
-        }
-
-        statusDiv.textContent = "Projet créé !";
-        document.getElementById('proj-nom').value = "";
-        document.getElementById('proj-description').value = "";
-        loadDashboard();
-    } catch (err) {
-        statusDiv.textContent = "Erreur réseau : " + err.message;
-    }
-}
-
-async function createDevis() {
-    const projetSelect = document.getElementById('devis-projet');
-    const id_projet = projetSelect.value;
-    const nomProjet = projetSelect.options[projetSelect.selectedIndex] ? projetSelect.options[projetSelect.selectedIndex].text : '';
-    const titre = document.getElementById('devis-titre').value;
-    const acompte_pct = parseFloat(document.getElementById('devis-acompte').value) || 30;
-    const marge_cible_pct = parseFloat(document.getElementById('devis-marge').value) || 30;
-    const lignes = collectLignes();
-    const statusDiv = document.getElementById('devis-status');
-    const btnPdf = document.getElementById('btn-pdf');
-
-    if (!id_projet || !titre) {
-        statusDiv.textContent = "Projet et titre obligatoires.";
-        return;
-    }
-    if (lignes.length === 0 || !lignes.some(l => l.designation && l.designation !== '(sans nom)')) {
-        statusDiv.textContent = "Ajoute au moins une intervention avec une désignation.";
-        return;
-    }
-
-    statusDiv.textContent = "Création en cours...";
-    btnPdf.style.display = "none";
-
-    try {
-        const res = await fetch(API_URL + "/api/v1/devis/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-            body: JSON.stringify({
-                titre, acompte_pct, id_projet, marge_cible_pct,
-                fournisseur_non_verifie: false,
-                lots: [{ nom_lot: "Lot principal", lignes }]
-            })
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-            statusDiv.textContent = "Erreur : " + (data.detail || res.status);
-            return;
-        }
-
-        statusDiv.textContent = "Devis créé ! Marge : " + formatMoney(data.marge_brute_eur) + " (" + data.taux_marque_pct + "%)";
-
-        lastDevis = { ...data, titre, nomProjet, acompte_pct, lignes };
-        btnPdf.style.display = "block";
-
-        document.getElementById('devis-titre').value = "";
-        document.getElementById('lignes-container').innerHTML = "";
-        addLigne();
-        loadDashboard();
-    } catch (err) {
-        statusDiv.textContent = "Erreur réseau : " + err.message;
-    }
-}
-
-function generatePDF(devisObj) {
-    if (!devisObj) return;
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const gold = [245, 158, 11];
-    const dark = [30, 30, 30];
-    const muted = [120, 120, 120];
-
-    doc.setFillColor(...gold);
-    doc.rect(0, 0, 210, 22, 'F');
-    doc.setFontSize(18);
-    doc.setTextColor(255,255,255);
-    doc.text("ASSAWIN", 14, 14);
-    doc.setFontSize(10);
-    doc.text("Devis", 180, 14);
-
-    let y = 34;
-    doc.setTextColor(...dark);
-    doc.setFontSize(14);
-    doc.text(devisObj.titre || 'Devis', 14, y);
-    y += 7;
-    doc.setFontSize(10);
-    doc.setTextColor(...muted);
-    doc.text("Référence : " + (devisObj.reference || 'N/A'), 14, y);
-    y += 5;
-    doc.text("Date : " + new Date().toLocaleDateString('fr-FR'), 14, y);
-    y += 10;
-
-    doc.setFillColor(240, 240, 240);
-    doc.rect(14, y, 182, 8, 'F');
-    doc.setTextColor(...dark);
-    doc.setFontSize(9);
-    doc.text("Désignation", 16, y + 5.5);
-    doc.text("Qté", 110, y + 5.5);
-    doc.text("Unité", 128, y + 5.5);
-    doc.text("Prix U. HT", 148, y + 5.5);
-    doc.text("Total HT", 175, y + 5.5);
-    y += 8;
-
-    let lignesList = devisObj.lignes || [];
-    if (devisObj.lots && devisObj.lots.length > 0 && lignesList.length === 0) {
-        devisObj.lots.forEach(lot => {
-            if (lot.lignes) lignesList = lignesList.concat(lot.lignes);
-        });
-    }
-
-    lignesList.forEach(l => {
-        const totalLigne = l.prix_unitaire_ht * l.quantite;
-        doc.setFontSize(9);
-        doc.setTextColor(...dark);
-        doc.text(String(l.designation || '').substring(0, 45), 16, y + 5.5);
-        doc.text(String(l.quantite || 1), 110, y + 5.5);
-        doc.text(String(l.unite || 'u'), 128, y + 5.5);
-        doc.text(formatMoney(l.prix_unitaire_ht), 148, y + 5.5);
-        doc.text(formatMoney(totalLigne), 175, y + 5.5);
-        y += 8;
-        doc.setDrawColor(230,230,230);
-        doc.line(14, y, 196, y);
-    });
-
-    y += 8;
-    const lines = [
-        ["Total HT", devisObj.total_ht],
-        ["TVA", devisObj.total_tva],
-        ["Total TTC", devisObj.total_ttc],
-        ["Acompte (" + (devisObj.acompte_pct || 30) + "%)", devisObj.acompte_montant]
-    ];
-    lines.forEach(([label, val], i) => {
-        doc.setFontSize(i === 2 ? 12 : 10);
-        doc.setTextColor(i === 2 ? gold[0] : dark[0], i === 2 ? gold[1] : dark[1], i === 2 ? gold[2] : dark[2]);
-        doc.text(label, 130, y);
-        doc.text(formatMoney(val), 175, y);
-        y += 7;
-    });
-
-    y += 8;
-    doc.setFontSize(8);
-    doc.setTextColor(...muted);
-    doc.text("Devis généré via ASSAWIN — sous réserve d'acceptation. Validité 30 jours.", 14, y);
-
-    doc.save((devisObj.reference || "devis") + ".pdf");
-}
-</script>
-</body>
-</html>
+    db.delete(devis)
+    db.commit()
+    return {"message": "Devis supprimé avec succès"}
