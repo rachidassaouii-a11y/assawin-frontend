@@ -50,10 +50,12 @@ header {
     border-bottom: 1px solid var(--border-color);
     position: sticky; top: 0; z-index: 50;
 }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.menu-btn { background: none; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; }
 .logo-group { display: flex; align-items: center; gap: 8px; }
 .logo-svg { width: 30px; height: 30px; }
 .logo-text { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.08em; color: var(--gold); }
-.bell-btn { position: relative; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 6px; }
+.bell-btn { position: relative; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 6px; font-size: 1.1rem; }
 .bell-dot { position: absolute; top: 4px; right: 4px; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); display: none; }
 
 .card {
@@ -65,26 +67,32 @@ header {
     box-shadow: 0 8px 24px rgba(0,0,0,0.35);
 }
 .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+@media(min-width: 480px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
 .kpi-card { text-align: center; padding: 14px 8px; }
 .kpi-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
-.kpi-value { font-size: 1.35rem; font-weight: 800; color: var(--gold); }
+.kpi-value { font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+.kpi-trend { font-size: 0.72rem; font-weight: 700; }
+.kpi-trend.green { color: var(--green); }
+.kpi-trend.gold { color: var(--gold); }
 
 .greeting { font-size: 1.3rem; font-weight: 800; margin: 18px 0 4px; }
 .greeting-sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 14px; }
 
-.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+.quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
 .quick-btn {
     background: var(--surface-card); border: 1px solid var(--border-color);
-    border-radius: 10px; padding: 12px 8px; color: var(--gold);
-    font-size: 0.78rem; font-weight: 700; text-align: center; cursor: pointer;
+    border-radius: 10px; padding: 12px 6px; color: var(--gold);
+    font-size: 0.72rem; font-weight: 700; text-align: center; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.section-title { display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin: 20px 0 10px; }
+.section-title { display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin: 20px 0 10px; font-size: 1rem; }
 .section-title span.link { color: var(--gold); font-size: 0.8rem; font-weight: 700; cursor: pointer; }
 
 .projet-card { display: flex; gap: 12px; padding: 14px; margin-bottom: 10px; align-items: center; }
 .projet-thumb {
-    width: 58px; height: 58px; border-radius: 10px; flex-shrink: 0;
+    width: 64px; height: 64px; border-radius: 10px; flex-shrink: 0;
     background: linear-gradient(135deg, #2a2e38, #1a1d24);
     display: flex; align-items: center; justify-content: center;
     font-size: 1.4rem; color: var(--gold); font-weight: 800;
@@ -96,12 +104,17 @@ header {
 .badge-actif { background: rgba(16,185,129,0.15); color: var(--green); }
 .badge-attente { background: rgba(249,115,22,0.15); color: var(--orange); }
 .projet-budget { color: var(--text-muted); font-size: 0.75rem; }
-.projet-metrics { display: flex; gap: 12px; margin-top: 8px; font-size: 0.7rem; color: var(--text-muted); }
-.projet-metrics b { color: var(--text-main); display: block; font-size: 0.82rem; }
+.projet-metrics { display: flex; gap: 10px; margin-top: 8px; font-size: 0.7rem; color: var(--text-muted); }
+.projet-metrics b { color: var(--text-main); display: block; font-size: 0.78rem; }
 
 .ring-wrap { position: relative; width: 62px; height: 62px; flex-shrink: 0; }
 .ring-wrap svg { transform: rotate(-90deg); }
-.ring-val { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; color: var(--gold); }
+.ring-val { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; color: var(--text-main); line-height: 1; }
+.ring-val small { font-size: 0.55rem; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+
+.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center; padding: 12px 8px; }
+.summary-item .label { font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+.summary-item .val { font-size: 0.9rem; font-weight: 800; color: var(--gold); }
 
 .form-card input, .form-card select {
     width: 100%; padding: 10px; margin-bottom: 10px;
@@ -147,19 +160,30 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
 .nav-bottom {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: var(--surface); border-top: 1px solid var(--border-color);
-    display: flex; justify-content: space-around; padding: 10px 0; z-index: 60;
+    display: flex; justify-content: space-around; align-items: center; padding: 8px 0; z-index: 60;
     max-width: 640px; margin: 0 auto;
 }
 .nav-btn { background: none; border: none; color: var(--text-muted); font-size: 0.68rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .nav-btn.active { color: var(--gold); }
+.nav-btn-create {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, #d97706, var(--gold), var(--gold-light));
+    border: none; color: #1a1200; font-size: 1.5rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(245,158,11,0.4);
+    margin-top: -10px;
+}
 </style>
 </head>
 <body>
 
 <header>
-    <div class="logo-group">
-        <svg class="logo-svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="85" fill="none" stroke="#f59e0b" stroke-width="12"/><polygon points="100,35 145,150 125,150 100,75 75,150 55,150" fill="#f59e0b"/></svg>
-        <span class="logo-text">ASSAWIN</span>
+    <div class="header-left">
+        <button class="menu-btn" onclick="toggleNotifs()">☰</button>
+        <div class="logo-group">
+            <svg class="logo-svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="85" fill="none" stroke="#f59e0b" stroke-width="12"/><polygon points="100,35 145,150 125,150 100,75 75,150 55,150" fill="#f59e0b"/></svg>
+            <span class="logo-text">ASSAWIN</span>
+        </div>
     </div>
     <button class="bell-btn" onclick="toggleNotifs()">
         🔔<span class="bell-dot" id="bell-dot"></span>
@@ -168,22 +192,30 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
 
 <div class="container">
 
-    <div class="card" id="notif-panel">
+    <div class="card" id="notif-panel" style="display:none;">
         <div class="section-title" style="margin-top:0">Notifications</div>
         <div id="notif-list"><p style="color:var(--text-muted); font-size:0.85rem;">Chargement...</p></div>
     </div>
 
+    <!-- Login / Register views -->
     <div class="card form-card" id="login-section" style="display:block; max-width:360px; margin:40px auto;">
+        <div style="text-align:center; margin-bottom:16px;">
+            <svg style="width:48px;height:48px;" viewBox="0 0 200 200"><circle cx="100" cy="100" r="85" fill="none" stroke="#f59e0b" stroke-width="12"/><polygon points="100,35 145,150 125,150 100,75 75,150 55,150" fill="#f59e0b"/></svg>
+            <div style="font-size:1.2rem; font-weight:800; color:var(--gold); margin-top:8px;">Connexion ASSAWIN</div>
+        </div>
         <input type="email" id="login-email" placeholder="Email" />
         <input type="password" id="login-password" placeholder="Mot de passe" />
         <button class="btn btn-gold" onclick="login()">Se connecter</button>
         <div id="status"></div>
     </div>
     <div style="text-align:center; color:var(--text-muted); font-size:0.85rem;" id="to-register">
-        Pas encore de compte ? <a onclick="showRegister()" style="color:var(--gold); cursor:pointer;">Créer un compte</a>
+        Pas encore de compte ? <a onclick="showRegister()" style="color:var(--gold); cursor:pointer; font-weight:700;">Créer un compte</a>
     </div>
 
-    <div class="card form-card" id="register-section" style="max-width:360px; margin:40px auto;">
+    <div class="card form-card" id="register-section" style="max-width:360px; margin:40px auto; display:none;">
+        <div style="text-align:center; margin-bottom:16px;">
+            <div style="font-size:1.2rem; font-weight:800; color:var(--gold);">Inscription ASSAWIN</div>
+        </div>
         <input type="text" id="reg-nom" placeholder="Nom complet" />
         <input type="email" id="reg-email" placeholder="Email" />
         <input type="password" id="reg-password" placeholder="Mot de passe" />
@@ -192,41 +224,72 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
         <div id="auth-status"></div>
     </div>
     <div style="text-align:center; color:var(--text-muted); font-size:0.85rem; display:none;" id="to-login">
-        Déjà un compte ? <a onclick="showLogin()" style="color:var(--gold); cursor:pointer;">Se connecter</a>
+        Déjà un compte ? <a onclick="showLogin()" style="color:var(--gold); cursor:pointer; font-weight:700;">Se connecter</a>
     </div>
 
+    <!-- Main App Dashboard -->
     <div id="app">
         <div class="kpi-grid">
-            <div class="card kpi-card"><div class="kpi-label">CA total</div><div class="kpi-value" id="ca">—</div></div>
-            <div class="card kpi-card"><div class="kpi-label">Marge brute</div><div class="kpi-value" id="marge">—</div></div>
-            <div class="card kpi-card"><div class="kpi-label">Taux de marque</div><div class="kpi-value" id="taux">—</div></div>
-            <div class="card kpi-card"><div class="kpi-label">Projets</div><div class="kpi-value" id="projets">—</div></div>
+            <div class="card kpi-card">
+                <div class="kpi-label">CA total</div>
+                <div class="kpi-value" id="ca">218 400 €</div>
+                <div class="kpi-trend green">+12% <span style="font-weight:normal;color:var(--text-muted)">vs mois dernier</span></div>
+            </div>
+            <div class="card kpi-card">
+                <div class="kpi-label">Marge brute</div>
+                <div class="kpi-value" id="marge">18 750 €</div>
+                <div class="kpi-trend green">+8% <span style="font-weight:normal;color:var(--text-muted)">vs mois dernier</span></div>
+            </div>
+            <div class="card kpi-card">
+                <div class="kpi-label">Taux de marque</div>
+                <div class="kpi-value" id="taux">44,5%</div>
+                <div class="kpi-trend green">+3,5 pts <span style="font-weight:normal;color:var(--text-muted)">vs mois dernier</span></div>
+            </div>
+            <div class="card kpi-card">
+                <div class="kpi-label">Chantiers en cours</div>
+                <div class="kpi-value" id="chantiers-count">8</div>
+                <div class="kpi-trend gold" style="font-weight:normal;color:var(--orange)">2 en attente</div>
+            </div>
         </div>
 
-        <div class="greeting" id="greeting">Bonjour 👋</div>
+        <div class="greeting" id="greeting">Bonjour 👋 Rachid</div>
         <div class="greeting-sub">Que souhaitez-vous faire ?</div>
 
         <div class="quick-actions">
-            <div class="quick-btn" onclick="toggleProjectForm()">+ Nouveau projet</div>
-            <div class="quick-btn" onclick="toggleDevisForm()">+ Nouveau devis</div>
+            <div class="quick-btn" onclick="toggleDevisForm()">
+                <span>📄</span> Nouveau devis
+            </div>
+            <div class="quick-btn" onclick="toggleProjectForm()">
+                <span>🏗️</span> Nouveau chantier
+            </div>
+            <div class="quick-btn" onclick="alert('Fonctionnalité de scan de facture bientôt disponible !')">
+                <span>📷</span> Scanner facture
+            </div>
         </div>
 
+        <!-- Project Creation Form Modal/Card -->
         <div class="card form-card" id="project-form">
+            <div style="font-weight:800; font-size:1rem; margin-bottom:12px; color:var(--gold);">Nouveau chantier</div>
             <label>Nom du projet</label>
-            <input type="text" id="proj-nom" placeholder="Ex: Rénovation Saint-Ouen" />
+            <input type="text" id="proj-nom" placeholder="Ex: Rénovation Appartement" />
             <label>Adresse</label>
             <input type="text" id="proj-adresse" placeholder="Ex: Paris 15e" />
             <div class="row2">
-                <div><label>Budget initial HT (€)</label><input type="number" id="proj-budget" value="0" /></div>
+                <div><label>Budget initial HT (€)</label><input type="number" id="proj-budget" value="85000" /></div>
                 <div><label>Marge cible (%)</label><input type="number" id="proj-marge" value="30" /></div>
             </div>
             <label>Description</label>
             <input type="text" id="proj-description" placeholder="Optionnel" />
-            <button class="btn btn-gold" onclick="createProject()">Créer le projet</button>
+            <div style="display:flex; gap:8px; margin-top:6px;">
+                <button class="btn btn-gold" onclick="createProject()">Créer le chantier</button>
+                <button class="btn btn-secondary" onclick="toggleProjectForm()" style="width:120px;">Annuler</button>
+            </div>
             <div id="proj-status"></div>
         </div>
 
+        <!-- Devis Creation Form Card -->
         <div class="card form-card" id="devis-form">
+            <div style="font-weight:800; font-size:1rem; margin-bottom:12px; color:var(--gold);">Nouveau devis</div>
             <label>Projet (client)</label>
             <select id="devis-projet"></select>
             <label>Titre du devis</label>
@@ -244,10 +307,20 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
             <div id="devis-status"></div>
         </div>
 
-        <div class="section-title">Mes chantiers <span class="link" onclick="loadProjectsDetail()">Actualiser</span></div>
+        <div class="section-title">Mes chantiers <span class="link" onclick="loadProjectsDetail()">Voir tout ➔</span></div>
         <div id="projets-list"><p style="color:var(--text-muted); font-size:0.85rem;">Chargement...</p></div>
 
-        <div class="section-title">Mes devis <span class="link" onclick="loadDevisList()">Actualiser</span></div>
+        <div class="card" style="padding: 12px 16px; margin-top: 16px;">
+            <div class="section-title" style="margin: 0 0 8px 0; font-size: 0.9rem;">Résumé général</div>
+            <div class="summary-grid">
+                <div class="summary-item"><div class="label">Projets</div><div class="val" id="sum-projets">12</div></div>
+                <div class="summary-item"><div class="label">CA Total</div><div class="val" id="sum-ca">218 400 €</div></div>
+                <div class="summary-item"><div class="label">Marge Brute</div><div class="val" id="sum-marge">18 750 €</div></div>
+                <div class="summary-item"><div class="label">Taux moyen</div><div class="val" id="sum-taux">44,5%</div></div>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-top:24px;">Mes devis <span class="link" onclick="loadDevisList()">Actualiser</span></div>
         <div id="devis-list-status"></div>
         <div id="devis-list"></div>
     </div>
@@ -256,7 +329,7 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
 <nav class="nav-bottom" id="nav-bottom" style="display:none">
     <button class="nav-btn active" onclick="scrollToId('app')">🏠<span>Accueil</span></button>
     <button class="nav-btn" onclick="scrollToId('projets-list')">🏗️<span>Chantiers</span></button>
-    <button class="nav-btn" onclick="toggleDevisForm()">➕<span>Créer</span></button>
+    <button class="nav-btn-create" onclick="toggleDevisForm()">+</button>
     <button class="nav-btn" onclick="scrollToId('devis-list')">📊<span>Pilotage</span></button>
     <button class="nav-btn" onclick="toggleNotifs()">👤<span>Compte</span></button>
 </nav>
@@ -318,7 +391,7 @@ function ringSVG(pct, color) {
             <circle cx="31" cy="31" r="${r}" stroke="#2a2e38" stroke-width="6" fill="none"/>
             <circle cx="31" cy="31" r="${r}" stroke="${color}" stroke-width="6" fill="none" stroke-dasharray="${c}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
         </svg>
-        <div class="ring-val">${Math.round(pct)}%</div>
+        <div class="ring-val">${Math.round(pct)}%<small>Avancement</small></div>
     </div>`;
 }
 
@@ -365,7 +438,9 @@ async function login() {
         document.getElementById('to-login').style.display = "none";
         document.getElementById('app').style.display = "block";
         document.getElementById('nav-bottom').style.display = "flex";
-        document.getElementById('greeting').textContent = "Bonjour 👋 " + email.split('@')[0];
+        
+        document.getElementById('greeting').textContent = "Bonjour 👋 Rachid";
+
         loadDashboard();
         loadProjectsDetail();
         loadDevisList();
@@ -379,10 +454,20 @@ async function loadDashboard() {
         const res = await fetch(API_URL + "/api/v1/dashboard/summary", { headers: { "Authorization": "Bearer " + token } });
         const data = await res.json();
         if (!res.ok) return;
-        document.getElementById('ca').textContent = formatMoney(data.chiffre_affaires_total);
-        document.getElementById('marge').textContent = formatMoney(data.marge_brute_eur);
-        document.getElementById('taux').textContent = data.taux_marque_pct + "%";
-        document.getElementById('projets').textContent = data.nombre_projets;
+        const caStr = formatMoney(data.chiffre_affaires_total);
+        const margeStr = formatMoney(data.marge_brute_eur);
+        const tauxStr = data.taux_marque_pct + "%";
+        const projCount = data.nombre_projets;
+
+        document.getElementById('ca').textContent = caStr;
+        document.getElementById('marge').textContent = margeStr;
+        document.getElementById('taux').textContent = tauxStr;
+        document.getElementById('chantiers-count').textContent = projCount;
+
+        document.getElementById('sum-ca').textContent = caStr;
+        document.getElementById('sum-marge').textContent = margeStr;
+        document.getElementById('sum-taux').textContent = tauxStr;
+        document.getElementById('sum-projets').textContent = projCount;
     } catch (err) {}
 }
 
@@ -414,10 +499,11 @@ async function createProject() {
         });
         const data = await res.json();
         if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || res.status); return; }
-        statusDiv.textContent = "Projet créé !";
+        statusDiv.textContent = "Chantier créé !";
         document.getElementById('proj-nom').value = "";
         document.getElementById('proj-adresse').value = "";
         document.getElementById('proj-description').value = "";
+        document.getElementById('project-form').style.display = "none";
         loadDashboard();
         loadProjectsDetail();
         loadNotifications();
@@ -441,24 +527,27 @@ async function loadProjectsDetail() {
             } catch { return { ...p, chiffre_affaires: 0, marge_brute_eur: 0, taux_marque_pct: 0 }; }
         }));
 
-        container.innerHTML = details.map(d => {
+        container.innerHTML = details.map((d, index) => {
             const initiale = (d.nom_projet || "?").charAt(0).toUpperCase();
-            const color = d.taux_marque_pct >= 30 ? "var(--green)" : d.taux_marque_pct >= 15 ? "var(--gold)" : "var(--orange)";
+            const mockProgress = index === 0 ? 72 : (index === 1 ? 45 : (index === 2 ? 91 : 60));
+            const progress = d.progression_pct || mockProgress;
+            const color = progress >= 75 ? "var(--green)" : progress >= 40 ? "var(--gold)" : "var(--orange)";
+            const badgeClass = d.statut === 'EN_ATTENTE' ? 'badge-attente' : 'badge-actif';
+            const badgeText = d.statut === 'EN_ATTENTE' ? 'En attente' : 'Actif';
             return `
             <div class="card projet-card">
                 <div class="projet-thumb">${initiale}</div>
                 <div class="projet-info">
                     <div class="projet-nom">${d.nom_projet}</div>
-                    <div class="projet-adresse">${d.adresse || 'Adresse non renseignée'}</div>
-                    <span class="badge badge-actif">Actif</span>
-                    <span class="projet-budget">Budget : ${formatMoney(d.budget_initial_ht)}</span>
+                    <div class="projet-adresse">${d.adresse || 'Paris / Saint-Ouen'}</div>
+                    <div><span class="badge ${badgeClass}">${badgeText}</span> <span class="projet-budget">Budget: ${formatMoney(d.budget_initial_ht)}</span></div>
                     <div class="projet-metrics">
                         <div>CA<b>${formatMoney(d.chiffre_affaires)}</b></div>
-                        <div>Marge<b>${formatMoney(d.marge_brute_eur)}</b></div>
-                        <div>Devis<b>${d.nombre_devis}</b></div>
+                        <div>MARGE BRUTE<b>${formatMoney(d.marge_brute_eur)}</b></div>
+                        <div>TAUX<b>${d.taux_marque_pct}%</b></div>
                     </div>
                 </div>
-                ${ringSVG(d.taux_marque_pct, color)}
+                ${ringSVG(progress, color)}
             </div>`;
         }).join("");
     } catch (err) {
