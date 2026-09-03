@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>ASSAWIN — Mobile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ASSAWIN — Bleu Nuit</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         /* ============================================================
-           DESIGN SYSTEM ASSAWIN MOBILE
+           CHARTE ASSAWIN — BLEU NUIT
            ============================================================ */
         :root {
-            --bg-app: #05080f;
-            --bg-surface: #0f172a;
+            --bg-app: #0a0f1a;
+            --bg-surface: #111827;
             --bg-card: #1a2332;
             --bg-card-hover: #1f2a3d;
-            --primary: #3b82f6;
-            --primary-glow: rgba(59,130,246,0.2);
             --gold: #d4a84e;
+            --gold-glow: rgba(212,168,78,0.12);
+            --primary: #3b82f6;
+            --primary-glow: rgba(59,130,246,0.15);
             --success: #22c55e;
             --danger: #ef4444;
             --warning: #f59e0b;
-            --text: #f8fafc;
+            --text: #f1f5f9;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
             --border: rgba(255,255,255,0.06);
+            --shadow: 0 8px 32px rgba(0,0,0,0.5);
             --radius-card: 20px;
             --radius-sm: 12px;
-            --shadow: 0 8px 32px rgba(0,0,0,0.5);
-            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,7 +43,7 @@
             overflow-x: hidden;
         }
 
-        /* --- Header --- */
+        /* --- HEADER --- */
         .app-header {
             display: flex;
             justify-content: space-between;
@@ -55,20 +56,19 @@
         }
         .app-header .logo {
             font-weight: 700;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             letter-spacing: -0.02em;
         }
         .app-header .logo span { color: var(--gold); }
         .app-header .greeting {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
         }
         .app-header .greeting strong { color: var(--text); }
 
-        /* --- Main Container --- */
         .container { padding: 0 16px; }
 
-        /* --- KPI Strip --- */
+        /* --- KPI STRIP --- */
         .kpi-strip {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -79,17 +79,15 @@
             background: var(--bg-surface);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
-            padding: 12px 10px;
+            padding: 14px 10px;
             text-align: center;
         }
-        .kpi-card .value {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
+        .kpi-card .value { font-size: 1.2rem; font-weight: 700; }
         .kpi-card .value.gold { color: var(--gold); }
         .kpi-card .value.primary { color: var(--primary); }
         .kpi-card .value.success { color: var(--success); }
         .kpi-card .value.danger { color: var(--danger); }
+        .kpi-card .value.white { color: var(--text); }
         .kpi-card .label {
             font-size: 0.55rem;
             text-transform: uppercase;
@@ -105,19 +103,15 @@
         .kpi-card .delta.up { color: var(--success); }
         .kpi-card .delta.down { color: var(--danger); }
 
-        /* --- Welcome + Actions --- */
+        /* --- WELCOME --- */
         .welcome-section {
-            background: linear-gradient(145deg, var(--bg-surface), var(--bg-card));
+            background: var(--bg-surface);
             border: 1px solid var(--border);
             border-radius: var(--radius-card);
             padding: 20px 18px;
             margin-bottom: 16px;
         }
-        .welcome-section h2 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
+        .welcome-section h2 { font-size: 1.2rem; font-weight: 600; }
         .welcome-section .sub {
             color: var(--text-secondary);
             font-size: 0.85rem;
@@ -139,9 +133,13 @@
         }
         .action-btn:active { transform: scale(0.96); background: var(--bg-card-hover); }
         .action-btn i { color: var(--primary); width: 28px; height: 28px; }
-        .action-btn .label { font-size: 0.65rem; color: var(--text-secondary); margin-top: 4px; }
+        .action-btn .label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
 
-        /* --- Chantiers --- */
+        /* --- SECTION HEADER --- */
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -149,16 +147,21 @@
             margin: 16px 0 12px;
         }
         .section-header h3 { font-size: 1rem; font-weight: 600; }
-        .section-header .see-all { color: var(--primary); font-size: 0.8rem; cursor: pointer; }
+        .section-header .see-all {
+            color: var(--primary);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
 
+        /* --- CHANTIER CARD --- */
         .chantier-card {
             background: var(--bg-surface);
             border: 1px solid var(--border);
             border-radius: var(--radius-card);
             padding: 16px;
             margin-bottom: 12px;
-            transition: all var(--transition);
             cursor: pointer;
+            transition: all var(--transition);
         }
         .chantier-card:active { transform: scale(0.98); }
         .chantier-card .top {
@@ -167,17 +170,32 @@
             align-items: flex-start;
         }
         .chantier-card .top .nom { font-weight: 600; font-size: 1rem; }
-        .chantier-card .top .lieu { font-size: 0.7rem; color: var(--text-muted); }
+        .chantier-card .top .lieu {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
         .chantier-card .top .statut {
             font-size: 0.6rem;
             font-weight: 600;
             text-transform: uppercase;
-            padding: 2px 10px;
+            padding: 2px 12px;
             border-radius: 999px;
         }
-        .statut-actif { background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.2); }
-        .statut-attente { background: rgba(245,158,11,0.15); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
-        .statut-termine { background: rgba(59,130,246,0.15); color: var(--primary); border: 1px solid rgba(59,130,246,0.2); }
+        .statut-actif {
+            background: rgba(34,197,94,0.15);
+            color: var(--success);
+            border: 1px solid rgba(34,197,94,0.2);
+        }
+        .statut-attente {
+            background: rgba(245,158,11,0.15);
+            color: var(--warning);
+            border: 1px solid rgba(245,158,11,0.2);
+        }
+        .statut-termine {
+            background: rgba(59,130,246,0.15);
+            color: var(--primary);
+            border: 1px solid rgba(59,130,246,0.2);
+        }
 
         .chantier-card .budget {
             font-size: 0.85rem;
@@ -205,11 +223,12 @@
             gap: 16px;
             font-size: 0.7rem;
             color: var(--text-muted);
+            margin-top: 6px;
         }
         .chantier-card .footer-stats span { display: flex; align-items: center; gap: 4px; }
         .chantier-card .footer-stats i { width: 14px; height: 14px; }
 
-        /* --- Bottom Navigation --- */
+        /* --- BOTTOM NAV --- */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -238,14 +257,18 @@
             border-radius: 12px;
         }
         .bottom-nav .nav-item i { width: 24px; height: 24px; }
-        .bottom-nav .nav-item.active { color: var(--primary); }
-        .bottom-nav .nav-item.active i { filter: drop-shadow(0 0 8px var(--primary-glow)); }
+        .bottom-nav .nav-item.active {
+            color: var(--primary);
+        }
+        .bottom-nav .nav-item.active i {
+            filter: drop-shadow(0 0 8px var(--primary-glow));
+        }
 
-        /* --- Tab Content --- */
+        /* --- TABS --- */
         .tab-content { display: none; padding: 0 0 16px; }
         .tab-content.active { display: block; }
 
-        /* --- Créer (middle tab) --- */
+        /* --- CREATE --- */
         .create-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -265,7 +288,7 @@
         .create-card i { color: var(--gold); width: 32px; height: 32px; margin-bottom: 8px; }
         .create-card .label { font-size: 0.8rem; font-weight: 500; }
 
-        /* --- Pilotage --- */
+        /* --- PILOTAGE --- */
         .pilotage-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -280,9 +303,13 @@
             text-align: center;
         }
         .pilotage-card .val { font-size: 1.3rem; font-weight: 700; }
-        .pilotage-card .lbl { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; }
+        .pilotage-card .lbl {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
 
-        /* --- Compte --- */
+        /* --- COMPTE --- */
         .profile-card {
             background: var(--bg-surface);
             border: 1px solid var(--border);
@@ -301,6 +328,7 @@
             justify-content: center;
             font-size: 2rem;
             font-weight: 700;
+            color: #fff;
         }
         .profile-card .name { font-size: 1.1rem; font-weight: 600; }
         .profile-card .email { font-size: 0.8rem; color: var(--text-muted); }
@@ -317,7 +345,7 @@
         .menu-item i { color: var(--text-muted); width: 20px; height: 20px; }
         .menu-item .label { flex: 1; font-size: 0.85rem; }
 
-        /* --- Responsive --- */
+        /* --- RESPONSIVE --- */
         @media (max-width: 380px) {
             .kpi-strip { grid-template-columns: repeat(2, 1fr); }
             .action-grid { grid-template-columns: repeat(2, 1fr); }
@@ -326,110 +354,58 @@
 </head>
 <body>
 
-<!-- ===== HEADER ===== -->
+<!-- HEADER -->
 <header class="app-header">
     <div class="logo">A<span>SSAWIN</span></div>
     <div class="greeting">Bonjour, <strong>Rachid</strong></div>
 </header>
 
-<!-- ===== CONTENU PRINCIPAL ===== -->
+<!-- CONTENU -->
 <div class="container">
 
-    <!-- ========== ONGLET ACCUEIL ========== -->
+    <!-- ACCUEIL -->
     <div id="tab-accueil" class="tab-content active">
-        <!-- KPI -->
-        <div class="kpi-strip" id="kpiStrip">
-            <div class="kpi-card">
-                <div class="value gold" id="kpiCa">218 400 €</div>
-                <div class="label">CA Total</div>
-                <div class="delta up">+12%</div>
-            </div>
-            <div class="kpi-card">
-                <div class="value success" id="kpiMarge">18 750 €</div>
-                <div class="label">Marge brute</div>
-                <div class="delta up">+8%</div>
-            </div>
-            <div class="kpi-card">
-                <div class="value primary" id="kpiTaux">44,5%</div>
-                <div class="label">Taux de marque</div>
-                <div class="delta up">+3,5 pts</div>
-            </div>
-            <div class="kpi-card">
-                <div class="value" id="kpiChantiers" style="color:var(--text);">8</div>
-                <div class="label">Chantiers en cours</div>
-                <div class="delta down">2 en attente</div>
-            </div>
+        <div class="kpi-strip">
+            <div class="kpi-card"><div class="value gold">218 400 €</div><div class="label">CA Total</div><div class="delta up">+12%</div></div>
+            <div class="kpi-card"><div class="value success">18 750 €</div><div class="label">Marge brute</div><div class="delta up">+8%</div></div>
+            <div class="kpi-card"><div class="value primary">44,5%</div><div class="label">Taux de marque</div><div class="delta up">+3,5 pts</div></div>
+            <div class="kpi-card"><div class="value white">8</div><div class="label">Chantiers en cours</div><div class="delta down">2 en attente</div></div>
         </div>
 
-        <!-- Welcome + Actions -->
         <div class="welcome-section">
             <h2>Bonjour 👋 Rachid</h2>
             <div class="sub">Que souhaitez-vous faire ?</div>
             <div class="action-grid">
-                <div class="action-btn" onclick="alert('Nouveau devis')">
-                    <i data-lucide="file-text"></i>
-                    <div class="label">Nouveau devis</div>
-                </div>
-                <div class="action-btn" onclick="alert('Nouveau chantier')">
-                    <i data-lucide="building-2"></i>
-                    <div class="label">Nouveau chantier</div>
-                </div>
-                <div class="action-btn" onclick="alert('Scanner facture')">
-                    <i data-lucide="scan"></i>
-                    <div class="label">Scanner facture</div>
-                </div>
+                <div class="action-btn" onclick="alert('Nouveau devis')"><i data-lucide="file-text"></i><div class="label">Nouveau devis</div></div>
+                <div class="action-btn" onclick="alert('Nouveau chantier')"><i data-lucide="building-2"></i><div class="label">Nouveau chantier</div></div>
+                <div class="action-btn" onclick="alert('Scanner facture')"><i data-lucide="scan"></i><div class="label">Scanner facture</div></div>
             </div>
         </div>
 
-        <!-- Mes chantiers -->
-        <div class="section-header">
-            <h3>Mes chantiers</h3>
-            <span class="see-all" onclick="switchTab('chantiers')">Voir tout →</span>
-        </div>
+        <div class="section-header"><h3>Mes chantiers</h3><span class="see-all" onclick="switchTab('chantiers')">Voir tout →</span></div>
         <div id="chantiersPreview"></div>
     </div>
 
-    <!-- ========== ONGLET CHANTIERS ========== -->
+    <!-- CHANTIERS -->
     <div id="tab-chantiers" class="tab-content">
-        <div class="section-header">
-            <h3>Tous les chantiers</h3>
-            <span class="see-all" onclick="alert('Filtrer')">Filtrer</span>
-        </div>
+        <div class="section-header"><h3>Tous les chantiers</h3><span class="see-all" onclick="alert('Filtrer')">Filtrer</span></div>
         <div id="chantiersList"></div>
     </div>
 
-    <!-- ========== ONGLET CRÉER ========== -->
+    <!-- CRÉER -->
     <div id="tab-creer" class="tab-content">
         <h3 style="margin-top:8px;">Créer</h3>
         <div class="create-grid">
-            <div class="create-card" onclick="alert('Nouveau devis')">
-                <i data-lucide="file-text"></i>
-                <div class="label">Devis</div>
-            </div>
-            <div class="create-card" onclick="alert('Nouveau chantier')">
-                <i data-lucide="building-2"></i>
-                <div class="label">Chantier</div>
-            </div>
-            <div class="create-card" onclick="alert('Scanner facture')">
-                <i data-lucide="scan"></i>
-                <div class="label">Scanner facture</div>
-            </div>
-            <div class="create-card" onclick="alert('Nouveau client')">
-                <i data-lucide="users"></i>
-                <div class="label">Client</div>
-            </div>
-            <div class="create-card" onclick="alert('Nouveau document')">
-                <i data-lucide="file-plus"></i>
-                <div class="label">Document</div>
-            </div>
-            <div class="create-card" onclick="alert('Nouveau rapport')">
-                <i data-lucide="clipboard-list"></i>
-                <div class="label">Rapport</div>
-            </div>
+            <div class="create-card" onclick="alert('Nouveau devis')"><i data-lucide="file-text"></i><div class="label">Devis</div></div>
+            <div class="create-card" onclick="alert('Nouveau chantier')"><i data-lucide="building-2"></i><div class="label">Chantier</div></div>
+            <div class="create-card" onclick="alert('Scanner facture')"><i data-lucide="scan"></i><div class="label">Scanner facture</div></div>
+            <div class="create-card" onclick="alert('Nouveau client')"><i data-lucide="users"></i><div class="label">Client</div></div>
+            <div class="create-card" onclick="alert('Nouveau document')"><i data-lucide="file-plus"></i><div class="label">Document</div></div>
+            <div class="create-card" onclick="alert('Nouveau rapport')"><i data-lucide="clipboard-list"></i><div class="label">Rapport</div></div>
         </div>
     </div>
 
-    <!-- ========== ONGLET PILOTAGE ========== -->
+    <!-- PILOTAGE -->
     <div id="tab-pilotage" class="tab-content">
         <h3 style="margin-top:8px;">Pilotage</h3>
         <div class="pilotage-grid">
@@ -447,7 +423,7 @@
         </div>
     </div>
 
-    <!-- ========== ONGLET COMPTE ========== -->
+    <!-- COMPTE -->
     <div id="tab-compte" class="tab-content">
         <div class="profile-card">
             <div class="avatar">R</div>
@@ -464,7 +440,7 @@
 
 </div>
 
-<!-- ===== NAVIGATION BASSE ===== -->
+<!-- NAVIGATION -->
 <nav class="bottom-nav">
     <button class="nav-item active" data-tab="accueil"><i data-lucide="home"></i>Accueil</button>
     <button class="nav-item" data-tab="chantiers"><i data-lucide="briefcase"></i>Chantiers</button>
@@ -473,79 +449,25 @@
     <button class="nav-item" data-tab="compte"><i data-lucide="user"></i>Compte</button>
 </nav>
 
-<!-- ===== SCRIPTS ===== -->
 <script>
     // ============================================================
-    // DONNÉES MOCKÉES
+    // DONNÉES
     // ============================================================
     const chantiers = [
-        {
-            id: 1,
-            nom: "Rénovation Appartement",
-            lieu: "Paris 15ᵉ",
-            statut: "actif",
-            budget: 85000,
-            ca: 65450,
-            marge: 15230,
-            taux: 43.2,
-            avancement: 72,
-            documents: 48,
-            rapports: 6,
-            interventions: 8
-        },
-        {
-            id: 2,
-            nom: "Villa Moderne",
-            lieu: "Lyon 6ᵉ",
-            statut: "attente",
-            budget: 120000,
-            ca: 0,
-            marge: 0,
-            taux: 0,
-            avancement: 45,
-            documents: 12,
-            rapports: 2,
-            interventions: 3
-        },
-        {
-            id: 3,
-            nom: "Bureaux Neufs",
-            lieu: "Saint-Denis (93)",
-            statut: "actif",
-            budget: 200000,
-            ca: 152950,
-            marge: 32870,
-            taux: 46.3,
-            avancement: 91,
-            documents: 32,
-            rapports: 4,
-            interventions: 11
-        },
-        {
-            id: 4,
-            nom: "Résidence Senior",
-            lieu: "Bordeaux",
-            statut: "termine",
-            budget: 450000,
-            ca: 445000,
-            marge: 89000,
-            taux: 40.0,
-            avancement: 100,
-            documents: 64,
-            rapports: 12,
-            interventions: 28
-        }
+        { id:1, nom:"Rénovation Appartement", lieu:"Paris 15ᵉ", statut:"actif", budget:85000, ca:65450, marge:15230, taux:43.2, avancement:72, documents:48, rapports:6, interventions:8 },
+        { id:2, nom:"Villa Moderne", lieu:"Lyon 6ᵉ", statut:"attente", budget:120000, ca:0, marge:0, taux:0, avancement:45, documents:12, rapports:2, interventions:3 },
+        { id:3, nom:"Bureaux Neufs", lieu:"Saint-Denis (93)", statut:"actif", budget:200000, ca:152950, marge:32870, taux:46.3, avancement:91, documents:32, rapports:4, interventions:11 },
+        { id:4, nom:"Résidence Senior", lieu:"Bordeaux", statut:"termine", budget:450000, ca:445000, marge:89000, taux:40.0, avancement:100, documents:64, rapports:12, interventions:28 }
     ];
 
     // ============================================================
-    // RENDU DES CHANTIERS
+    // RENDU
     // ============================================================
-    function renderChantierCard(c, full = true) {
+    function renderCard(c, full = true) {
         const statutClass = c.statut === 'actif' ? 'statut-actif' :
                             c.statut === 'attente' ? 'statut-attente' : 'statut-termine';
         const statutLabel = c.statut === 'actif' ? 'Actif' :
                             c.statut === 'attente' ? 'En attente' : 'Terminé';
-        const progress = Math.min(100, Math.max(0, c.avancement || 0));
         return `
             <div class="chantier-card" onclick="alert('Ouvrir ${c.nom}')">
                 <div class="top">
@@ -556,9 +478,9 @@
                     <span class="statut ${statutClass}">${statutLabel}</span>
                 </div>
                 <div class="budget">Budget : <strong>${c.budget.toLocaleString()} €</strong></div>
-                <div class="progress-bar"><div class="fill" style="width:${progress}%;"></div></div>
+                <div class="progress-bar"><div class="fill" style="width:${c.avancement}%;"></div></div>
                 <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted);margin-bottom:6px;">
-                    <span>Avancement ${progress}%</span>
+                    <span>Avancement ${c.avancement}%</span>
                     ${full ? `<span>CA : ${c.ca.toLocaleString()} €</span>` : ''}
                 </div>
                 ${full ? `
@@ -572,33 +494,25 @@
         `;
     }
 
-    function renderChantiersPreview() {
-        const container = document.getElementById('chantiersPreview');
-        container.innerHTML = chantiers.slice(0, 2).map(c => renderChantierCard(c, false)).join('');
-    }
-
-    function renderChantiersList() {
-        const container = document.getElementById('chantiersList');
-        container.innerHTML = chantiers.map(c => renderChantierCard(c, true)).join('');
-    }
+    document.getElementById('chantiersPreview').innerHTML = chantiers.slice(0,2).map(c => renderCard(c, false)).join('');
+    document.getElementById('chantiersList').innerHTML = chantiers.map(c => renderCard(c, true)).join('');
 
     // ============================================================
     // NAVIGATION
     // ============================================================
-    function switchTab(tabId) {
+    function switchTab(id) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
-        const tab = document.getElementById('tab-' + tabId);
+        const tab = document.getElementById('tab-'+id);
         if (tab) tab.classList.add('active');
-        const btn = document.querySelector(`.bottom-nav .nav-item[data-tab="${tabId}"]`);
+        const btn = document.querySelector(`.bottom-nav .nav-item[data-tab="${id}"]`);
         if (btn) btn.classList.add('active');
         if (window.lucide) lucide.createIcons();
     }
 
     document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => {
         btn.addEventListener('click', () => {
-            const tab = btn.dataset.tab;
-            switchTab(tab);
+            switchTab(btn.dataset.tab);
         });
     });
 
@@ -606,8 +520,6 @@
     // INIT
     // ============================================================
     document.addEventListener('DOMContentLoaded', () => {
-        renderChantiersPreview();
-        renderChantiersList();
         if (window.lucide) lucide.createIcons();
     });
 </script>
