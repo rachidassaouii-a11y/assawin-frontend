@@ -573,7 +573,136 @@
     document.addEventListener('DOMContentLoaded', () => {
         if (window.lucide) lucide.createIcons();
     });
+    let currentProjetId = null;
+
+function openProjetModal(projetId, nomProjet) {
+    currentProjetId = projetId;
+    document.getElementById('modal-titre').textContent = nomProjet;
+    document.getElementById('projet-modal').classList.add('open');
+    switchModalTab('synthese');
+    loadModalSynthese(projetId);
+    loadPhotos(projetId);
+    loadComptesRendus(projetId);
+}
+function closeProjetModal() {
+    document.getElementById('projet-modal').classList.remove('open');
+    currentProjetId = null;
+}
+function switchModalTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+}
+
+async function loadModalSynthese(projetId) {
+    const el = document.getElementById('modal-synthese-content');
+    el.innerHTML = "Chargement...";
+    try {
+        const res = await fetch(API_URL + "/api/v1/projets/" + projetId + "/detail", { headers: { "Authorization": "Bearer " + token } });
+        const d = await res.json();
+        if (!res.ok) { el.innerHTML = "Erreur de chargement."; return; }
+        el.innerHTML = `
+            <div class="result-line"><span>Adresse</span><span>${d.adresse || '—'}</span></div>
+            <div class="result-line"><span>Budget initial</span><span>${formatMoney(d.budget_initial_ht)}</span></div>
+            <div class="result-line"><span>Chiffre d'affaires</span><span>${formatMoney(d.chiffre_affaires)}</span></div>
+            <div class="result-line"><span>Coût total</span><span>${formatMoney(d.cout_total)}</span></div>
+            <div class="result-line total"><span>Marge brute</span><span>${formatMoney(d.marge_brute_eur)} (${d.taux_marque_pct}%)</span></div>
+            <div class="result-line"><span>Nombre de devis</span><span>${d.nombre_devis}</span></div>
+            ${d.description ? "<p style='color:var(--text-muted); font-size:0.82rem; margin-top:10px;'>" + d.description + "</p>" : ""}
+        `;
+    } catch (err) { el.innerHTML = "Erreur réseau."; }
+}
+
+async function loadPhotos(projetId) {
+    const grid = document.getElementById('photo-grid');
+    grid.innerHTML = "";
+    try {
+        const res = await fetch(API_URL + "/api/v1/photos/projet/" + projetId, { headers: { "Authorization": "Bearer " + token } });
+        const photos = await res.json();
+        if (!res.ok || photos.length === 0) { grid.innerHTML = "<p style='color:var(--text-muted); font-size:0.8rem; grid-column:1/-1;'>Aucune photo.</p>"; return; }
+        grid.innerHTML = photos.map(p => `<img src="${p.image_base64}" onclick="deletePhotoConfirm('${p.id}')" />`).join("");
+    } catch (err) {}
+}
+
+function uploadPhoto() {
+    const input = document.getElementById('photo-input');
+    const file = input.files[0];
+    if (!file || !currentProjetId) return;
+    const statusDiv = document.getElementById('photo-status');
+    statusDiv.textContent = "Envoi en cours...";
+    const reader = new FileReader();
+    reader.onload = async () => {
+        try {
+            const res = await fetch(API_URL + "/api/v1/photos/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+                body: JSON.stringify({ projet_id: currentProjetId, image_base64: reader.result })
+            });
+            const data = await res.json();
+            if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || res.status); return; }
+            statusDiv.textContent = "Photo ajoutée.";
+            input.value = "";
+            loadPhotos(currentProjetId);
+        } catch (err) { statusDiv.textContent = "Erreur réseau : " + err.message; }
+    };
+    reader.readAsDataURL(file);
+}
+
+async function deletePhotoConfirm(photoId) {
+    if (!confirm("Supprimer cette photo ?")) return;
+    try {
+        await fetch(API_URL + "/api/v1/photos/" + photoId, { method: "DELETE", headers: { "Authorization": "Bearer " + token } });
+        loadPhotos(currentProjetId);
+    } catch (err) {}
+}
+
+async function loadComptesRendus(projetId) {
+    const list = document.getElementById('cr-list');
+    list.innerHTML = "Chargement...";
+    try {
+        const res = await fetch(API_URL + "/api/v1/comptes-rendus/projet/" + projetId, { headers: { "Authorization": "Bearer " + token } });
+        const crs = await res.json();
+        if (!res.ok || crs.length === 0) { list.innerHTML = "<p style='color:var(--text-muted); font-size:0.8rem;'>Aucun compte-rendu.</p>"; return; }
+        list.innerHTML = crs.map(c => `
+            <div class="cr-item">
+                <div class="cr-titre">${c.titre}</div>
+                ${c.contenu ? "<div class='cr-contenu'>" + c.contenu + "</div>" : ""}
+                <button class="btn-remove" onclick="deleteCR('${c.id}')">Supprimer</button>
+            </div>
+        `).join("");
+    } catch (err) { list.innerHTML = "Erreur réseau."; }
+}
+
+async function createCompteRendu() {
+    const titre = document.getElementById('cr-titre').value;
+    const contenu = document.getElementById('cr-contenu').value;
+    const statusDiv = document.getElementById('cr-status');
+    if (!titre || !currentProjetId) { statusDiv.textContent = "Titre obligatoire."; return; }
+    statusDiv.textContent = "Enregistrement...";
+    try {
+        const res = await fetch(API_URL + "/api/v1/comptes-rendus/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({ projet_id: currentProjetId, titre, contenu: contenu || null })
+        });
+        const data = await res.json();
+        if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || res.status); return; }
+        statusDiv.textContent = "Compte-rendu ajouté.";
+        document.getElementById('cr-titre').value = "";
+        document.getElementById('cr-contenu').value = "";
+        loadComptesRendus(currentProjetId);
+    } catch (err) { statusDiv.textContent = "Erreur réseau : " + err.message; }
+}
+
+async function deleteCR(crId) {
+    if (!confirm("Supprimer ce compte-rendu ?")) return;
+    try {
+        await fetch(API_URL + "/api/v1/comptes-rendus/" + crId, { method: "DELETE", headers: { "Authorization": "Bearer " + token } });
+        loadComptesRendus(currentProjetId);
+    } catch (err) {}
+}
 </script>
+
 
 </body>
 </html>
