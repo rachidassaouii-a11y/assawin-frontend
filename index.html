@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASSAWIN</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+    --bg-main: #0c0d0f;
+    --surface: #14161b;
+    --surface-card: #1a1d24;
+    --border-color: rgba(245,158,11,0.15);
+    --gold: #f59e0b;
+    --gold-light: #fbbf24;
+    --text-main: #f1f3f5;
+    --text-muted: #8b93a1;
+    --green: #10b981;
+    --orange: #f97316;
+    --red: #ef4444;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    padding-bottom: 90px;
+    position: relative;
+}
+body::before {
+    content: "";
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 480px; height: 480px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='90' fill='none' stroke='%23f59e0b' stroke-width='6' opacity='0.12'/%3E%3Cpolygon points='100,35 145,150 125,150 100,75 75,150 55,150' fill='%23f59e0b' opacity='0.1'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    pointer-events: none;
+    z-index: 0;
+}
+.container { max-width: 640px; margin: 0 auto; padding: 14px; position: relative; z-index: 1; }
+
+header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px; background: var(--surface);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky; top: 0; z-index: 50;
+}
+.logo-group { display: flex; align-items: center; gap: 8px; }
+.logo-svg { width: 30px; height: 30px; }
+.logo-text { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.08em; color: var(--gold); }
+.bell-btn { position: relative; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 6px; font-size: 1.1rem; }
+.bell-dot { position: absolute; top: 4px; right: 4px; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); display: none; }
+
+.card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+.kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+.kpi-card { text-align: center; padding: 14px 8px; }
+.kpi-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
+.kpi-value { font-size: 1.35rem; font-weight: 800; color: var(--gold); }
+
+.greeting { font-size: 1.3rem; font-weight: 800; margin: 18px 0 4px; }
+.greeting-sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 14px; }
+
+.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+.quick-btn {
+    background: var(--surface-card); border: 1px solid var(--border-color);
+    border-radius: 10px; padding: 12px 8px; color: var(--gold);
+    font-size: 0.78rem; font-weight: 700; text-align: center; cursor: pointer;
+}
+
+.section-title { display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin: 20px 0 10px; }
+.section-title span.link { color: var(--gold); font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+
+.projet-card { display: flex; gap: 12px; padding: 14px; margin-bottom: 10px; align-items: center; cursor: pointer; }
+.projet-thumb {
+    width: 58px; height: 58px; border-radius: 10px; flex-shrink: 0;
+    background: linear-gradient(135deg, #2a2e38, #1a1d24);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; color: var(--gold); font-weight: 800;
+}
+.projet-info { flex: 1; min-width: 0; }
+.projet-nom { font-weight: 800; font-size: 0.95rem; }
+.projet-adresse { color: var(--text-muted); font-size: 0.75rem; margin: 2px 0 6px; }
+.badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 0.68rem; font-weight: 700; margin-right: 6px; }
+.badge-actif { background: rgba(16,185,129,0.15); color: var(--green); }
+.projet-budget { color: var(--text-muted); font-size: 0.75rem; }
+.projet-metrics { display: flex; gap: 12px; margin-top: 8px; font-size: 0.7rem; color: var(--text-muted); }
+.projet-metrics b { color: var(--text-main); display: block; font-size: 0.82rem; }
+
+.ring-wrap { position: relative; width: 62px; height: 62px; flex-shrink: 0; }
+.ring-wrap svg { transform: rotate(-90deg); }
+.ring-val { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; color: var(--gold); }
+
+.form-card input, .form-card select, .form-card textarea {
+    width: 100%; padding: 10px; margin-bottom: 10px;
+    background: var(--surface); border: 1px solid var(--border-color);
+    border-radius: 8px; color: var(--text-main); font-size: 0.9rem; font-family: inherit;
+}
+.form-card label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px; font-weight: 700; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.btn { width: 100%; padding: 13px; border-radius: 10px; border: none; font-weight: 800; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; }
+.btn-gold { background: linear-gradient(135deg, #d97706, var(--gold), var(--gold-light)); color: #1a1200; box-shadow: 0 6px 16px rgba(245,158,11,0.25); }
+.btn-secondary { background: var(--surface-card); color: var(--gold); border: 1px solid var(--border-color); }
+.btn-pdf { background: var(--green); color: #052e19; display: none; margin-top: 8px; }
+.btn-small { background: rgba(245,158,11,0.08); color: var(--gold); border: 1px dashed var(--gold); border-radius: 8px; padding: 9px; font-size: 0.78rem; width: 100%; cursor: pointer; margin-top: 6px; }
+.btn-remove { background: none; border: none; color: var(--red); font-size: 0.72rem; padding: 4px 0; cursor: pointer; font-weight: 700; }
+
+.mode-toggle { display: flex; gap: 6px; margin: 10px 0; }
+.mode-btn { flex: 1; padding: 7px; font-size: 0.72rem; border-radius: 7px; border: 1px solid var(--border-color); background: transparent; color: var(--text-muted); cursor: pointer; }
+.mode-btn.active { background: var(--gold); color: #1a1200; border-color: var(--gold); font-weight: 800; }
+.slider-row label { display: flex; justify-content: space-between; font-size: 0.75rem; }
+.slider-row .marge-val { color: var(--gold); font-weight: 800; }
+input[type=range] { width: 100%; accent-color: var(--gold); }
+.result-line { display: flex; justify-content: space-between; font-size: 0.78rem; padding: 3px 0; color: var(--text-muted); }
+.result-line.total { color: var(--gold); font-weight: 800; font-size: 0.92rem; border-top: 1px solid var(--border-color); margin-top: 6px; padding-top: 8px; }
+.ligne-block { border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; background: rgba(0,0,0,0.2); }
+
+.devis-card { padding: 14px; margin-bottom: 10px; }
+.devis-header { display: flex; justify-content: space-between; }
+.devis-titre { font-weight: 800; }
+.devis-montant { color: var(--gold); font-weight: 800; }
+.badge-vert { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid var(--green); padding: 3px 10px; border-radius: 999px; font-size: 0.68rem; font-weight: 700; }
+.badge-orange { background: rgba(249,115,22,0.15); color: var(--orange); border: 1px solid var(--orange); padding: 3px 10px; border-radius: 999px; font-size: 0.68rem; font-weight: 700; }
+.devis-actions { display: flex; gap: 6px; margin-top: 8px; }
+.devis-actions button { flex: 1; padding: 8px; font-size: 0.7rem; border-radius: 7px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main); cursor: pointer; font-weight: 700; }
+
+.notif-item { padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 0.82rem; }
+.notif-item:last-child { border-bottom: none; }
+.notif-date { color: var(--text-muted); font-size: 0.68rem; margin-top: 2px; }
+
+#status, #auth-status, #proj-status, #devis-status { text-align: center; color: var(--text-muted); font-size: 0.85rem; min-height: 1.3rem; margin-top: 6px; }
+#app, #register-section, #project-form, #devis-form, #notif-panel { display: none; }
+
+.nav-bottom {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--surface); border-top: 1px solid var(--border-color);
+    display: flex; justify-content: space-around; padding: 10px 0; z-index: 60;
+    max-width: 640px; margin: 0 auto;
+}
+.nav-btn { background: none; border: none; color: var(--text-muted); font-size: 0.68rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.nav-btn.active { color: var(--gold); }
+
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; }
+.modal-overlay.open { display:flex; align-items:flex-end; justify-content:center; }
+.modal-sheet { background:var(--surface); width:100%; max-width:640px; max-height:88vh; overflow-y:auto; border-radius:18px 18px 0 0; padding:16px; }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.modal-close { background:none; border:none; color:var(--text-muted); font-size:1.3rem; cursor:pointer; }
+.tabs-row { display:flex; gap:6px; overflow-x:auto; margin-bottom:14px; }
+.tab-btn { background:var(--surface-card); border:1px solid var(--border-color); color:var(--text-muted); padding:7px 14px; border-radius:20px; font-size:0.75rem; white-space:nowrap; cursor:pointer; }
+.tab-btn.active { background:var(--gold); color:#1a1200; font-weight:800; border-color:var(--gold); }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+.photo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; }
+.photo-grid img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; }
+.cr-item { padding:10px; border-bottom:1px solid var(--border-color); }
+.cr-item:last-child { border-bottom:none; }
+.cr-titre { font-weight:700; font-size:0.88rem; }
+.cr-contenu { font-size:0.82rem; color:var(--text-main); }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo-group">
+        <svg class="logo-svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="85" fill="none" stroke="#f59e0b" stroke-width="12"/><polygon points="100,35 145,150 125,150 100,75 75,150 55,150" fill="#f59e0b"/></svg>
+        <span class="logo-text">ASSAWIN</span>
+    </div>
+    <button class="bell-btn" onclick="toggleNotifs()">
+        &#128276;<span class="bell-dot" id="bell-dot"></span>
+    </button>
+</header>
+
+<div class="container">
+
+    <div class="card" id="notif-panel">
+        <div class="section-title" style="margin-top:0">Notifications</div>
+        <div id="notif-list"><p style="color:var(--text-muted); font-size:0.85rem;">Chargement...</p></div>
+    </div>
+
+    <div class="card form-card" id="login-section" style="display:block; max-width:360px; margin:40px auto;">
+        <input type="email" id="login-email" placeholder="Email" />
+        <input type="password" id="login-password" placeholder="Mot de passe" />
+        <button class="btn btn-gold" onclick="login()">Se connecter</button>
+        <div id="status"></div>
+    </div>
+    <div style="text-align:center; color:var(--text-muted); font-size:0.85rem;" id="to-register">
+        Pas encore de compte ? <a onclick="showRegister()" style="color:var(--gold); cursor:pointer;">Créer un compte</a>
+    </div>
+
+    <div class="card form-card" id="register-section" style="max-width:360px; margin:40px auto;">
+        <input type="text" id="reg-nom" placeholder="Nom complet" />
+        <input type="email" id="reg-email" placeholder="Email" />
+        <input type="password" id="reg-password" placeholder="Mot de passe" />
+        <input type="text" id="reg-entreprise" placeholder="Entreprise (optionnel)" />
+        <button class="btn btn-gold" onclick="register()">Créer mon compte</button>
+        <div id="auth-status"></div>
+    </div>
+    <div style="text-align:center; color:var(--text-muted); font-size:0.85rem; display:none;" id="to-login">
+        Déjà un compte ? <a onclick="showLogin()" style="color:var(--gold); cursor:pointer;">Se connecter</a>
+    </div>
+
+    <div id="app">
+        <div class="kpi-grid">
+            <div class="card kpi-card"><div class="kpi-label">CA total</div><div class="kpi-value" id="ca">—</div></div>
+            <div class="card kpi-card"><div class="kpi-label">Marge brute</div><div class="kpi-value" id="marge">—</div></div>
+            <div class="card kpi-card"><div class="kpi-label">Taux de marque</div><div class="kpi-value" id="taux">—</div></div>
+            <div class="card kpi-card"><div class="kpi-label">Projets</div><div class="kpi-value" id="projets">—</div></div>
+        </div>
+
+        <div class="greeting" id="greeting">Bonjour</div>
+        <div class="greeting-sub">Que souhaitez-vous faire ?</div>
+
+        <div class="quick-actions">
+            <div class="quick-btn" onclick="toggleProjectForm()">+ Nouveau projet</div>
+            <div class="quick-btn" onclick="toggleDevisForm()">+ Nouveau devis</div>
+        </div>
+
+        <div class="card form-card" id="project-form">
+            <label>Nom du projet</label>
+            <input type="text" id="proj-nom" placeholder="Ex: Rénovation Saint-Ouen" />
+            <label>Adresse</label>
+            <input type="text" id="proj-adresse" placeholder="Ex: Paris 15e" />
+            <div class="row2">
+                <div><label>Budget initial HT (€)</label><input type="number" id="proj-budget" value="0" /></div>
+                <div><label>Marge cible (%)</label><input type="number" id="proj-marge" value="30" /></div>
+            </div>
+            <label>Description</label>
+            <input type="text" id="proj-description" placeholder="Optionnel" />
+            <button class="btn btn-gold" onclick="createProject()">Créer le projet</button>
+            <div id="proj-status"></div>
+        </div>
+
+        <div class="card form-card" id="devis-form">
+            <label>Projet (client)</label>
+            <select id="devis-projet"></select>
+            <label>Titre du devis</label>
+            <input type="text" id="devis-titre" placeholder="Ex: Rénovation complète" />
+            <div class="row2">
+                <div><label>Acompte (%)</label><input type="number" id="devis-acompte" value="30" /></div>
+                <div><label>Marge cible globale (%)</label><input type="number" id="devis-marge" value="30" /></div>
+            </div>
+            <label style="margin-top:6px">Interventions</label>
+            <div id="lignes-container"></div>
+            <button class="btn-small" type="button" onclick="addLigne()">+ Ajouter une intervention</button>
+            <button class="btn btn-gold" id="btn-submit-devis" onclick="createDevis()" style="margin-top:10px">Créer le devis</button>
+            <button class="btn btn-secondary" id="btn-cancel-edit" onclick="cancelEdit()" style="display:none; margin-top:6px">Annuler la modification</button>
+            <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()">Télécharger le PDF</button>
+            <div id="devis-status"></div>
+        </div>
+
+        <div class="section-title">Mes chantiers <span class="link" onclick="loadProjectsDetail()">Actualiser</span></div>
+        <div id="projets-list"><p style="color:var(--text-muted); font-size:0.85rem;">Chargement...</p></div>
+
+        <div class="section-title">Mes devis <span class="link" onclick="loadDevisList()">Actualiser</span></div>
+        <div id="devis-list-status"></div>
+        <div id="devis-list"></div>
+    </div>
+</div>
+
+<nav class="nav-bottom" id="nav-bottom" style="display:none">
+    <button class="nav-btn active" onclick="scrollToId('app')">Accueil</button>
+    <button class="nav-btn" onclick="scrollToId('projets-list')">Chantiers</button>
+    <button class="nav-btn" onclick="toggleDevisForm()">Créer</button>
+    <button class="nav-btn" onclick="scrollToId('devis-list')">Pilotage</button>
+    <button class="nav-btn" onclick="toggleNotifs()">Compte</button>
+</nav>
+
+<div class="modal-overlay" id="projet-modal">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <span style="font-weight:800; font-size:1.1rem;" id="modal-titre">Projet</span>
+            <button class="modal-close" onclick="closeProjetModal()">&#10005;</button>
+        </div>
+        <div class="tabs-row">
+            <button class="tab-btn active" data-tab="synthese" onclick="switchModalTab('synthese')">Synthèse</button>
+            <button class="tab-btn" data-tab="photos" onclick="switchModalTab('photos')">Photos</button>
+            <button class="tab-btn" data-tab="cr" onclick="switchModalTab('cr')">Comptes-rendus</button>
+        </div>
+
+        <div class="tab-panel active" id="tab-synthese">
+            <div id="modal-synthese-content">Chargement...</div>
+        </div>
+
+        <div class="tab-panel" id="tab-photos">
+            <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="uploadPhoto()" />
+            <button class="btn btn-secondary" onclick="document.getElementById('photo-input').click()">+ Ajouter une photo</button>
+            <div id="photo-status" style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin-top:6px;"></div>
+            <div class="photo-grid" id="photo-grid"></div>
+        </div>
+
+        <div class="tab-panel" id="tab-cr">
+            <input type="text" id="cr-titre" placeholder="Titre du compte-rendu" />
+            <textarea id="cr-contenu" placeholder="Contenu (optionnel)" rows="3"></textarea>
+            <button class="btn btn-secondary" onclick="createCompteRendu()">+ Ajouter un compte-rendu</button>
+            <div id="cr-status" style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin:6px 0;"></div>
+            <div id="cr-list" style="margin-top:10px;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_URL = "https://assawin-backend.onrender.com";
+let token = null;
+let cachedProjects = [];
+let ligneCounter = 0;
+let lastDevis = null;
+let editingDevisId = null;
+let currentProjetId = null;
+
+function scrollToId(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+function showRegister() {
+    document.getElementById('login-section').style.display = "none";
+    document.getElementById('to-register').style.display = "none";
+    document.getElementById('register-section').style.display = "block";
+    document.getElementById('to-login').style.display = "block";
+}
+function showLogin() {
+    document.getElementById('register-section').style.display = "none";
+    document.getElementById('to-login').style.display = "none";
+    document.getElementById('login-section').style.display = "block";
+    document.getElementById('to-register').style.display = "block";
+}
+function toggleProjectForm() {
+    const el = document.getElementById('project-form');
+    el.style.display = el.style.display === "block" ? "none" : "block";
+    if (el.style.display === "block") el.scrollIntoView({behavior:'smooth'});
+}
+async function toggleDevisForm() {
+    const el = document.getElementById('devis-form');
+    const willShow = el.style.display !== "block";
+    el.style.display = willShow ? "block" : "none";
+    if (willShow) {
+        await refreshProjectSelect();
+        if (document.getElementById('lignes-container').children.length === 0) addLigne();
+        el.scrollIntoView({behavior:'smooth'});
+    }
+}
+function toggleNotifs() {
+    const panel = document.getElementById('notif-panel');
+    const willShow = panel.style.display !== "block";
+    panel.style.display = willShow ? "block" : "none";
+    if (willShow) { loadNotifications(); panel.scrollIntoView({behavior:'smooth'}); }
+}
+
+function formatMoney(val) {
+    const num = parseFloat(val) || 0;
+    return num.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' €';
+}
+
+function ringSVG(pct, color) {
+    const r = 26, c = 2 * Math.PI * r;
+    const offset = c - (Math.min(Math.max(pct,0),100) / 100) * c;
+    return '<div class="ring-wrap"><svg width="62" height="62"><circle cx="31" cy="31" r="' + r + '" stroke="#2a2e38" stroke-width="6" fill="none"/><circle cx="31" cy="31" r="' + r + '" stroke="' + color + '" stroke-width="6" fill="none" stroke-dasharray="' + c + '" stroke-dashoffset="' + offset + '" stroke-linecap="round"/></svg><div class="ring-val">' + Math.round(pct) + '%</div></div>';
+}
+
+async function register() {
+    const nom = document.getElementById('reg-nom').value;
+    const email = document.getElementById('reg-email').value;
+    const password = document.getElementById('reg-password').value;
+    const entreprise = document.getElementById('reg-entreprise').value;
+    const statusDiv = document.getElementById('auth-status');
+    if (!nom || !email || !password) { statusDiv.textContent = "Nom, email et mot de passe obligatoires."; return; }
+    statusDiv.textContent = "Création du compte...";
+    try {
+        const res = await fetch(API_URL + "/api/v1/auth/register", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nom, email, password, entreprise: entreprise || null })
+        });
+        const data = await res.json();
+        if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || "inscription refusée"); return; }
+        statusDiv.textContent = "Compte créé ! Connexion en cours...";
+        document.getElementById('login-email').value = email;
+        document.getElementById('login-password').value = password;
+        showLogin();
+        await login();
+    } catch (err) { statusDiv.textContent = "Erreur réseau : " + err.message; }
+}
+
+async function login() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const statusDiv = document.getElementById('status');
+    statusDiv.textContent = "Connexion...";
+    try {
+        const res = await fetch(API_URL + "/api/v1/auth/login", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || "connexion refusée"); return; }
+        token = data.access_token;
+        document.getElementById('login-section').style.display = "none";
+        document.getElementById('to-register').style.display = "none";
+        document.getElementById('register-section').style.display = "none";
+        document.getElementById('to-login').style.display = "none";
+        document.getElementById('app').style.display = "block";
+        document.getElementById('nav-bottom').style.display = "flex";
+        document.getElementById('greeting').textContent = "Bonjour " + email.split('@')[0];
+        loadDashboard();
+        loadProjectsDetail();
+        loadDevisList();
+        loadNotifications();
+    } catch (err) { statusDiv.textContent = "Erreur réseau : " + err.message; }
+}
+
+async function loadDashboard() {
+    try {
+        const res = await fetch(API_URL + "/api/v1/dashboard/summary", { headers: { "Authorization": "Bearer " + token } });
+        const data = await res.json();
+        if (!res.ok) return;
+        document.getElementById('ca').textContent = formatMoney(data.chiffre_affaires_total);
+        document.getElementById('marge').textContent = formatMoney(data.marge_brute_eur);
+        document.getElementById('taux').textContent = data.taux_marque_pct + "%";
+        document.getElementById('projets').textContent = data.nombre_projets;
+    } catch (err) {}
+}
+
+async function refreshProjectSelect() {
+    try {
+        const res = await fetch(API_URL + "/api/v1/projets/", { headers: { "Authorization": "Bearer " + token } });
+        const data = await res.json();
+        if (!res.ok) return;
+        cachedProjects = data;
+        const select = document.getElementById('devis-projet');
+        select.innerHTML = data.map(p => "<option value='" + p.id_projet + "'>" + p.nom_projet + "</option>").join("");
+    } catch (err) {}
+}
+
+async function createProject() {
+    const nom_projet = document.getElementById('proj-nom').value;
+    const adresse = document.getElementById('proj-adresse').value;
+    const budget_initial_ht = parseFloat(document.getElementById('proj-budget').value) || 0;
+    const marge_cible_pct = parseFloat(document.getElementById('proj-marge').value) || 30;
+    const description = document.getElementById('proj-description').value;
+    const statusDiv = document.getElementById('proj-status');
+    if (!nom_projet) { statusDiv.textContent = "Le nom du projet est obligatoire."; return; }
+    statusDiv.textContent = "Création en cours...";
+    try {
+        const res = await fetch(API_URL + "/api/v1/projets/", {
+            method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({ nom_projet, budget_initial_ht, marge_cible_pct, statut: "EN_COURS", description: description || null, adresse: adresse || null })
+        });
+        const data = await res.json();
+        if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || res.status); return; }
+        statusDiv.textContent = "Projet créé !";
+        document.getElementById('proj-nom').value = "";
+        document.getElementById('proj-adresse').value = "";
+        document.getElementById('proj-description').value = "";
+        loadDashboard();
+        loadProjectsDetail();
+        loadNotifications();
+    } catch (err) { statusDiv.textContent = "Erreur réseau : " + err.message; }
+}
+
+async function loadProjectsDetail() {
+    const container = document.getElementById('projets-list');
+    container.innerHTML = "<p style='color:var(--text-muted); font-size:0.85rem;'>Chargement...</p>";
+    try {
+        const res = await fetch(API_URL + "/api/v1/projets/", { headers: { "Authorization": "Bearer " + token } });
+        const projets = await res.json();
+        if (!res.ok || projets.length === 0) {
+            container.innerHTML = "<p style='color:var(--text-muted); font-size:0.85rem;'>Aucun chantier pour l'instant.</p>";
+            return;
+        }
+        const details = await Promise.all(projets.map(async p => {
+            try {
+                const r = await fetch(API_URL + "/api/v1/projets/" + p.id_projet + "/detail", { headers: { "Authorization": "Bearer " + token } });
+                return r.ok ? await r.json() : { ...p, chiffre_affaires: 0, marge_brute_eur: 0, taux_marque_pct: 0 };
+            } catch { return { ...p, chiffre_affaires: 0, marge_brute_eur: 0, taux_marque_pct: 0 }; }
+        }));
+
+        container.innerHTML = details.map(d => {
+            const initiale = (d.nom_projet || "?").charAt(0).toUpperCase();
+            const color = d.taux_marque_pct >= 30 ? "var(--green)" : d.taux_marque_pct >= 15 ? "var(--gold)" : "var(--orange)";
+            const nomEchap = d.nom_projet.replace(/'/g, "");
+            return '<div class="card projet-card" onclick="openProjetModal(\'' + d.id_projet + '\',\'' + nomEchap + '\')">' +
+                '<div class="projet-thumb">' + initiale + '</div>' +
+                '<div class="projet-info">' +
+                '<div class="projet-nom">' + d.nom_projet + '</div>' +
+                '<div class="projet-adresse">' + (d.adresse || 'Adresse non renseignée') + '</div>' +
+                '<span class="badge badge-actif">Actif</span>' +
+                '<span class="projet-budget">Budget : ' + formatMoney(d.budget_initial_ht) + '</span>' +
+                '<div class="projet-metrics"><div>CA<b>' + formatMoney(d.chiffre_affaires) + '</b></div><div>Marge<b>' + formatMoney(d.marge_brute_eur) + '</b></div><div>Devis<b>' + d.nombre_devis + '</b></div></div>' +
+                '</div>' +
+                ringSVG(d.taux_marque_pct, color) +
+                '</div>';
+        }).join("");
+    } catch (err) {
+        container.innerHTML = "<p style='color:var(--text-muted); font-size:0.85rem;'>Erreur de chargement.</p>";
+    }
+}
+
+function addLigne() {
+    ligneCounter++;
+    const id = ligneCounter;
+    const container = document.getElementById('lignes-container');
+    const block = document.createElement('div');
+    block.className = 'ligne-block';
+    block.id = 'ligne-' + id;
+    block.dataset.mode = 'inverse';
+    block.innerHTML = `
+        <input type="text" placeholder="Désignation" data-field="designation" style="margin-bottom:6px" />
+        <div class="row2">
+            <input type="text" placeholder="Unité" value="u" data-field="unite" />
+            <input type="number" placeholder="Qté" value="1" data-field="quantite" oninput="recalc(${id})" />
+        </div>
+        <div class="mode-toggle">
+            <button type="button" class="mode-btn active" data-mode="inverse" onclick="setMode(${id}, 'inverse')">Chiffrage inversé</button>
+            <button type="button" class="mode-btn" data-mode="direct" onclick="setMode(${id}, 'direct')">Prix direct</button>
+        </div>
+        <div data-panel="inverse">
+            <label>Déboursé sec unitaire (€)</label>
+            <input type="number" value="0" data-field="debourse_sec_unitaire" oninput="recalc(${id})" />
+            <div class="slider-row">
+                <label>Marge cible <span class="marge-val" data-out="marge-label">30%</span></label>
+                <input type="range" min="0" max="80" value="30" data-field="marge_slider" oninput="recalc(${id})" />
+            </div>
+        </div>
+        <div data-panel="direct" style="display:none">
+            <label>Prix unitaire HT (€)</label>
+            <input type="number" value="0" data-field="prix_manuel" oninput="recalc(${id})" />
+            <label>Déboursé sec unitaire (€)</label>
+            <input type="number" value="0" data-field="debourse_sec_unitaire_direct" oninput="recalc(${id})" />
+        </div>
+        <label>TVA (%)</label>
+        <input type="number" value="20" data-field="taux_tva" oninput="recalc(${id})" />
+        <div class="result-line"><span>Prix unitaire HT</span><span data-out="prix-unitaire">0,00 €</span></div>
+        <div class="result-line"><span>Marge unitaire</span><span data-out="marge-unitaire">0,00 €</span></div>
+        <div class="result-line total"><span>Total ligne HT</span><span data-out="total-ligne">0,00 €</span></div>
+        <button type="button" class="btn-remove" onclick="removeLigne(${id})">Retirer cette intervention</button>
+    `;
+    container.appendChild(block);
+    recalc(id);
+}
+function setMode(id, mode) {
+    const block = document.getElementById('ligne-' + id);
+    block.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    block.querySelector('[data-panel="inverse"]').style.display = mode === 'inverse' ? 'block' : 'none';
+    block.querySelector('[data-panel="direct"]').style.display = mode === 'direct' ? 'block' : 'none';
+    block.dataset.mode = mode;
+    recalc(id);
+}
+function recalc(id) {
+    const block = document.getElementById('ligne-' + id);
+    if (!block) return;
+    const mode = block.dataset.mode || 'inverse';
+    const get = (f) => parseFloat(block.querySelector('[data-field="' + f + '"]')?.value) || 0;
+    const quantite = get('quantite') || 1;
+    let prixUnitaire = 0, debourseUnitaire = 0;
+    if (mode === 'inverse') {
+        debourseUnitaire = get('debourse_sec_unitaire');
+        const margePct = get('marge_slider');
+        block.querySelector('[data-out="marge-label"]').textContent = margePct + '%';
+        prixUnitaire = margePct < 100 ? debourseUnitaire / (1 - margePct / 100) : debourseUnitaire;
+    } else {
+        prixUnitaire = get('prix_manuel');
+        debourseUnitaire = get('debourse_sec_unitaire_direct');
+    }
+    block.querySelector('[data-out="prix-unitaire"]').textContent = formatMoney(prixUnitaire);
+    block.querySelector('[data-out="marge-unitaire"]').textContent = formatMoney(prixUnitaire - debourseUnitaire);
+    block.querySelector('[data-out="total-ligne"]').textContent = formatMoney(prixUnitaire * quantite);
+}
+function removeLigne(id) { const el = document.getElementById('ligne-' + id); if (el) el.remove(); }
+function collectLignes() {
+    const blocks = document.querySelectorAll('.ligne-block');
+    const lignes = [];
+    blocks.forEach(block => {
+        const mode = block.dataset.mode || 'inverse';
+        const get = (f) => block.querySelector('[data-field="' + f + '"]')?.value;
+        const quantite = parseFloat(get('quantite')) || 1;
+        const taux_tva = parseFloat(get('taux_tva')) || 20;
+        let prix_unitaire_ht, debourse_sec_unitaire;
+        if (mode === 'inverse') {
+            debourse_sec_unitaire = parseFloat(get('debourse_sec_unitaire')) || 0;
+            const margePct = parseFloat(get('marge_slider')) || 0;
+            prix_unitaire_ht = margePct < 100 ? debourse_sec_unitaire / (1 - margePct / 100) : debourse_sec_unitaire;
+        } else {
+            prix_unitaire_ht = parseFloat(get('prix_manuel')) || 0;
+            debourse_sec_unitaire = parseFloat(get('debourse_sec_unitaire_direct')) || 0;
+        }
+        lignes.push({ designation: get('designation') || '(sans nom)', unite: get('unite'), quantite, prix_unitaire_ht: Math.round(prix_unitaire_ht*100)/100, debourse_sec_unitaire, taux_tva });
+    });
+    return lignes;
+}
+
+function resetDevisFormState() {
+    editingDevisId = null;
+    document.getElementById('btn-submit-devis').textContent = "Créer le devis";
+    document.getElementById('btn-cancel-edit').style.display = "none";
+}
+function cancelEdit() {
+    resetDevisFormState();
+    document.getElementById('devis-titre').value = "";
+    document.getElementById('lignes-container').innerHTML = "";
+    addLigne();
+    document.getElementById('devis-status').textContent = "";
+}
+async function createDevis() {
+    const projetSelect = document.getElementById('devis-projet');
+    const id_projet = projetSelect.value;
+    const nomProjet = projetSelect.options[projetSelect.selectedIndex] ? projetSelect.options[projetSelect.selectedIndex].text : '';
+    const titre = document.getElementById('devis-titre').value;
+    const acompte_pct = parseFloat(document.getElementById('devis-acompte').value) || 30;
+    const marge_cible_pct = parseFloat(document.getElementById('devis-marge').value) || 30;
+    const lignes = collectLignes();
+    const statusDiv = document.getElementById('devis-status');
+    const btnPdf = document.getElementById('btn-pdf');
+    if (!id_projet || !titre) { statusDiv.textContent = "Projet et titre obligatoires."; return; }
+    if (lignes.length === 0 || !lignes.some(l => l.designation && l.designation !== '(sans nom)')) { statusDiv.textContent = "Ajoute au moins une intervention avec une désignation."; return; }
+    statusDiv.textContent = editingDevisId ? "Mise à jour..." : "Création...";
+    btnPdf.style.display = "none";
+    const payload = { titre, acompte_pct, id_projet, marge_cible_pct, fournisseur_non_verifie: false, lots: [{ nom_lot: "Lot principal", lignes }] };
+    try {
+        const url = editingDevisId ? API_URL + "/api/v1/devis/" + editingDevisId : API_URL + "/api/v1/devis/";
+        const method = editingDevisId ? "PUT" : "POST";
+        const res = await fetch(url, { method, headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }, body: JSON.stringify(payload) });
+        const data = await res.json();
+        if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || res.status); return; }
+        statusDiv.textContent = (editingDevisId ? "Devis mis à jour ! " : "Devis créé ! ") + "Marge : " + formatMoney(data.marge_brute_eur) + " (" + data.taux_marque_pct + "%)";
+        lastDevis = { ...data, titre, nomProjet, acompte_pct, lignes };
+        btnPdf.style.display = "block";
+        resetDevisFormState();
+        document.getElementById('devis-titre').value = "";
+        document.getElementById('lignes-container').innerHTML = "";
+        addLigne();
+        loadDashboard();
+        loadProjectsDetail();
+        loadDevisList();
+        loadNotifications();
+    } catch (err) { statusDiv.textContent = "Erreur réseau : " + err.message; }
+}
+
+async function loadDevisList() {
+    const statusDiv = document.getElementById('devis-list-status');
+    statusDiv.textContent = "Chargement...";
+    try {
+        const res = await fetch(API_URL + "/api/v1/devis/", { headers: { "Authorization": "Bearer " + token } });
+        const data = await res.json();
+        if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || res.status); return; }
+        statusDiv.textContent = "";
+        afficherGestionDevis(data);
+    } catch (err) { statusDiv.textContent = "Erreur réseau : " + err.message; }
+}
+function afficherGestionDevis(devisList) {
+    const container = document.getElementById('devis-list');
+    container.innerHTML = '';
+    if (devisList.length === 0) { container.innerHTML = "<p style='color:var(--text-muted); font-size:0.85rem;'>Aucun devis pour l'instant.</p>"; return; }
+    devisList.forEach(devis => {
+        const card = document.createElement('div');
+        card.className = 'card devis-card';
+        const statutHtml = devis.can_send ? '<span class="badge-vert">Vérifié - Prêt à imprimer</span>' : '<span class="badge-orange">À vérifier</span>';
+        card.innerHTML = '<div class="devis-header"><span class="devis-titre">' + (devis.reference || 'Sans titre') + '</span><span class="devis-montant">' + formatMoney(devis.total_ttc) + ' TTC</span></div>' +
+            '<div style="color:var(--text-muted); font-size:0.78rem; margin-top:2px;">Marge : ' + formatMoney(devis.marge_brute_eur) + ' — ' + devis.taux_marque_pct + '%</div>' +
+            '<div style="margin:8px 0">' + statutHtml + '</div>' +
+            '<div class="devis-actions"><button onclick="chargerDevisPourModification(\'' + devis.id_devis + '\')">Modifier</button><button onclick="telechargerPdfResume(\'' + devis.id_devis + '\')">PDF</button><button onclick="supprimerDevis(\'' + devis.id_devis + '\')">Supprimer</button></div>';
+        container.appendChild(card);
+    });
+    window._devisCache = devisList;
+}
+function chargerDevisPourModification(id_devis) {
+    const devis = (window._devisCache || []).find(d => d.id_devis === id_devis);
+    if (!devis) return;
+    editingDevisId = id_devis;
+    document.getElementById('btn-submit-devis').textContent = "Enregistrer les modifications";
+    document.getElementById('btn-cancel-edit').style.display = "block";
+    document.getElementById('devis-form').style.display = "block";
+    document.getElementById('devis-titre').value = devis.reference || '';
+    document.getElementById('lignes-container').innerHTML = "";
+    addLigne();
+    setMode(ligneCounter, 'direct');
+    const block = document.getElementById('ligne-' + ligneCounter);
+    block.querySelector('[data-field="designation"]').value = devis.reference || 'Ligne existante';
+    block.querySelector('[data-field="prix_manuel"]').value = devis.total_ht;
+    block.querySelector('[data-field="debourse_sec_unitaire_direct"]').value = devis.cout_total;
+    recalc(ligneCounter);
+    document.getElementById('devis-status').textContent = "Modification : ajuste puis enregistre.";
+    document.getElementById('devis-form').scrollIntoView({behavior:'smooth'});
+}
+async function supprimerDevis(id_devis) {
+    if (!confirm("Supprimer ce devis ?")) return;
+    try {
+        const res = await fetch(API_URL + "/api/v1/devis/" + id_devis, { method: "DELETE", headers: { "Authorization": "Bearer " + token } });
+        if (!res.ok) { const data = await res.json(); alert("Erreur : " + (data.detail || res.status)); return; }
+        loadDevisList(); loadDashboard(); loadProjectsDetail();
+    } catch (err) { alert("Erreur réseau : " + err.message); }
+}
+
+async function loadNotifications() {
+    try {
+        const res = await fetch(API_URL + "/api/v1/notifications/", { headers: { "Authorization": "Bearer " + token } });
+        const data = await res.json();
+        if (!res.ok) return;
+        const listDiv = document.getElementById('notif-list');
+        if (data.length === 0) { listDiv.innerHTML = "<p style='color:var(--text-muted); font-size:0.85rem;'>Aucune notification.</p>"; }
+        else {
+            listDiv.innerHTML = data.map(n => '<div class="notif-item">' + n.message + '<div class="notif-date">' + new Date(n.created_at).toLocaleString('fr-FR') + '</div></div>').join('');
+        }
+        document.getElementById('bell-dot').style.display = data.some(n => n.lu === 'non') ? 'block' : 'none';
+    } catch (err) {}
+}
+
+function openProjetModal(projetId, nomProjet) {
+    currentProjetId = projetId;
+    document.getElementById('modal-titre').textContent = nomProjet;
+    document.getElementById('projet-modal').classList.add('open');
+    switchModalTab('synthese');
+    loadModalSynthese(projetId);
+    loadPhotos(projetId);
+    loadComptesRendus(projetId);
+}
+function closeProjetModal() {
+    document.getElementById('projet-modal').classList.remove('open');
+    currentProjetId = null;
+}
+function switchModalTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+}
+async function loadModalSynthese(projetId) {
+    const el = document.getElementById('modal-synthese-content');
+    el.innerHTML = "Chargement...";
+    try {
+        const res = await fetch(API_URL + "/api/v1/projets/" + projetId + "/detail", { headers: { "Authorization": "Bearer " + token } });
+        const d = await res.json();
+        if (!res.ok) { el.innerHTML = "Erreur de chargement."; return; }
+        el.innerHTML = '<div class="result-line"><span>Adresse</span><span>' + (d.adresse || '—') + '</span></div>' +
+            '<div class="result-line"><span>Budget initial</span><span>' + formatMoney(d.budget_initial_ht) + '</span></div>' +
+            '<div class="result-line"><span>Chiffre d\'affaires</span><span>' + formatMoney(d.chiffre_affaires) + '</span></div>' +
+            '<div class="result-line"><span>Coût total</span><span>' + formatMoney(d.cout_total) + '</span></div>' +
+            '<div class="result-line total"><span>Marge brute</span><span>' + formatMoney(d.marge_brute_eur) + ' (' + d.taux_marque_pct + '%)</span></div>' +
+            '<div class="result-line"><span>Nombre de devis</span><span>' + d.nombre_devis + '</span></div>' +
+            (d.description ? "<p style='color:var(--text-muted); font-size:0.82rem; margin-top:10px;'>" + d.description + "</p>" : "");
+    } catch (err) { el.innerHTML = "Erreur réseau."; }
+}
+async function loadPhotos(projetId) {
+    const grid = document.getElementById('photo-grid');
+    grid.innerHTML = "";
+    try {
+        const res = await fetch(API_URL + "/api/v1/photos/projet/" + projetId, { headers: { "Authorization": "Bearer " + token } });
+        const photos = await res.json();
+        if (!res.ok || photos.length === 0) { grid.innerHTML = "<p style='color:var(--text-muted); font-size:0.8rem; grid-column:1/-1;'>Aucune photo.</p>"; return; }
+        grid.innerHTML = photos.map(p => '<img src="' + p.image_base64 + '" onclick="deletePhotoConfirm(\'' + p.id + '\')" />').join("");
+    } catch (err) {}
+}
+function uploadPhoto() {
+    const input = document.getElementById('photo-input');
+    const file = input.files[0];
+    if (!file || !currentProjetId) return;
+    const statusDiv = document.getElementById('photo-status');
+    statusDiv.textContent = "Envoi en cours...";
+    const reader = new FileReader();
+    reader.onload = async () => {
+        try {
+            const res = await fetch(API_URL + "/api/v1/photos/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+                body: JSON.stringify({ projet_id: currentProjetId, image_base64: reader.result })
+            });
+            const data = await res.json();
+            if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || res.status); return; }
+            statusDiv.textContent = "Photo ajoutée.";
+            input.value = "";
+            loadPhotos(currentProjetId);
+        } catch (err) { statusDiv.textContent = "Erreur réseau : " + err.message; }
+    };
+    reader.readAsDataURL(file);
+}
+async function deletePhotoConfirm(photoId) {
+    if (!confirm("Supprimer cette photo ?")) return;
+    try {
+        await fetch(API_URL + "/api/v1/photos/" + photoId, { method: "DELETE", headers: { "Authorization": "Bearer " + token } });
+        loadPhotos(currentProjetId);
+    } catch (err) {}
+}
+async function loadComptesRendus(projetId) {
+    const list = document.getElementById('cr-list');
+    list.innerHTML = "Chargement...";
+    try {
+        const res = await fetch(API_URL + "/api/v1/comptes-rendus/projet/" + projetId, { headers: { "Authorization": "Bearer " + token } });
+        const crs = await res.json();
+        if (!res.ok || crs.length === 0) { list.innerHTML = "<p style='color:var(--text-muted); font-size:0.8rem;'>Aucun compte-rendu.</p>"; return; }
+        list.innerHTML = crs.map(c => '<div class="cr-item"><div class="cr-titre">' + c.titre + '</div>' + (c.contenu ? "<div class='cr-contenu'>" + c.contenu + "</div>" : "") + '<button class="btn-remove" onclick="deleteCR(\'' + c.id + '\')">Supprimer</button></div>').join("");
+    } catch (err) { list.innerHTML = "Erreur réseau."; }
+}
+async function createCompteRendu() {
+    const titre = document.getElementById('cr-titre').value;
+    const contenu = document.getElementById('cr-contenu').value;
+    const statusDiv = document.getElementById('cr-status');
+    if (!titre || !currentProjetId) { statusDiv.textContent = "Titre obligatoire."; return; }
+    statusDiv.textContent = "Enregistrement...";
+    try {
+        const res = await fetch(API_URL + "/api/v1/comptes-rendus/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({ projet_id: currentProjetId, titre, contenu: contenu || null })
+        });
+        const data = await res.json();
+        if (!res.ok) { statusDiv.textContent = "Erreur : " + (data.detail || res.status); return; }
+        statusDiv.textContent = "Compte-rendu ajouté.";
+        document.getElementById('cr-titre').value = "";
+        document.getElementById('cr-contenu').value = "";
+        loadComptesRendus(currentProjetId);
+    } catch (err) { statusDiv.textContent = "Erreur réseau : " + err.message; }
+}
+async function deleteCR(crId) {
+    if (!confirm("Supprimer ce compte-rendu ?")) return;
+    try {
+        await fetch(API_URL + "/api/v1/comptes-rendus/" + crId, { method: "DELETE", headers: { "Authorization": "Bearer " + token } });
+        loadComptesRendus(currentProjetId);
+    } catch (err) {}
+}
+
+function telechargerPdfResume(id_devis) {
+    const devis = (window._devisCache || []).find(d => d.id_devis === id_devis);
+    if (!devis) return;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const gold = [245,158,11], dark=[30,30,30], muted=[120,120,120];
+    doc.setFillColor(...gold); doc.rect(0,0,210,24,'F');
+    doc.setFontSize(18); doc.setTextColor(255,255,255); doc.text("ASSAWIN PRO",14,16);
+    doc.setFontSize(10); doc.text("DEVIS - RESUME",155,16);
+    let y = 40;
+    doc.setTextColor(...dark); doc.setFontSize(15); doc.text(devis.reference || "Devis",14,y); y+=12;
+    const lines = [["Total HT",devis.total_ht,false],["TVA",devis.total_tva,false],["Total TTC",devis.total_ttc,true],["Marge brute",devis.marge_brute_eur,false],["Taux de marque",devis.taux_marque_pct+" %",false],["Acompte",devis.acompte_montant,false]];
+    lines.forEach(([label,val,bold]) => {
+        doc.setFontSize(bold?12:10);
+        doc.setTextColor(bold?gold[0]:dark[0], bold?gold[1]:dark[1], bold?gold[2]:dark[2]);
+        doc.text(String(label),14,y);
+        doc.text(typeof val==='number'?formatMoney(val):String(val),140,y);
+        y+=8;
+    });
+    y+=15; doc.setFontSize(8); doc.setTextColor(...muted);
+    doc.text("Résumé généré via ASSAWIN PRO.",14,y);
+    doc.save((devis.reference||"devis")+"-resume.pdf");
+}
+
+function generatePDF() {
+    if (!lastDevis) return;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const gold=[245,158,11], dark=[30,30,30], muted=[120,120,120];
+    doc.setFillColor(...gold); doc.rect(0,0,210,24,'F');
+    doc.setFontSize(18); doc.setTextColor(255,255,255); doc.text("ASSAWIN PRO",14,16);
+    doc.setFontSize(10); doc.text("DEVIS",175,16);
+    let y = 36;
+    doc.setTextColor(...dark); doc.setFontSize(15); doc.text(lastDevis.titre,14,y); y+=10;
+    doc.setFillColor(245,245,247); doc.roundedRect(14,y,182,22,2,2,'F');
+    doc.setFontSize(9); doc.setTextColor(...muted);
+    doc.text("Client / Projet :",18,y+7); doc.text("Référence :",18,y+14); doc.text("Date :",130,y+7);
+    doc.setTextColor(...dark);
+    doc.text(lastDevis.nomProjet,48,y+7); doc.text(String(lastDevis.reference||"N/A"),40,y+14); doc.text(new Date().toLocaleDateString('fr-FR'),145,y+7);
+    y+=32;
+    doc.setFillColor(30,30,30); doc.rect(14,y,182,8,'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(9);
+    doc.text("Désignation",18,y+5.5); doc.text("Qté",110,y+5.5); doc.text("Unité",126,y+5.5); doc.text("Prix U. HT",148,y+5.5); doc.text("Total HT",174,y+5.5);
+    y+=8;
+    lastDevis.lignes.forEach(l => {
+        const totalLigne = l.prix_unitaire_ht * l.quantite;
+        doc.setFontSize(9); doc.setTextColor(...dark);
+        doc.text(String(l.designation).substring(0,42),18,y+6); doc.text(String(l.quantite),110,y+6); doc.text(String(l.unite),126,y+6);
+        doc.text(formatMoney(l.prix_unitaire_ht),148,y+6); doc.text(formatMoney(totalLigne),174,y+6);
+        y+=9; doc.setDrawColor(230,230,230); doc.line(14,y,196,y);
+    });
+    y+=10;
+    const totals=[["Total HT",lastDevis.total_ht,false],["TVA",lastDevis.total_tva,false],["Total TTC",lastDevis.total_ttc,true],["Acompte ("+lastDevis.acompte_pct+"%)",lastDevis.acompte_montant,false]];
+    totals.forEach(([label,val,bold]) => {
+        doc.setFontSize(bold?11:9);
+        doc.setTextColor(bold?gold[0]:dark[0], bold?gold[1]:dark[1], bold?gold[2]:dark[2]);
+        doc.text(label,120,y); doc.text(formatMoney(val),174,y); y+=7;
+    });
+    y+=15; doc.setFontSize(8); doc.setTextColor(...muted);
+    doc.text("Devis généré via ASSAWIN PRO — Document sous réserve d'acceptation. Validité 30 jours.",14,y);
+    doc.save((lastDevis.reference||"devis")+".pdf");
+}
+</script>
+</body>
+</html>
