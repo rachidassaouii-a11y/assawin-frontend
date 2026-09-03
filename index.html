@@ -4,6 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ASSAWIN — Bleu Nuit</title>
+    <div class="modal-overlay" id="projet-modal">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <span style="font-weight:800; font-size:1.1rem;" id="modal-titre">Projet</span>
+            <button class="modal-close" onclick="closeProjetModal()">✕</button>
+        </div>
+        <div class="tabs-row">
+            <button class="tab-btn active" data-tab="synthese" onclick="switchModalTab('synthese')">Synthèse</button>
+            <button class="tab-btn" data-tab="photos" onclick="switchModalTab('photos')">Photos</button>
+            <button class="tab-btn" data-tab="cr" onclick="switchModalTab('cr')">Comptes-rendus</button>
+        </div>
+
+        <div class="tab-panel active" id="tab-synthese">
+            <div id="modal-synthese-content">Chargement...</div>
+        </div>
+
+        <div class="tab-panel" id="tab-photos">
+            <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="uploadPhoto()" />
+            <button class="btn btn-secondary" onclick="document.getElementById('photo-input').click()">+ Ajouter une photo</button>
+            <div id="photo-status" style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin-top:6px;"></div>
+            <div class="photo-grid" id="photo-grid"></div>
+        </div>
+
+        <div class="tab-panel" id="tab-cr">
+            <input type="text" id="cr-titre" placeholder="Titre du compte-rendu" style="width:100%; padding:9px; margin-bottom:6px; background:var(--surface-card); border:1px solid var(--border-color); border-radius:8px; color:var(--text-main);" />
+            <textarea id="cr-contenu" placeholder="Contenu (optionnel)" rows="3" style="width:100%; padding:9px; margin-bottom:6px; background:var(--surface-card); border:1px solid var(--border-color); border-radius:8px; color:var(--text-main); font-family:inherit;"></textarea>
+            <button class="btn btn-secondary" onclick="createCompteRendu()">+ Ajouter un compte-rendu</button>
+            <div id="cr-status" style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin:6px 0;"></div>
+            <div id="cr-list" style="margin-top:10px;"></div>
+        </div>
+    </div>
+    </div>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
 .projet-card { cursor: pointer; }
